@@ -1,12 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, include
+from tastypie.api import Api
+from SPADE_main.api import PlayerResource
 
-# from django.contrib import admin
-# admin.autodiscover()
+player_resource = PlayerResource()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'SPADE.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    # url(r'^admin/', include(admin.site.urls)),
+    (r'^$', 'SPADE_main.views.index'),
+    (r'^api/', include(player_resource.urls))
 )
