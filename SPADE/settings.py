@@ -85,3 +85,5 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
