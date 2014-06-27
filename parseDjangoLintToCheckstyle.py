@@ -34,14 +34,14 @@ def main():
             fileElement.set('name', match.group(1))
             continue
 
-        match = re.search('^([A-Z]):\s(.*),(.*):(.*):\s(.*):\s(.*)$', line)
+        match = re.search('^([A-Z]):\s(.*),(.*):(.*):\s(.*)$', line)
         if match:
             errorElement = Element('error')
             errorElement.set('severity', match.group(1))
             errorElement.set('line', str(match.group(2)))
             errorElement.set('column', str(match.group(3)))
             errorElement.set('source', match.group(4))
-            errorElement.set('message', match.group(6))
+            errorElement.set('message', match.group(5))
 
             fileElement.append(errorElement)
 
