@@ -17,6 +17,9 @@ def main():
 
     # Make the first argument the output file
     outputXmlFile = args[1]
+    directory = os.path.dirname(outputXmlFile)
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
 
     # Start off with the root checkstyle element and version
     outXml = Element('checkstyle')
