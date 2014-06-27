@@ -28,20 +28,24 @@ def main():
     for line in sys.stdin:
         sys.stdout.write(line)
 
+        # Match the module header
+        # ************* Module SPADE_main.models
         match = re.search('^\*+\sModule\sSPADE_main\.(.*)$', line)
         if match:
             fileElement = Element('file')
             fileElement.set('name', match.group(1))
             continue
 
-        match = re.search('^([A-Z]):\s(.*),(.*):(.*):\s(.*)$', line)
+        # Match an error
+        # W: 14,15:Players: nfl_team: ForeignKey missing related_name
+        match = re.search('^([A-Z]):\s(.*),(.*):(.*):\s(.*):\s(.*)$', line)
         if match:
             errorElement = Element('error')
             errorElement.set('severity', match.group(1))
             errorElement.set('line', str(match.group(2)))
             errorElement.set('column', str(match.group(3)))
             errorElement.set('source', match.group(4))
-            errorElement.set('message', match.group(5))
+            errorElement.set('message', match.group(5) + ': ' + match.group(6))
 
             fileElement.append(errorElement)
 
