@@ -11,7 +11,7 @@ class NflTeams(models.Model):
 
 class Players(models.Model):
     name = models.CharField(max_length=50)
-    nfl_team = models.ForeignKey(NflTeams)
+    nfl_team = models.ForeignKey(NflTeams, related_name="+")
     games_played = models.IntegerField()
     espn_ranking = models.IntegerField()
     last_season_points = models.IntegerField()
