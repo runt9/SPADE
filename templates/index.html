@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-<html>
+<html style="height: 100%">
 <head>
     <title>Simple Player Analysis & Draft Engine</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/players.css" %}">
+
     <!-- CDN for Bootstrap 3.2.0 -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
@@ -16,28 +18,39 @@
     <script src="{% static "javascript/controllers.js" %}"></script>
     <script src="{% static "javascript/services.js" %}"></script>
 </head>
-<body ng-app="PlayersApp" ng-controller="playersController">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Pos</th>
-                <th>NFL Team</th>
-                <th>Games</th>
-                <th>ESPN Rank</th>
-                <th>2013 Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="player in playersList">
-                <td>{[{player.name}]}</td>
-                <td>{[{player.position}]}</td>
-                <td>{[{player.nfl_team}]}</td>
-                <td>{[{player.games_played}]}</td>
-                <td>{[{player.espn_ranking}]}</td>
-                <td>{[{player.last_season_points}]}</td>
-            </tr>
-        </tbody>
-    </table>
+<body ng-app="PlayersApp" ng-controller="playersController" style="height: 100%">
+    <div class="col-md-9 col-lg-10" style="height: 100%; border-right: 1px solid #DDDDDD; padding-right: 0; padding-left: 0">
+        <div class="jumbotron">
+            <div align="center" class="container">
+                <h1>Welcome to SPADE!</h1>
+                <p>Otherwise known as the <b>S</b>imple <b>P</b>layer <b>A</b>nalysis & <b>D</b>raft <b>E</b>ngine</p>
+            </div>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th><div class="sortableHeader" ng-click="predicate = 'name'; reverse = !reverse">Name</div></th>
+                    <th><div class="sortableHeader" ng-click="predicate = 'position'; reverse = !reverse">Pos</div></th>
+                    <th><div class="sortableHeader" ng-click="predicate = 'nfl_team'; reverse = !reverse">NFL Team</div></th>
+                    <th><div class="sortableHeader" ng-click="predicate = 'games_played'; reverse = !reverse">Games</div></th>
+                    <th><div class="sortableHeader" ng-click="predicate = 'espn_ranking'; reverse = !reverse">ESPN Rank</div></th>
+                    <th><div class="sortableHeader" ng-click="predicate = 'last_season_points'; reverse = !reverse">2013 Points</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="player in playersList | orderBy:predicate:reverse">
+                    <td>{[{player.name}]}</td>
+                    <td>{[{player.position}]}</td>
+                    <td>{[{player.nfl_team}]}</td>
+                    <td>{[{player.games_played}]}</td>
+                    <td>{[{player.espn_ranking}]}</td>
+                    <td>{[{player.last_season_points}]}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-3 col-lg-2">
+    	PLACEHOLDER FOR TEAMS
+    </div>
 </body>
 </html>
