@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <title>Simple Player Analysis & Draft Engine</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CDN for Bootstrap 3.2.0 -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- CDN for AngularJS 1.2.18 -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+
+    <!-- Staticfiles loading for our local javascript -->
+    <script src="{% static "javascript/app.js" %}"></script>
+    <script src="{% static "javascript/controllers.js" %}"></script>
+    <script src="{% static "javascript/services.js" %}"></script>
+</head>
+<body ng-app="PlayersApp" ng-controller="playersController">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Pos</th>
+                <th>NFL Team</th>
+                <th>Games</th>
+                <th>ESPN Rank</th>
+                <th>2013 Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="player in playersList">
+                <td>{[{player.name}]}</td>
+                <td>{[{player.position}]}</td>
+                <td>{[{player.nfl_team}]}</td>
+                <td>{[{player.games_played}]}</td>
+                <td>{[{player.espn_ranking}]}</td>
+                <td>{[{player.last_season_points}]}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

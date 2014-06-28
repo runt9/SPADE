@@ -1,5 +1,4 @@
 from django.conf.urls import patterns, include
-from tastypie.api import Api
 from SPADE_main.api import PlayerResource
 
 player_resource = PlayerResource()
