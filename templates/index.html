@@ -26,25 +26,106 @@
                 <p>Otherwise known as the <b>S</b>imple <b>P</b>layer <b>A</b>nalysis & <b>D</b>raft <b>E</b>ngine</p>
             </div>
         </div>
-        <table class="table table-striped table-hover">
+        <div>
+            <div style="float: right">
+                <label>Search Name:&nbsp;<input ng-model="search.name"></label>
+            </div>
+            <div style="float: left">
+                <label>Position:&nbsp;
+                    <select ng-model="search.position">
+                        <option value="">All</option>
+                        <option ng-repeat="position in positions" value="{[{position}]}">{[{position}]}</option>
+                    </select>
+                </label>
+            </div>
+            <div style="float: left; padding-left: 15px">
+                <label>NFL Team:&nbsp;
+                    <select ng-model="search.nfl_team">
+                        <option value="">All</option>
+                        <option ng-repeat="(short,long) in nfl_teams" value="{[{short}]}">{[{long}]}</option>
+                    </select>
+                </label>
+            </div>
+            <div style="float: left; padding-left: 15px">
+                <label>Availability:&nbsp;
+                    <select ng-model="search.available">
+                        <option value="">All</option>
+                        <option value="true">Only Available</option>
+                        <option value="false">Only Unavailable</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <table class="table table-hover">
             <thead>
                 <tr>
-                    <th><div class="sortableHeader" ng-click="predicate = 'name'; reverse = !reverse">Name</div></th>
-                    <th><div class="sortableHeader" ng-click="predicate = 'position'; reverse = !reverse">Pos</div></th>
-                    <th><div class="sortableHeader" ng-click="predicate = 'nfl_team'; reverse = !reverse">NFL Team</div></th>
-                    <th><div class="sortableHeader" ng-click="predicate = 'games_played'; reverse = !reverse">Games</div></th>
-                    <th><div class="sortableHeader" ng-click="predicate = 'espn_ranking'; reverse = !reverse">ESPN Rank</div></th>
-                    <th><div class="sortableHeader" ng-click="predicate = 'last_season_points'; reverse = !reverse">2013 Points</div></th>
+                    <th ng-class="{'sorted': predicate == 'name'}">
+                        <div class="sortableHeader" ng-click="predicate = 'name'; reverse = !reverse">
+                            Name
+                            <span ng-class="{'caret': predicate == 'name', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'position'}">
+                        <div class="sortableHeader" ng-click="predicate = 'position'; reverse = !reverse">
+                            Pos
+                            <span ng-class="{'caret': predicate == 'position', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'nfl_team'}">
+                        <div class="sortableHeader" ng-click="predicate = 'nfl_team'; reverse = !reverse">
+                            NFL Team
+                            <span ng-class="{'caret': predicate == 'nfl_team', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'games_played'}">
+                        <div class="sortableHeader" ng-click="predicate = 'games_played'; reverse = !reverse">
+                            Games
+                            <span ng-class="{'caret': predicate == 'games_played', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'espn_ranking'}">
+                        <div class="sortableHeader" ng-click="predicate = 'espn_ranking'; reverse = !reverse">
+                            ESPN Rank
+                            <span ng-class="{'caret': predicate == 'espn_ranking', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'last_season_points'}">
+                        <div class="sortableHeader" ng-click="predicate = 'last_season_points'; reverse = !reverse">
+                            2013 Points
+                            <span ng-class="{'caret': predicate == 'last_season_points', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'league_team'}">
+                        <div class="sortableHeader" ng-click="predicate = 'league_team'; reverse = !reverse">
+                            League Team
+                            <span ng-class="{'caret': predicate == 'league_team', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">
+                        <div class="sortableHeader" ng-click="predicate = 'passing_yards'; reverse = !reverse">
+                            Passing Yards
+                            <span ng-class="{'caret': predicate == 'passing_yards', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
+                    <th ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">
+                        <div class="sortableHeader" ng-click="predicate = 'rushing_yards'; reverse = !reverse">
+                            Rushing Yards
+                            <span ng-class="{'caret': predicate == 'rushing_yards', 'caret-reversed': reverse}"></span>
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="player in playersList | orderBy:predicate:reverse">
-                    <td>{[{player.name}]}</td>
-                    <td>{[{player.position}]}</td>
-                    <td>{[{player.nfl_team}]}</td>
-                    <td>{[{player.games_played}]}</td>
-                    <td>{[{player.espn_ranking}]}</td>
-                    <td>{[{player.last_season_points}]}</td>
+                <tr ng-repeat="player in playersList | orderBy:predicate:reverse | filter:search:strict" ng-class="{'bg-danger': !player.available}">
+                    <td ng-class="{'sorted': predicate == 'name'}">{[{player.name}]}</td>
+                    <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
+                    <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
+                    <td ng-class="{'sorted': predicate == 'games_played'}">{[{player.games_played}]}</td>
+                    <td ng-class="{'sorted': predicate == 'espn_ranking'}">{[{player.espn_ranking}]}</td>
+                    <td ng-class="{'sorted': predicate == 'last_season_points'}">{[{player.last_season_points}]}</td>
+                    <td ng-class="{'sorted': predicate == 'league_team'}">{[{player.league_team}]}</td>
+                    <td ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">{[{player.passing_yards}]}</td>
+                    <td ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">{[{player.rushing_yards}]}</td>
                 </tr>
             </tbody>
         </table>
