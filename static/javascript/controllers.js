@@ -35,7 +35,19 @@ angular.module('PlayersApp.controllers', []).controller('playersController', fun
            league_team: 'MRN',
            available: false,
            rushing_yards: "1500"
-       }
+       },
+       {
+           name: "Calvin Johnson",
+           position: "WR",
+           nfl_team: "DET",
+           games_played: "16",
+           espn_ranking: "4",
+           last_season_points: "496",
+           league_team: "",
+           available: true,
+           receiving_yards: "1800",
+           receiving_tds: "18"
+       },
    ];
    $scope.positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
    $scope.nfl_teams = {
