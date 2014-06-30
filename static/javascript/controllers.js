@@ -12,6 +12,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', fun
            last_season_points: "500",
            league_team: "",
            available: true,
+           tagged: false,
            passing_yards: "5000"
        },
        {
@@ -23,6 +24,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', fun
            last_season_points: "500",
            league_team: "",
            available: true,
+           tagged: false,
            passing_yards: "4000"
        },
        {
@@ -34,6 +36,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', fun
            last_season_points: "499",
            league_team: 'MRN',
            available: false,
+           tagged: false,
            rushing_yards: "1500"
        },
        {
@@ -45,6 +48,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', fun
            last_season_points: "496",
            league_team: "",
            available: true,
+           tagged: false,
            receiving_yards: "1800",
            receiving_tds: "18"
        },

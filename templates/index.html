@@ -33,7 +33,7 @@
                 <div style="float: right; padding-right: 10px">
                     <input type="text" ng-model="search.name" placeholder="Search Name" class="form-control">
                 </div>
-                <div style="float: left; padding-left: 10px">
+                <div class="filterSelect">
                     <label>Position:&nbsp;
                         <select ng-model="search.position">
                             <option value="">All</option>
@@ -41,7 +41,7 @@
                         </select>
                     </label>
                 </div>
-                <div style="float: left; padding-left: 15px">
+                <div class="filterSelect">
                     <label>NFL Team:&nbsp;
                         <select ng-model="search.nfl_team">
                             <option value="">All</option>
@@ -49,7 +49,7 @@
                         </select>
                     </label>
                 </div>
-                <div style="float: left; padding-left: 15px">
+                <div class="filterSelect">
                     <label>Availability:&nbsp;
                         <select ng-model="search.available">
                             <option value="">All</option>
@@ -58,10 +58,20 @@
                         </select>
                     </label>
                 </div>
+                <div class="filterSelect">
+                    <label>Tagged:&nbsp;
+                        <select ng-model="search.tagged">
+                            <option value="">All</option>
+                            <option value="true">Tagged</option>
+                            <option value="false">Untagged</option>
+                        </select>
+                    </label>
+                </div>
             </div>
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th>Tag</th>
                         <th ng-class="{'sorted': predicate == 'name'}">
                             <div class="sortableHeader" ng-click="predicate = 'name'; reverse = !reverse">
                                 Name
@@ -128,11 +138,11 @@
                                 <span ng-class="{'caret': predicate == 'receiving_tds', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
-
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="player in playersList | orderBy:predicate:reverse | filter:search:strict" ng-class="{'bg-danger': !player.available}">
+                    <tr ng-repeat="player in playersList | orderBy:predicate:reverse | filter:search:strict" ng-class="{'bg-danger': !player.available, 'bg-warning': player.tagged}">
+                        <td><input type="checkbox" ng-checked="player.tagged" ng-model="player.tagged" ng-disabled="!player.available"></td>
                         <td ng-class="{'sorted': predicate == 'name'}">{[{player.name}]}</td>
                         <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
                         <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
