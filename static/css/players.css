@@ -1,12 +1,15 @@
-.sortableHeader {
-    display: block;
-    cursor: pointer;
+.noSelect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+}
+.sortableHeader {
+    display: block;
+    cursor: pointer;
 }
 .sorted {
     background-color: #EEEEEE;
@@ -49,4 +52,30 @@ select {
 .filterSelect {
     float: left;
     padding-left: 10px;
+}
+.teamList {
+    padding-left: 0;
+    padding-right: 0;
+}
+.teamFilterSelect {
+    margin: auto;
+}
+.tagBox {
+    cursor: pointer;
+}
+.teamPlayer {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #DDDDDD;
+}
+.teamPlayer:hover {
+    background-color: #EEEEEE;
+}
+.playerPosition {
+    padding-left: 15px;
+    font-weight: bold;
+}
+.playerName {
+    padding-right: 15px;
+    float: right;
 }

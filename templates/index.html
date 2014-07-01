@@ -21,7 +21,7 @@
     <script src="{% static "javascript/services.js" %}"></script>
 </head>
 <body ng-app="PlayersApp" ng-controller="playersController" style="height: 100%">
-    <div class="col-md-9 col-lg-10 playersColumn">
+    <div class="col-md-9 col-lg-9 playersColumn">
         <div class="jumbotron">
             <div align="center" class="container">
                 <h1>Welcome to SPADE!</h1>
@@ -45,7 +45,7 @@
                     <label>NFL Team:&nbsp;
                         <select ng-model="search.nfl_team">
                             <option value="">All</option>
-                            <option ng-repeat="(short,long) in nfl_teams" value="{[{short}]}">{[{long}]}</option>
+                            <option ng-repeat="(short,long) in nflTeams" value="{[{short}]}">{[{long}]}</option>
                         </select>
                     </label>
                 </div>
@@ -141,8 +141,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="player in playersList | orderBy:predicate:reverse | filter:search:strict" ng-class="{'bg-danger': !player.available, 'bg-warning': player.tagged}">
-                        <td><input type="checkbox" ng-checked="player.tagged" ng-model="player.tagged" ng-disabled="!player.available"></td>
+                    <tr ng-repeat="player in playersList | orderBy:predicate:reverse | filter:search:strict"
+                        ng-class="{'bg-danger': !player.available, 'bg-warning': player.tagged}">
+                        <td ng-click="player.tagged = player.available ? !player.tagged : false" ng-class="{'tagBox': player.available}" class="noSelect">
+                            <input type="checkbox" ng-checked="player.tagged" ng-disabled="!player.available">
+                        </td>
                         <td ng-class="{'sorted': predicate == 'name'}">{[{player.name}]}</td>
                         <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
                         <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
@@ -159,8 +162,20 @@
             </table>
         </div>
     </div>
-    <div class="col-md-3 col-lg-2">
-    	PLACEHOLDER FOR TEAMS
+    <div class="col-md-3 col-lg-3 teamList">
+        <div class="filters" align="center">
+            <div class="teamFilterSelect">
+                <label>Select Team:&nbsp;
+                    <select ng-model="selectedLeagueTeam">
+                        <option ng-repeat="(short,long) in leagueTeams" value="{[{short}]}">{[{long}]}</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="teamPlayer" ng-repeat="position in leaguePositions">
+            <span class="playerPosition">{[{position}]}</span>
+            <span class="playerName">{[{getTeamPosition(selectedLeagueTeam, position).name}]}</span>
+        </div>
     </div>
 </body>
 </html>
