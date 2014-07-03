@@ -13,6 +13,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
            league_team: "RD",
            available: false,
            tagged: false,
+           draft_position: 2,
            passing_yards: "5000"
        },
        {
@@ -25,6 +26,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
            league_team: "RD",
            available: false,
            tagged: false,
+           draft_position: 3,
            passing_yards: "4000"
        },
        {
@@ -37,6 +39,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
            league_team: 'MRN',
            available: false,
            tagged: false,
+           draft_position: 1,
            rushing_yards: "1500"
        },
        {
@@ -49,6 +52,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
            league_team: "",
            available: true,
            tagged: false,
+           draft_position: 4,
            receiving_yards: "1800",
            receiving_tds: "18"
        },
@@ -98,8 +102,10 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
     $scope.selectedLeagueTeam = "";
     $scope.leaguePositions = ['QB1', 'QB2', 'RB', 'RB/WR', 'WR', 'WR/TE', 'OP', 'D/ST', 'K', 'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7'];
 
+    // Initialize the list of which players belong to which league team
     $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
 
+    // Given a team and a position, grab the player in that position on the given team and return it
     $scope.getTeamPosition = function(team, position) {
         var retVal;
         var teamsPlayers = $scope.teamsPlayers;
