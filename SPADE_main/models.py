@@ -6,6 +6,7 @@ class LeagueTeams(models.Model):
     short_name = models.CharField(max_length=3)
     long_name = models.CharField(max_length=50)
 
+
 class NflTeams(models.Model):
     short_name = models.CharField(max_length=3)
     long_name = models.CharField(max_length=50)
@@ -16,6 +17,7 @@ class NflTeams(models.Model):
 
 class PlayerPosition(models.Model):
     position = models.CharField(max_length=3)
+
 
 class Players(models.Model):
     name = models.CharField(max_length=50)
@@ -46,6 +48,7 @@ class Kickers(Players):
     xp_percent = models.DecimalField(max_digits=3, decimal_places=1)
     points = models.IntegerField()
 
+
 class QuarterBacks(Players):
     qb_rating = models.DecimalField(max_digits=4, decimal_places=1)
     completions = models.IntegerField()
@@ -66,6 +69,7 @@ class QuarterBacks(Players):
     fumbles = models.IntegerField()
     fumbles_lost = models.IntegerField()
 
+
 class RunningBacks(Players):
     rushes = models.IntegerField()
     rushing_yards = models.IntegerField()
@@ -83,6 +87,7 @@ class RunningBacks(Players):
     receiving_touchdowns = models.IntegerField()
     fumbles = models.IntegerField()
     fumbles_lost = models.IntegerField()
+
 
 class WideReceivers(Players):
     receptions = models.IntegerField()
@@ -107,6 +112,7 @@ class WideReceivers(Players):
     fumbles = models.IntegerField()
     fumbles_lost = models.IntegerField()
 
+
 class TightEnds(Players):
     receptions = models.IntegerField()
     targets = models.IntegerField()
@@ -125,6 +131,7 @@ class TightEnds(Players):
     fumbles = models.IntegerField()
     fumbles_lost = models.IntegerField()
 
+
 class SpecialTeams(Players):
     kickoffs = models.IntegerField()
     yards_per_kickoff = models.DecimalField(max_digits=3, decimal_places=1)
@@ -132,6 +139,7 @@ class SpecialTeams(Players):
     returns = models.IntegerField()
     yards_per_return = models.DecimalField(max_digits=3, decimal_places=1)
     touchdown_returns = models.IntegerField()
+
 
 class Defence(Players):
     points_per_game = models.DecimalField(max_digits=3, decimal_places=1)

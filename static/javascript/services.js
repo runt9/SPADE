@@ -115,6 +115,21 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
             }
 
             return team;
+        },
+
+        // Given a team, a position, and a list of teams with players on them, find out how many players
+        // of each given position exists on the given team.
+        getTeamPositionPlayerCount: function(team, position, teamsPlayers) {
+            var teamPosition;
+            var count = 0;
+
+            for (teamPosition in teamsPlayers[team]) {
+                if (teamsPlayers[team][teamPosition].position == position) {
+                    count++;
+                }
+            }
+
+            return count;
         }
     };
 });

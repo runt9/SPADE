@@ -1,6 +1,6 @@
 // Initialize our PlayersApp controller
 // TODO: Remove hardcoded players list and wire up to endpoint
-angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', 'playerTeamService', '$log', function($scope, playerTeamService, $log) {
+angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', 'playerTeamService', function($scope, playerTeamService) {
     "use strict";
     $scope.playersList = [
        {
@@ -55,7 +55,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
            draft_position: 4,
            receiving_yards: "1800",
            receiving_tds: "18"
-       },
+       }
     ];
     $scope.positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
     $scope.nflTeams = {
@@ -107,13 +107,11 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
 
     // Given a team and a position, grab the player in that position on the given team and return it
     $scope.getTeamPosition = function(team, position) {
-        var retVal;
         var teamsPlayers = $scope.teamsPlayers;
-
-        if (teamsPlayers[team] !== undefined && teamsPlayers[team][position] !== undefined) {
-            retVal = teamsPlayers[team][position];
-        }
-
-        return retVal;
+        return (teamsPlayers[team] !== undefined && teamsPlayers[team][position] !== undefined) ?  teamsPlayers[team][position] : undefined;
     };
+
+    $scope.getTeamPositionPlayerCount = function(team, position) {
+        return playerTeamService.getTeamPositionPlayerCount(team, position, $scope.teamsPlayers);
+    }
 }]);

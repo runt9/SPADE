@@ -5,7 +5,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-
 }
 .sortableHeader {
     display: block;
@@ -54,6 +53,9 @@ select {
     padding-left: 10px;
 }
 .teamList {
+    height: 100%;
+    border-collapse: collapse;
+    display: table;
     padding-left: 0;
     padding-right: 0;
 }
@@ -78,4 +80,13 @@ select {
 .playerName {
     padding-right: 15px;
     float: right;
+}
+.teamListCounts {
+    display: table-row;
+    vertical-align: bottom;
+    height: 1px;
+    border-top: 1px solid #DDDDDD;
+}
+.playerCount {
+    padding-right: 20px;
 }
