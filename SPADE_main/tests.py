@@ -11,6 +11,10 @@ class ApiTestCase(TestCase):
         response = self.client.get('/api/player/')
         self.assertEqual(response.status_code, 200)
 
+    def test_league_team_url(self):
+        response = self.client.get('/api/league_team/')
+        self.assertEqual(response.status_code, 200)
+
     def test_invalid_url(self):
         response = self.client.get('/mangled_url')
         self.assertNotEqual(response.status_code, 200)
