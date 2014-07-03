@@ -90,3 +90,10 @@ select {
 .playerCount {
     padding-right: 20px;
 }
+.clickable {
+    cursor: pointer;
+    color: mediumblue;
+}
+.clickable:hover {
+    color: slateblue;
+}

@@ -11,6 +11,7 @@ class PlayerResource(ModelResource):
         queryset = Players.objects.all()
         resource_name = 'player'
 
+
 class LeagueTeamResource(ModelResource):
     """
     API Facet

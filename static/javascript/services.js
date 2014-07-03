@@ -130,6 +130,13 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
             }
 
             return count;
+        },
+
+        // Takes in a string, replaces all underscores with spaces, then uppercases the first letter of each word.
+        convertFieldToHeader: function(str) {
+            return str.replace(/_/g, ' ').replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
         }
     };
 });
