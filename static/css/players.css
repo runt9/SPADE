@@ -97,3 +97,7 @@ select {
 .clickable:hover {
     color: slateblue;
 }
+.statsHolder {
+    overflow: hidden;
+    border-radius: 5px;
+}

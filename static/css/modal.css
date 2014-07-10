@@ -19,9 +19,11 @@
     -moz-transform: translate(-50%, -50%);
     background-color: #FFFFFF;
     box-shadow: 4px 4px 80px #000;
+    border-radius: 5px;
 }
 
 .ng-modal-dialog-content {
-    padding: 10px;
+    padding: 5px;
     text-align: left;
+    border-radius: 5px;
 }

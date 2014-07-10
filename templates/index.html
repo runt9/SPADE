@@ -225,21 +225,23 @@
         </div>
     </div>
     <modal-dialog show="modalShown">
-        <table class="table-hover table-bordered">
-            <thead>
-                <tr class="filters">
-                    <td colspan="2" style="font-weight: bold; text-align: center; padding: 10px">
-                        {[{modalPlayer.name}]} - {[{modalPlayer.position}]} - Stats
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="(key, value) in modalPlayer.stats">
-                    <td style="font-weight: bold; padding: 2px">{[{convertFieldToHeader(key)}]}</td>
-                    <td style="padding: 2px; text-align: right">{[{value}]}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="statsHolder">
+            <table class="table-hover table-bordered" style="padding: 5px">
+                <thead>
+                    <tr class="filters">
+                        <td colspan="2" style="font-weight: bold; text-align: center; padding: 10px">
+                            {[{modalPlayer.name}]} - {[{modalPlayer.position}]} - Stats
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(key, value) in modalPlayer.stats">
+                        <td style="font-weight: bold; padding: 2px">{[{convertFieldToHeader(key)}]}</td>
+                        <td style="padding: 2px; text-align: right">{[{value}]}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </modal-dialog>
 </body>
 </html>
