@@ -36,7 +36,8 @@ playersApp.directive('modalDialog', function() {
 });
 
 var draftBoardApp = angular.module('DraftBoardApp', [
-    'DraftBoardApp.controllers'
+    'DraftBoardApp.controllers',
+    'DraftBoardApp.services'
 ]);
 
 draftBoardApp.config(function($interpolateProvider) {

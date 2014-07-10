@@ -1,6 +1,9 @@
 .boardPlayerCell {
     padding-top: 15px;
     padding-bottom: 15px;
+    font-size: 14pt;
+    font-weight: bold;
+    position: relative;
 }
 .draftBoardHolder {
     position: absolute;
@@ -9,11 +12,34 @@
     left: 0;
     right: 0;
 }
-.ticker {
+.draftBoardTable {
+    table-layout: fixed;
+}
+.draftBoardTable th {
+    font-size: 12pt;
+}
+.tickerBox {
     position: absolute;
-    height: 60px;
+    height: 50px;
+    width: 100%;
+    display: block;
+    overflow: hidden;
     bottom: 0;
     left: 0;
     right: 0;
-    border-top: 1px solid black;
+    background-color: #222222;
+    color: #DDDDDD;
+}
+.ticker {
+    display: inline;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    vertical-align: middle;
+}
+.tickerElement {
+    margin-right: 30px;
+    font-weight: bold;
+    font-size: 24pt;
+    white-space: nowrap;
 }

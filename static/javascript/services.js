@@ -141,3 +141,23 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
     };
 });
 
+angular.module('DraftBoardApp.services', []).factory('draftBoardService', function() {
+    "use strict";
+
+    return {
+        // Given a team, a round, and a list of players, return the player that was drafted by
+        // that team in the given round, if there is one.
+        getDraftedPlayer: function(team, round, players) {
+            var retPlayer = {};
+            var index;
+
+            for (index in players) {
+                if (players[index].team == team && players[index].round == round) {
+                    retPlayer = players[index];
+                }
+            }
+
+            return retPlayer;
+        }
+    };
+});

@@ -206,10 +206,95 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
     }
 }]);
 
-angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', function($scope) {
+angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', 'draftBoardService', '$interval', function($scope, draftBoardService, $interval) {
     "use strict";
-    $scope.draftedPlayers = [];
-    $scope.rounds = 16;
-    $scope.roundsArray = new Array($scope.rounds);
+    $scope.draftedPlayers = [
+        {
+            name: "LeSean McCoy",
+            position: "RB",
+            team: "team1",
+            round: 1
+        },
+        {
+            name: "Peyton Manning",
+            position: "QB",
+            team: "team2",
+            round: 1,
+        },
+        {
+            name: "Tom Brady",
+            position: "QB",
+            team: "team3",
+            round: 1
+        },
+    ];
+    $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     $scope.leagueTeams = ['team1', 'team2', 'team3', 'team4', 'team5', 'team6', 'team7', 'team8', 'team9', 'team10'];
+    $scope.getDraftedPlayer = function(team, round) {
+        return draftBoardService.getDraftedPlayer(team, round, $scope.draftedPlayers)
+    };
+
+    // Ticker object to maintain configuration and updating of the ticker
+    $scope.ticker = {
+        // Starting position
+        position: angular.element(document.getElementById('tickerBox'))[0].offsetWidth,
+        margin: 20,
+        moveFlag: true,
+
+        // Returns the left offset the ticker should have.
+        getTickerLeft: function() {
+            return $scope.ticker.position + $scope.ticker.margin + 'px';
+        },
+
+        // Moves the ticker by dropping the position by one, which causes an Angular bind to call the getTickerLeft
+        // above, which will move the ticker over by 1 pixel.
+        tickerMove: function() {
+            var tickerDiv = angular.element(document.getElementById('ticker'))[0];
+            var tickerBox = angular.element(document.getElementById('tickerBox'))[0];
+
+            if ($scope.ticker.moveFlag) {
+                $scope.ticker.position--;
+
+                // If the ticker div is all the way off the left side of the screen, reset it to the default position,
+                // which is off to the right of the screen
+                if (tickerDiv.offsetLeft < (0 - (tickerDiv.offsetWidth + $scope.ticker.margin))) {
+                    $scope.ticker.position = tickerBox.offsetWidth + $scope.ticker.margin;
+                }
+            }
+        }
+    };
+
+    // Initialize our ticker when the page loads.
+    $scope.init = function() {
+        $interval($scope.ticker.tickerMove, 20);
+    };
+
+    $scope.getCssClassForPlayer = function(player) {
+        var className = '';
+
+        switch (player.position) {
+            case 'QB':
+                className = 'bg-success';
+                break;
+            case 'RB':
+                className = 'bg-info';
+                break;
+            case 'WR':
+                className = 'bg-warning';
+                break;
+            case 'TE':
+                className = 'bg-danger';
+                break;
+            case 'D/ST':
+                className = 'bg-doc';
+                break;
+            case 'K':
+                className = 'bg-alert';
+                break;
+            default:
+                break;
+        }
+
+        return className;
+    }
 }]);
