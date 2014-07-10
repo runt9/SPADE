@@ -14,3 +14,7 @@ def players(request):
 
 def view_player(request, player_id):
     return render_to_response('view_player.html')
+
+
+def draft_board(request):
+    return render_to_response('draft_board.html')

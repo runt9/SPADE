@@ -1,17 +1,17 @@
 // Load the PlayersApp module, including controllers and services, then add configuration
 // for interpolateProvider because {{ }} conflicts with Django and we don't want that.
-var app = angular.module('PlayersApp', [
+var playersApp = angular.module('PlayersApp', [
     'PlayersApp.controllers',
     'PlayersApp.services'
 ]);
 
-app.config(function($interpolateProvider) {
+playersApp.config(function($interpolateProvider) {
     "use strict";
     $interpolateProvider.startSymbol('{[{');
     $interpolateProvider.endSymbol('}]}');
 });
 
-app.directive('modalDialog', function() {
+playersApp.directive('modalDialog', function() {
     return {
         restrict: 'E',
         scope: {
@@ -33,4 +33,14 @@ app.directive('modalDialog', function() {
             "</div>"
 
     };
+});
+
+var draftBoardApp = angular.module('DraftBoardApp', [
+    'DraftBoardApp.controllers'
+]);
+
+draftBoardApp.config(function($interpolateProvider) {
+    "use strict";
+    $interpolateProvider.startSymbol('{[{');
+    $interpolateProvider.endSymbol('}]}');
 });

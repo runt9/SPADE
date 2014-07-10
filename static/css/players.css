@@ -1,29 +1,3 @@
-.noSelect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.sortableHeader {
-    display: block;
-    cursor: pointer;
-}
-.sorted {
-    background-color: #EEEEEE;
-}
-.caret.caret-reversed {
-    border-top-width: 0;
-    border-bottom: 4px solid #000000;
-}
-select {
-    border-radius: 4px;
-    margin-top: 1px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    height: 34px;
-}
 .filters {
     background: linear-gradient(to bottom, rgba(222,239,255,1) 0%,rgba(152,190,222,1) 100%);
     padding-top: 10px;
@@ -31,26 +5,12 @@ select {
     border-bottom: 1px solid slategrey;
     overflow: hidden;
 }
-.tableHolder {
-    width: 95%;
-    margin: auto;
-    border: 2px outset slategray;
-    border-radius: 10px;
-    overflow: auto;
-}
-.table {
-    margin-bottom: 0;
-}
 .playersColumn {
     height: 100%;
     border-right: 1px solid #DDDDDD;
     padding-right: 0;
     padding-left: 0;
     overflow: auto;
-}
-.filterSelect {
-    float: left;
-    padding-left: 10px;
 }
 .teamList {
     height: 100%;
@@ -82,20 +42,10 @@ select {
     float: right;
 }
 .teamListCounts {
-    display: table-row;
-    vertical-align: bottom;
-    height: 1px;
     border-top: 1px solid #DDDDDD;
 }
 .playerCount {
     padding-right: 20px;
-}
-.clickable {
-    cursor: pointer;
-    color: mediumblue;
-}
-.clickable:hover {
-    color: slateblue;
 }
 .statsHolder {
     overflow: hidden;

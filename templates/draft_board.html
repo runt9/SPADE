@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <title>Simple Player Analysis & Draft Engine</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CDN for Bootstrap 3.2.0 -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- CDN for AngularJS 1.2.18 -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+
+    <!-- Staticfiles loading for our local css -->
+    <link rel="stylesheet" href="{% static "css/base.css" %}">
+    <link rel="stylesheet" href="{% static "css/draft_board.css" %}">
+
+    <!-- Staticfiles loading for our local javascript -->
+    <script src="{% static "javascript/app.js" %}"></script>
+    <script src="{% static "javascript/controllers.js" %}"></script>
+    <script src="{% static "javascript/services.js" %}"></script>
+</head>
+<body ng-app="DraftBoardApp" ng-controller="draftBoardController">
+    <div class="holder">
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Timer and draft team information here</h1>
+            </div>
+        </div>
+        <div class="tableHolder scrollable draftBoardHolder">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="centered">Round</th>
+                        <th class="centered" ng-repeat="team in leagueTeams">{[{team}]}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="rnd in roundsArray track by $index">
+                        <td class="boardPlayerCell centered">
+                            <div class="boardPlayerCell">Round {[{$index + 1}]}</div>
+                        </td>
+                        <td class="boardPlayerCell centered" ng-repeat="team in leagueTeams">
+                            {[{draftedPlayers[$index + 1][team].name}]}</br>
+                            {[{draftedPlayers[$index + 1][team].position}]}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="centered ticker">
+            <p class="centered">Ticker goes here</p>
+        </div>
+    </div>
+</body>

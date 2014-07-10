@@ -1,0 +1,72 @@
+html,body {
+    height: 100%;
+}
+body {
+    overflow-y: hidden;
+}
+.noSelect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.sortableHeader {
+    display: block;
+    cursor: pointer;
+}
+.sorted {
+    background-color: #EEEEEE;
+}
+.caret.caret-reversed {
+    border-top-width: 0;
+    border-bottom: 4px solid #000000;
+}
+select {
+    border-radius: 4px;
+    margin-top: 1px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    height: 34px;
+}
+.tableHolder {
+    width: 95%;
+    margin: auto;
+    border: 2px outset slategray;
+    border-radius: 10px;
+    overflow: auto;
+}
+.table {
+    margin-bottom: 0;
+}
+.filterSelect {
+    float: left;
+    padding-left: 10px;
+}
+.clickable {
+    cursor: pointer;
+    color: mediumblue;
+}
+.clickable:hover {
+    color: slateblue;
+}
+.centered {
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 auto;
+}
+.scrollable {
+    overflow-y: auto;
+}
+.fixedFooter {
+    display: table-row;
+    vertical-align: bottom;
+    height: 1px;
+}
+.holder {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}

@@ -1,0 +1,19 @@
+.boardPlayerCell {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.draftBoardHolder {
+    position: absolute;
+    top: 200px;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+}
+.ticker {
+    position: absolute;
+    height: 60px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid black;
+}

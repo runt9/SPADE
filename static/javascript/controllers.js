@@ -1,6 +1,6 @@
 // Initialize our PlayersApp controller
 // TODO: Remove hardcoded players list and wire up to endpoint
-angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', 'playerTeamService', '$log', function($scope, playerTeamService, $log) {
+angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', 'playerTeamService', function($scope, playerTeamService) {
     "use strict";
     $scope.playersList = [
        {
@@ -201,8 +201,15 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
     $scope.modalShown = false;
     $scope.modalPlayer = null;
     $scope.showModal = function(player) {
-        $log.log(player);
         $scope.modalPlayer = player;
         $scope.modalShown = true;
     }
+}]);
+
+angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', function($scope) {
+    "use strict";
+    $scope.draftedPlayers = [];
+    $scope.rounds = 16;
+    $scope.roundsArray = new Array($scope.rounds);
+    $scope.leagueTeams = ['team1', 'team2', 'team3', 'team4', 'team5', 'team6', 'team7', 'team8', 'team9', 'team10'];
 }]);
