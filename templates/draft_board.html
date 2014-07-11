@@ -23,9 +23,15 @@
 </head>
 <body ng-app="DraftBoardApp" ng-controller="draftBoardController" ng-init="init()">
     <div class="holder">
-        <div class="jumbotron">
-            <div class="container">
-                <h1>Timer and draft team information here</h1>
+        <div class="jumbotron draftInfo">
+            <div class="timer">
+                <span>Time to Pick:</span>
+                <!-- TODO: write timer directive -->
+            </div>
+            <div class="draftTeamInfo">
+                <span class="draftTeamHeader">On the Clock:&nbsp;</span><span class="draftTeamName">Team Four</span>
+                <span class="draftTeamHeader">Next Up:&nbsp;</span><span class="draftTeamName">Team Five</span>
+                <span class="draftTeamHeader">On Deck:&nbsp;</span><span class="draftTeamName">Team Six</span>
             </div>
         </div>
         <div class="tableHolder scrollable draftBoardHolder">
@@ -43,7 +49,9 @@
                         </td>
                         <td class="boardPlayerCell centered" ng-repeat="team in leagueTeams" ng-class="getCssClassForPlayer(getDraftedPlayer(team, round))">
                             <div class="cellTop absoluteCenter">{[{getDraftedPlayer(team, round).name}]}</div>
-                            <div class="cellBottom absoluteCenter">{[{getDraftedPlayer(team, round).position}]}</div>
+                            <div class="cellBottom absoluteCenter" ng-show="!isObjectEmpty(getDraftedPlayer(team, round))">
+                                {[{getDraftedPlayer(team, round).position}]}&nbsp;({[{getDraftedPlayer(team, round).nfl_team}]})
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -52,7 +60,7 @@
         <div class="tickerBox" id="tickerBox" ng-mouseover="ticker.moveFlag = false" ng-mouseleave="ticker.moveFlag = true">
             <div class="ticker" id="ticker" ng-style="{'left': ticker.getTickerLeft()}">
                 <span class="tickerElement" ng-repeat="(key, player) in draftedPlayers track by $index">
-                    {[{$index + 1}]}. {[{player.name}]} - {[{player.position}]}
+                    {[{$index + 1}]}. {[{player.name}]} - {[{player.position}]} ({[{player.nfl_team}]})
                 </span>
             </div>
         </div>

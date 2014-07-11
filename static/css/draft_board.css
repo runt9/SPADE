@@ -43,3 +43,21 @@
     font-size: 24pt;
     white-space: nowrap;
 }
+.timer {
+    font-weight: bold;
+    font-size: 24pt;
+}
+.draftInfo {
+    text-align: center;
+}
+.draftTeamHeader {
+    font-weight: bold;
+    font-size: 20pt;
+}
+.draftTeamName {
+    font-size: 20pt;
+    padding-right: 40px;
+}
+.draftTeamInfo {
+    padding-top: 20px;
+}

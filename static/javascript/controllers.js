@@ -212,24 +212,27 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
         {
             name: "LeSean McCoy",
             position: "RB",
-            team: "team1",
+            league_team: "Team One",
+            nfl_team: "PHI",
             round: 1
         },
         {
             name: "Peyton Manning",
             position: "QB",
-            team: "team2",
+            league_team: "Team Two",
+            nfl_team: "DEN",
             round: 1,
         },
         {
             name: "Tom Brady",
             position: "QB",
-            team: "team3",
+            league_team: "Team Three",
+            nfl_team: "NE",
             round: 1
         },
     ];
     $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-    $scope.leagueTeams = ['team1', 'team2', 'team3', 'team4', 'team5', 'team6', 'team7', 'team8', 'team9', 'team10'];
+    $scope.leagueTeams = ['Team One', 'Team Two', 'Team Three', 'Team Four', 'Team Five', 'Team Six', 'Team Seven', 'Team Eight', 'Team Nine', 'Team Ten'];
     $scope.getDraftedPlayer = function(team, round) {
         return draftBoardService.getDraftedPlayer(team, round, $scope.draftedPlayers)
     };
@@ -270,31 +273,10 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
     };
 
     $scope.getCssClassForPlayer = function(player) {
-        var className = '';
+        return draftBoardService.getCssClassForPlayer(player);
+    };
 
-        switch (player.position) {
-            case 'QB':
-                className = 'bg-success';
-                break;
-            case 'RB':
-                className = 'bg-info';
-                break;
-            case 'WR':
-                className = 'bg-warning';
-                break;
-            case 'TE':
-                className = 'bg-danger';
-                break;
-            case 'D/ST':
-                className = 'bg-doc';
-                break;
-            case 'K':
-                className = 'bg-alert';
-                break;
-            default:
-                break;
-        }
-
-        return className;
+    $scope.isObjectEmpty = function(obj) {
+        return draftBoardService.isObjectEmpty(obj);
     }
 }]);

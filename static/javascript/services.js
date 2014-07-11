@@ -152,12 +152,54 @@ angular.module('DraftBoardApp.services', []).factory('draftBoardService', functi
             var index;
 
             for (index in players) {
-                if (players[index].team == team && players[index].round == round) {
+                if (players[index].league_team == team && players[index].round == round) {
                     retPlayer = players[index];
                 }
             }
 
             return retPlayer;
+        },
+
+        // Determine what background style we should use for the given player based off of their position
+        getCssClassForPlayer: function(player) {
+            var className = '';
+
+            switch (player.position) {
+                case 'QB':
+                    className = 'bg-success';
+                    break;
+                case 'RB':
+                    className = 'bg-info';
+                    break;
+                case 'WR':
+                    className = 'bg-warning';
+                    break;
+                case 'TE':
+                    className = 'bg-danger';
+                    break;
+                case 'D/ST':
+                    className = 'bg-doc';
+                    break;
+                case 'K':
+                    className = 'bg-alert';
+                    break;
+                default:
+                    break;
+            }
+
+            return className;
+        },
+
+        isObjectEmpty: function(obj) {
+            var prop;
+
+            for(prop in obj) {
+                if(obj.hasOwnProperty(prop)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     };
 });

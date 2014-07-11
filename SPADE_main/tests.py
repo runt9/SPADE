@@ -1,5 +1,4 @@
 from django.test import TestCase
-from SPADE_main.models import NflTeams
 
 
 class ApiTestCase(TestCase):
@@ -13,6 +12,10 @@ class ApiTestCase(TestCase):
 
     def test_league_team_url(self):
         response = self.client.get('/api/league_team/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_draft_board_url(self):
+        response = self.client.get('/draft_board/')
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_url(self):
