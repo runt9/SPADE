@@ -80,13 +80,7 @@ select {
     position: absolute;
     top: 0;
 }
-.cellBottom {
-    position: absolute;
-    bottom: 0;
-}
 .absoluteCenter {
-    padding-top: 2px;
-    padding-bottom: 2px;
     left: 0;
     right: 0;
 }

@@ -3,7 +3,6 @@
     padding-bottom: 15px;
     font-size: 14pt;
     font-weight: bold;
-    position: relative;
 }
 .draftBoardHolder {
     position: absolute;
@@ -43,9 +42,13 @@
     font-size: 24pt;
     white-space: nowrap;
 }
-.timer {
+.timerHolder {
     font-weight: bold;
-    font-size: 24pt;
+    font-size: 28pt;
+}
+.timer {
+    cursor: pointer;
+    display: inline-block;
 }
 .draftInfo {
     text-align: center;
@@ -60,4 +63,10 @@
 }
 .draftTeamInfo {
     padding-top: 20px;
+}
+.jumbotron {
+    padding-top: 20px;
+}
+.table>tbody>tr>td {
+    vertical-align: middle;
 }

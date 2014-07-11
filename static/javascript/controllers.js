@@ -256,7 +256,7 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
             var tickerBox = angular.element(document.getElementById('tickerBox'))[0];
 
             if ($scope.ticker.moveFlag) {
-                $scope.ticker.position--;
+                $scope.ticker.position -= 2;
 
                 // If the ticker div is all the way off the left side of the screen, reset it to the default position,
                 // which is off to the right of the screen
@@ -267,9 +267,38 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
         }
     };
 
+    $scope.timer = {
+        time: 300,
+        playing: false,
+
+        updateTimer: function() {
+            var minTime = 0;
+
+            if ($scope.timer.playing && $scope.timer.time > minTime) {
+                $scope.timer.time--;
+            }
+        },
+        formatTime: function() {
+            var time = $scope.timer.time;
+            var secondsToPad = 10;
+
+            var minutes = Math.floor(time / 60);
+            var seconds = Math.floor(time - (minutes * 60));
+            if (seconds < secondsToPad) {
+                seconds = "0" + seconds;
+            }
+
+            return minutes + ":" + seconds;
+        },
+        toggle: function() {
+            $scope.timer.playing = !$scope.timer.playing;
+        }
+    };
+
     // Initialize our ticker when the page loads.
     $scope.init = function() {
-        $interval($scope.ticker.tickerMove, 20);
+        $interval($scope.ticker.tickerMove, 10);
+        $interval($scope.timer.updateTimer, 1000);
     };
 
     $scope.getCssClassForPlayer = function(player) {
