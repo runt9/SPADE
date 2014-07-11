@@ -24,9 +24,11 @@
 <body ng-app="DraftBoardApp" ng-controller="draftBoardController" ng-init="init()">
     <div class="holder">
         <div class="jumbotron draftInfo">
-            <div class="timer">
+            <div class="timerHolder">
                 <span>Time to Pick:</span>
-                <!-- TODO: write timer directive -->
+                <span class="timer" ng-click="timer.toggle()" ng-class="{'text-danger': timer.time < 30}">
+                    {[{timer.formatTime()}]}
+                </span>
             </div>
             <div class="draftTeamInfo">
                 <span class="draftTeamHeader">On the Clock:&nbsp;</span><span class="draftTeamName">Team Four</span>
@@ -48,8 +50,10 @@
                             <div class="boardPlayerCell">Round {[{round}]}</div>
                         </td>
                         <td class="boardPlayerCell centered" ng-repeat="team in leagueTeams" ng-class="getCssClassForPlayer(getDraftedPlayer(team, round))">
-                            <div class="cellTop absoluteCenter">{[{getDraftedPlayer(team, round).name}]}</div>
-                            <div class="cellBottom absoluteCenter" ng-show="!isObjectEmpty(getDraftedPlayer(team, round))">
+                            <div>
+                                {[{getDraftedPlayer(team, round).name}]}
+                            </div>
+                            <div ng-show="!isObjectEmpty(getDraftedPlayer(team, round))">
                                 {[{getDraftedPlayer(team, round).position}]}&nbsp;({[{getDraftedPlayer(team, round).nfl_team}]})
                             </div>
                         </td>
