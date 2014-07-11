@@ -51,3 +51,7 @@
     overflow: hidden;
     border-radius: 5px;
 }
+.searchBox {
+    float: right;
+    padding-right: 10px;
+}

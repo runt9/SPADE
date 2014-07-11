@@ -41,7 +41,7 @@ select {
     margin-bottom: 0;
 }
 .filterSelect {
-    float: left;
+    display: inline-block;
     padding-left: 10px;
 }
 .clickable {
