@@ -231,6 +231,8 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
             round: 1
         },
     ];
+    $scope.currentRound = 1;
+    $scope.currentTeam = 'Team Four';
     $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     $scope.leagueTeams = ['Team One', 'Team Two', 'Team Three', 'Team Four', 'Team Five', 'Team Six', 'Team Seven', 'Team Eight', 'Team Nine', 'Team Ten'];
     $scope.getDraftedPlayer = function(team, round) {
@@ -267,24 +269,22 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
         }
     };
 
+    // Timer object to maintain configuration and updating of the timer
     $scope.timer = {
         time: 300,
         playing: false,
 
         updateTimer: function() {
-            var minTime = 0;
-
-            if ($scope.timer.playing && $scope.timer.time > minTime) {
+            if ($scope.timer.playing && $scope.timer.time > 0) {
                 $scope.timer.time--;
             }
         },
         formatTime: function() {
             var time = $scope.timer.time;
-            var secondsToPad = 10;
 
             var minutes = Math.floor(time / 60);
             var seconds = Math.floor(time - (minutes * 60));
-            if (seconds < secondsToPad) {
+            if (seconds < 10) {
                 seconds = "0" + seconds;
             }
 
@@ -295,7 +295,7 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
         }
     };
 
-    // Initialize our ticker when the page loads.
+    // Initialize our ticker and timer when the page loads.
     $scope.init = function() {
         $interval($scope.ticker.tickerMove, 10);
         $interval($scope.timer.updateTimer, 1000);
@@ -307,5 +307,52 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
 
     $scope.isObjectEmpty = function(obj) {
         return draftBoardService.isObjectEmpty(obj);
-    }
+    };
+
+    // Returns whether or not we're in "reverse" this round
+    $scope.isSnaking = function() {
+        return $scope.currentRound % 2 === 0;
+    };
+
+    // Gets the list of teams for on the clock, next up, and on deck
+    $scope.getNextTeams = function() {
+        var leagueTeams = $scope.leagueTeams;
+        var currentIndex = leagueTeams.indexOf($scope.currentTeam);
+        var nextIndex;
+        var onDeckIndex;
+        if ($scope.isSnaking()) {
+            nextIndex = (currentIndex - 1 > 0) ? currentIndex - 1 : currentIndex + 1;
+            onDeckIndex = (nextIndex - 1 > 0) ? nextIndex - 1 : nextIndex + 1;
+        } else {
+            nextIndex = (currentIndex + 1 < leagueTeams.length) ? currentIndex + 1 : currentIndex - 1;
+            onDeckIndex = (nextIndex + 1 < leagueTeams.length) ? nextIndex + 1 : nextIndex - 1;
+        }
+
+        return {
+            '1. On the Clock': $scope.currentTeam,
+            '2. Next Up': leagueTeams[nextIndex],
+            '3. On Deck': leagueTeams[onDeckIndex]
+        };
+    };
+
+    // TEMPORARY: Exists only for prototype stage. Simulates a draft event coming in.
+    $scope.simulated = false;
+    $scope.simulateDraftEvent = function() {
+        if ($scope.simulated) {
+            return;
+        }
+
+        $scope.draftedPlayers.push({
+            name: "Calvin Johnson",
+            position: "WR",
+            league_team: "Team Four",
+            nfl_team: "DET",
+            round: 1
+        });
+
+        $scope.timer.time = 300;
+        $scope.currentTeam = 'Team Five';
+
+        $scope.simulated = true;
+    };
 }]);

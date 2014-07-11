@@ -31,10 +31,12 @@
                 </span>
             </div>
             <div class="draftTeamInfo">
-                <span class="draftTeamHeader">On the Clock:&nbsp;</span><span class="draftTeamName">Team Four</span>
-                <span class="draftTeamHeader">Next Up:&nbsp;</span><span class="draftTeamName">Team Five</span>
-                <span class="draftTeamHeader">On Deck:&nbsp;</span><span class="draftTeamName">Team Six</span>
+                <div ng-repeat="(key, team) in getNextTeams()" style="display: inline-block">
+                    <span class="draftTeamHeader">{[{key}]}:&nbsp;</span>
+                    <span class="draftTeamName">{[{team}]}</span>
+                </div>
             </div>
+            <div style="padding-top: 10px;"><button ng-click="simulateDraftEvent()">Simulate Draft Event</button></div>
         </div>
         <div class="tableHolder scrollable draftBoardHolder">
             <table class="table table-bordered draftBoardTable">
