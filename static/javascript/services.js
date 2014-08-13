@@ -47,7 +47,7 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
             var retPosition;
             switch (position) {
                 case 'QB':
-                    retPosition = this.findFirstUndefinedPosition(team, ['OP', 'QB2', 'QB1']);
+                    retPosition = this.findFirstUndefinedPosition(team, ['OP', 'QB']);
                     break;
                 case 'RB':
                     retPosition = this.findFirstUndefinedPosition(team, ['OP', 'RB/WR', 'RB']);
@@ -130,13 +130,6 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
             }
 
             return count;
-        },
-
-        // Takes in a string, replaces all underscores with spaces, then uppercases the first letter of each word.
-        convertFieldToHeader: function(str) {
-            return str.replace(/_/g, ' ').replace(/\w\S*/g, function(txt) {
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
         }
     };
 });

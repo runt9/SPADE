@@ -15,7 +15,6 @@
     <!-- Staticfiles loading for our local css -->
     <link rel="stylesheet" href="{% static "css/base.css" %}">
     <link rel="stylesheet" href="{% static "css/players.css" %}">
-    <link rel="stylesheet" href="{% static "css/modal.css" %}">
 
     <!-- Staticfiles loading for our local javascript -->
     <script src="{% static "javascript/app.js" %}"></script>
@@ -96,16 +95,16 @@
                                 <span ng-class="{'caret': predicate == 'nfl_team', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
+                        <th ng-class="{'sorted': predicate == 'bye_week'}">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'bye_week'; reverse = !reverse">
+                                Bye
+                                <span ng-class="{'caret': predicate == 'bye_week', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
                         <th ng-class="{'sorted': predicate == 'games_played'}">
                             <div class="sortableHeader noSelect" ng-click="predicate = 'games_played'; reverse = !reverse">
                                 Games
                                 <span ng-class="{'caret': predicate == 'games_played', 'caret-reversed': reverse}"></span>
-                            </div>
-                        </th>
-                        <th ng-class="{'sorted': predicate == 'espn_ranking'}">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'espn_ranking'; reverse = !reverse">
-                                ESPN Rank
-                                <span ng-class="{'caret': predicate == 'espn_ranking', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
                         <th ng-class="{'sorted': predicate == 'last_season_points'}">
@@ -122,50 +121,90 @@
                         </th>
                         
                         <!-- QB stats -->
-                        <th ng-class="{'sorted': predicate == 'stats.passing_yards'}" ng-show="search.position == 'QB'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.passing_yards'; reverse = !reverse">
+                        <th ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'passing_yards'; reverse = !reverse">
                                 Passing Yards
-                                <span ng-class="{'caret': predicate == 'stats.passing_yards', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'passing_yards', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
-                        <th ng-class="{'sorted': predicate == 'stats.passing_touchdowns'}" ng-show="search.position == 'QB'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.passing_touchdowns'; reverse = !reverse">
+                        <th ng-class="{'sorted': predicate == 'passing_touchdowns'}" ng-show="search.position == 'QB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'passing_touchdowns'; reverse = !reverse">
                                 Passing touchdowns
-                                <span ng-class="{'caret': predicate == 'stats.passing_touchdowns', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'passing_touchdowns', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
-                        <th ng-class="{'sorted': predicate == 'stats.interceptions'}" ng-show="search.position == 'QB'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.interceptions'; reverse = !reverse">
+                        <th ng-class="{'sorted': predicate == 'interceptions'}" ng-show="search.position == 'QB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'interceptions'; reverse = !reverse">
                                 Interceptions
-                                <span ng-class="{'caret': predicate == 'stats.interceptions', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'interceptions', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        <th ng-class="{'sorted': predicate == 'completion_percentage'}" ng-show="search.position == 'QB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'completion_percentage'; reverse = !reverse">
+                                Comp Pct
+                                <span ng-class="{'caret': predicate == 'completion_percentage', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
                         
-                        <!-- RB stats -->
-                        <th ng-class="{'sorted': predicate == 'stats.rushing_yards'}" ng-show="search.position == 'RB'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.rushing_yards'; reverse = !reverse">
+                        <!-- RB -->
+                        <th ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'rushing_yards'; reverse = !reverse">
                                 Rushing Yards
-                                <span ng-class="{'caret': predicate == 'stats.rushing_yards', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'rushing_yards', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
-                        <th ng-class="{'sorted': predicate == 'stats.rushing_touchdowns'}" ng-show="search.position == 'RB'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.rushing_touchdowns'; reverse = !reverse">
+                        <th ng-class="{'sorted': predicate == 'rushing_touchdowns'}" ng-show="search.position == 'RB'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'rushing_touchdowns'; reverse = !reverse">
                                 Rushing Touchdowns
-                                <span ng-class="{'caret': predicate == 'stats.rushing_touchdowns', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'rushing_touchdowns', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
 
-                        <!-- WR/TE stats -->
-                        <th ng-class="{'sorted': predicate == 'stats.receiving_yards'}" ng-show="search.position == 'WR'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.receiving_yards'; reverse = !reverse">
+                        <!-- WR/TE -->
+                        <th ng-class="{'sorted': predicate == 'receiving_yards'}" ng-show="search.position == 'WR' || search.position == 'TE'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'receiving_yards'; reverse = !reverse">
                                 Receiving Yards
-                                <span ng-class="{'caret': predicate == 'stats.receiving_yards', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'receiving_yards', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
-                        <th ng-class="{'sorted': predicate == 'stats.receiving_touchdowns'}" ng-show="search.position == 'WR'">
-                            <div class="sortableHeader noSelect" ng-click="predicate = 'stats.receiving_touchdowns'; reverse = !reverse">
+                        <th ng-class="{'sorted': predicate == 'receiving_touchdowns'}" ng-show="search.position == 'WR' || search.position == 'TE'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'receiving_touchdowns'; reverse = !reverse">
                                 Receiving Touchdowns
-                                <span ng-class="{'caret': predicate == 'stats.receiving_touchdowns', 'caret-reversed': reverse}"></span>
+                                <span ng-class="{'caret': predicate == 'receiving_touchdowns', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        
+                        <!-- K -->
+                        <th ng-class="{'sorted': predicate == 'fg_percentage'}" ng-show="search.position == 'K'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'fg_percentage'; reverse = !reverse">
+                                FG Percent
+                                <span ng-class="{'caret': predicate == 'fg_percentage', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        <th ng-class="{'sorted': predicate == 'longest_fg'}" ng-show="search.position == 'K'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'longest_fg'; reverse = !reverse">
+                                Longest FG
+                                <span ng-class="{'caret': predicate == 'longest_fg', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        
+                        <!-- D/ST -->
+                        <th ng-class="{'sorted': predicate == 'def_points_per_game'}" ng-show="search.position == 'D/ST'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'def_points_per_game'; reverse = !reverse">
+                                Points Allowed/Game
+                                <span ng-class="{'caret': predicate == 'def_points_per_game', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        <th ng-class="{'sorted': predicate == 'def_interceptions'}" ng-show="search.position == 'D/ST'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'def_interceptions'; reverse = !reverse">
+                                Interceptions
+                                <span ng-class="{'caret': predicate == 'def_interceptions', 'caret-reversed': reverse}"></span>
+                            </div>
+                        </th>
+                        <th ng-class="{'sorted': predicate == 'dst_touchdowns'}" ng-show="search.position == 'D/ST'">
+                            <div class="sortableHeader noSelect" ng-click="predicate = 'dst_touchdowns'; reverse = !reverse">
+                                Touchdowns
+                                <span ng-class="{'caret': predicate == 'dst_touchdowns', 'caret-reversed': reverse}"></span>
                             </div>
                         </th>
                     </tr>
@@ -178,28 +217,36 @@
                         </td>
                         
                         <!-- Common to all players -->
-                        <td ng-class="{'sorted': predicate == 'name'}">
-                            <span class="clickable" ng-click="showModal(player)">{[{player.name}]}</span>
-                        </td>
+                        <td ng-class="{'sorted': predicate == 'name'}">{[{player.name}]}</td>
                         <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
                         <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
+                        <td ng-class="{'sorted': predicate == 'bye_week'}">{[{player.bye_week}]}</td>
                         <td ng-class="{'sorted': predicate == 'games_played'}">{[{player.games_played}]}</td>
-                        <td ng-class="{'sorted': predicate == 'espn_ranking'}">{[{player.espn_ranking}]}</td>
                         <td ng-class="{'sorted': predicate == 'last_season_points'}">{[{player.last_season_points}]}</td>
                         <td ng-class="{'sorted': predicate == 'league_team'}">{[{player.league_team}]}</td>
 
                         <!-- QB stats -->
-                        <td ng-class="{'sorted': predicate == 'stats.passing_yards'}" ng-show="search.position == 'QB'">{[{player.stats.passing_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'stats.passing_touchdowns'}" ng-show="search.position == 'QB'">{[{player.stats.passing_touchdowns}]}</td>
-                        <td ng-class="{'sorted': predicate == 'stats.interceptions'}" ng-show="search.position == 'QB'">{[{player.stats.interceptions}]}</td>
+                        <td ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">{[{player.passing_yards}]}</td>
+                        <td ng-class="{'sorted': predicate == 'passing_touchdowns'}" ng-show="search.position == 'QB'">{[{player.passing_touchdowns}]}</td>
+                        <td ng-class="{'sorted': predicate == 'interceptions'}" ng-show="search.position == 'QB'">{[{player.interceptions}]}</td>
+                        <td ng-class="{'sorted': predicate == 'completion_percentage'}" ng-show="search.position == 'QB'">{[{player.completion_percentage}]}</td>
 
-                        <!-- RB stats -->
-                        <td ng-class="{'sorted': predicate == 'stats.rushing_yards'}" ng-show="search.position == 'RB'">{[{player.stats.rushing_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'stats.rushing_touchdowns'}" ng-show="search.position == 'RB'">{[{player.stats.rushing_touchdowns}]}</td>
+                        <!-- RB -->
+                        <td ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">{[{player.rushing_yards}]}</td>
+                        <td ng-class="{'sorted': predicate == 'rushing_touchdowns'}" ng-show="search.position == 'RB'">{[{player.rushing_touchdowns}]}</td>
 
-                        <!-- WR stats -->
-                        <td ng-class="{'sorted': predicate == 'stats.receiving_yards'}" ng-show="search.position == 'WR'">{[{player.stats.receiving_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'stats.receiving_touchdowns'}" ng-show="search.position == 'WR'">{[{player.stats.receiving_touchdowns}]}</td>
+                        <!-- WR/TE -->
+                        <td ng-class="{'sorted': predicate == 'receiving_yards'}" ng-show="search.position == 'WR' || search.position == 'TE'">{[{player.receiving_yards}]}</td>
+                        <td ng-class="{'sorted': predicate == 'receiving_touchdowns'}" ng-show="search.position == 'WR' || search.position == 'TE'">{[{player.receiving_touchdowns}]}</td>
+                        
+                        <!-- K -->
+                        <td ng-class="{'sorted': predicate == 'fg_percentage'}" ng-show="search.position == 'K'">{[{player.fg_percentage}]}</td>
+                        <td ng-class="{'sorted': predicate == 'longest_fg'}" ng-show="search.position == 'K'">{[{player.longest_fg}]}</td>
+                        
+                        <!-- D/ST -->
+                        <td ng-class="{'sorted': predicate == 'def_points_per_game'}" ng-show="search.position == 'D/ST'">{[{player.def_points_per_game}]}</td>
+                        <td ng-class="{'sorted': predicate == 'def_interceptions'}" ng-show="search.position == 'D/ST'">{[{player.def_interceptions}]}</td>
+                        <td ng-class="{'sorted': predicate == 'dst_touchdowns'}" ng-show="search.position == 'D/ST'">{[{player.dst_touchdowns}]}</td>
                     </tr>
                 </tbody>
             </table>
@@ -226,24 +273,5 @@
             </span>
         </div>
     </div>
-    <modal-dialog show="modalShown">
-        <div class="statsHolder">
-            <table class="table-hover table-bordered" style="padding: 5px">
-                <thead>
-                    <tr class="filters">
-                        <td colspan="2" style="font-weight: bold; text-align: center; padding: 10px">
-                            {[{modalPlayer.name}]} - {[{modalPlayer.position}]} - Stats
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="(key, value) in modalPlayer.stats">
-                        <td style="font-weight: bold; padding: 2px">{[{convertFieldToHeader(key)}]}</td>
-                        <td style="padding: 2px; text-align: right">{[{value}]}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </modal-dialog>
 </body>
 </html>

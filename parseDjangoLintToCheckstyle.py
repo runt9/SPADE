@@ -30,7 +30,7 @@ def main():
 
         # Match the module header
         # ************* Module SPADE_main.models
-        match = re.search('^\*+\sModule\sSPADE_main\.(.*)$', line)
+        match = re.search('^\*+\sModule\sspade_main\.(.*)$', line)
         if match:
             fileElement = Element('file')
             fileElement.set('name', match.group(1))

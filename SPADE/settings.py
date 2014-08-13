@@ -99,3 +99,5 @@ TEMPLATE_DIRS = (
 
 TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
 TEST_OUTPUT_DIR = 'output/'
+
+API_LIMIT_PER_PAGE = 0
