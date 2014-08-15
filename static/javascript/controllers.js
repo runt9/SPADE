@@ -1,5 +1,6 @@
 // Initialize our PlayersApp controller
-angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', '$http', '$modal', 'playerTeamService', function($scope, $http, $modal, playerTeamService) {
+angular.module('PlayersApp.controllers', []).controller('playersController',
+    ['$scope', '$http', '$modal', 'playerTeamService', function($scope, $http, $modal, playerTeamService) {
     "use strict";
 
     $http.get('/api/player/').success(function(playersData) {
@@ -70,31 +71,43 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
         return playerTeamService.getTeamPositionPlayerCount(team, position, $scope.teamsPlayers);
     };
 
-    $scope.password = {
-        string: ''
-    };
-    $scope.openLoginModal = function() {
+    $scope.openLoginModal = function () {
+        $scope.password = {
+            string: ''
+        };
+
         $modal.open({
             templateUrl: 'login_modal.html',
             backdrop: true,
             size: 'sm',
-            controller: function ($scope, $modalInstance, password) {
+            controller: function ($scope, $modalInstance, $log, password) {
+                $scope.loading = false;
+                $scope.error = false;
+                $scope.errorMessage = '';
                 $scope.password = password;
+
                 $scope.submit = function () {
-                    $modalInstance.close(password);
+                    $scope.loading = true;
+                    $http.post('/admin_login/', {password: $scope.password.string}).success(function () {
+                        $modalInstance.dismiss('success');
+                    }).error(function (response) {
+                        $scope.error = true;
+                        $scope.errorMessage = response;
+                        $scope.loading = false;
+                    });
                 };
-                $scope.cancel = function () {
+
+                $scope.cancel = function() {
                     $modalInstance.dismiss('cancel');
-                }
+                };
             },
             resolve: {
-                password: function () {
+                password: function() {
                     return $scope.password;
                 }
             }
         });
-    };
-
+    }
 }]);
 
 angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', 'draftBoardService', '$interval', function($scope, draftBoardService, $interval) {

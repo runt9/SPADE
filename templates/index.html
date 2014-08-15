@@ -281,7 +281,15 @@
             Admin Login
         </div>
         <div class="modal-body">
-            <label>Password:<input type="password" ng-model="password.string" /></label>
+            <div ng-show="loading == false">
+                <label>Password:&nbsp;<input type="password" ng-model="password.string" /></label>
+                <div id="loginModalError" class="text-danger centered" ng-show="error == true">
+                    {[{errorMessage}]}
+                </div>
+            </div>
+            <div ng-show="loading == true">
+                Loading...
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
