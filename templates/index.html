@@ -12,6 +12,9 @@
     <!-- CDN for AngularJS 1.2.18 -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
 
+    <!-- CDN for angular-ui-bootstrap 0.11.0 -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
+
     <!-- Staticfiles loading for our local css -->
     <link rel="stylesheet" href="{% static "css/base.css" %}">
     <link rel="stylesheet" href="{% static "css/players.css" %}">
@@ -28,7 +31,7 @@
                 <h1>Welcome to SPADE!</h1>
                 <p>Otherwise known as the <b>S</b>imple <b>P</b>layer <b>A</b>nalysis & <b>D</b>raft <b>E</b>ngine</p>
                 <p>* All stats collected are from the 2013 season</p>
-                <a href="/draft_board" target="_blank">Go to draft board</a>
+                <button class="btn btn-primary" ng-click="openLoginModal()">Admin Login</button>
             </div>
         </div>
         <div class="tableHolder">
@@ -273,5 +276,17 @@
             </span>
         </div>
     </div>
+    <script type="text/ng-template" id="login_modal.html">
+        <div class="modal-header">
+            Admin Login
+        </div>
+        <div class="modal-body">
+            <label>Password:<input type="password" ng-model="password.string" /></label>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="submit()">Submit</button>
+        </div>
+    </script>
 </body>
 </html>

@@ -2,7 +2,8 @@
 // for interpolateProvider because {{ }} conflicts with Django and we don't want that.
 var playersApp = angular.module('PlayersApp', [
     'PlayersApp.controllers',
-    'PlayersApp.services'
+    'PlayersApp.services',
+    'ui.bootstrap'
 ]);
 
 playersApp.config(function($interpolateProvider) {

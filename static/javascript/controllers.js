@@ -1,5 +1,5 @@
 // Initialize our PlayersApp controller
-angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', '$http', 'playerTeamService', function($scope, $http, playerTeamService) {
+angular.module('PlayersApp.controllers', []).controller('playersController', ['$scope', '$http', '$modal', 'playerTeamService', function($scope, $http, $modal, playerTeamService) {
     "use strict";
 
     $http.get('/api/player/').success(function(playersData) {
@@ -68,6 +68,31 @@ angular.module('PlayersApp.controllers', []).controller('playersController', ['$
     // Wrapper for service layer handler
     $scope.getTeamPositionPlayerCount = function(team, position) {
         return playerTeamService.getTeamPositionPlayerCount(team, position, $scope.teamsPlayers);
+    };
+
+    $scope.password = {
+        string: ''
+    };
+    $scope.openLoginModal = function() {
+        $modal.open({
+            templateUrl: 'login_modal.html',
+            backdrop: true,
+            size: 'sm',
+            controller: function ($scope, $modalInstance, password) {
+                $scope.password = password;
+                $scope.submit = function () {
+                    $modalInstance.close(password);
+                };
+                $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                }
+            },
+            resolve: {
+                password: function () {
+                    return $scope.password;
+                }
+            }
+        });
     };
 
 }]);
