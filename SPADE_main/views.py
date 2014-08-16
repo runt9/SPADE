@@ -29,3 +29,14 @@ def admin_login(request):
 def admin_logout(request):
     request.session['authorized'] = False
     return HttpResponse('Logged out', content_type="application/json")
+
+
+def events(request):
+    try:
+        events = services.get_events(request)
+    except EmptyRequestError:
+        return HttpResponseBadRequest('No timestamp given')
+    except InvalidArgumentError:
+        return HttpResponseBadRequest('No timestamp given')
+
+    return HttpResponse(events)

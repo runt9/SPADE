@@ -1,4 +1,6 @@
 from django.db import models
+import jsonfield
+import json
 
 
 class Players(models.Model):
@@ -26,3 +28,12 @@ class Players(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Events(models.Model):
+    timestamp = models.IntegerField()
+    type = models.CharField(max_length=20)
+    data = jsonfield.JSONField()
+
+    def __unicode__(self):
+        return json.dumps(self.data)

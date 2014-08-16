@@ -226,7 +226,7 @@
                         
                         <!-- Common to all players -->
                         <td ng-class="{'sorted': predicate == 'name'}">
-                            <span ng-class="{clickable: authorized}" ng-click="authorized && openDraftPlayerModal(this)">{[{player.name}]}</span>
+                            <span ng-class="{clickable: authorized}" ng-click="authorized && playerClicked(this)">{[{player.name}]}</span>
                         </td>
                         <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
                         <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
@@ -275,10 +275,7 @@
         <div class="teamPlayer" ng-repeat="position in leaguePositions">
             <span class="playerPosition">{[{position}]}</span>
             <span class="byeWeek">{[{getTeamPosition(selectedLeagueTeam, position).bye_week}]}</span>
-            <span class="playerName" ng-click="authorized && unassignPlayer(getTeamPosition(selectedLeagueTeam, position))"
-                    ng-class="{clickable: authorized}">
-                {[{getTeamPosition(selectedLeagueTeam, position).name}]}
-            </span>
+            <span class="playerName">{[{getTeamPosition(selectedLeagueTeam, position).name}]}</span>
         </div>
         <div class="teamListCounts fixedFooter">
             <b>TOTALS:&nbsp</b>

@@ -1,6 +1,7 @@
 // Initialize our PlayersApp controller
 angular.module('PlayersApp.controllers', []).controller('playersController',
-    ['$scope', '$http', '$modal', 'playerTeamService', function($scope, $http, $modal, playerTeamService) {
+    ['$scope', '$http', '$modal', '$interval', 'playerTeamService',
+    function($scope, $http, $modal, $interval, playerTeamService) {
     "use strict";
 
     $scope.loading = true;
@@ -8,12 +9,13 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         var i;
         $scope.playersList = playersData.objects;
         for (i in $scope.playersList) {
-            $scope.playersList[i].available = $scope.playersList[i].draft_position == 0;
+            $scope.playersList[i].available = $scope.playersList[i].draft_position === 0;
             $scope.playersList[i].tagged = false;
         }
         // Initialize the list of which players belong to which league team
         $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
         $scope.loading = false;
+        $scope.EventsPoller.startPolling();
     });
 
     $scope.positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
@@ -133,8 +135,17 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         });
     };
 
+    $scope.playerClicked = function(clicked) {
+        var player = clicked.player;
+        if (player.available) {
+            $scope.openDraftPlayerModal(player)
+        } else {
+            $scope.unassignPlayer(player);
+        }
+    };
+
     // Draft player modal
-    $scope.openDraftPlayerModal = function (clicked) {
+    $scope.openDraftPlayerModal = function (player) {
         // Pull in the scope'd stuff we need below
         var leagueTeams = $scope.leagueTeams;
         $scope.team = {
@@ -175,7 +186,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                     return leagueTeams;
                 },
                 playerId: function() {
-                    return clicked.player.id;
+                    return player.id;
                 },
                 team: function() {
                     return $scope.team;
@@ -184,7 +195,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         });
     };
 
-        // Draft player modal
+    // Draft player modal
     $scope.unassignPlayer = function (player) {
         // Main modal
         $modal.open({
@@ -219,6 +230,78 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                 }
             }
         });
+    };
+
+    // Events Poller object
+    $scope.EventsPoller = {
+        isPolling: false,
+        lastPoll: Math.round(Date.now() / 1000), // Tracks the last timestamp of when we polled
+        pollInstance: null,
+        doPoll: function() {
+            // Send along our last poll time to the events endpoint to let the server know
+            // how far back to check for new events to give us
+            $http.get('/events/?time=' + $scope.EventsPoller.lastPoll).success(function(response) {
+                $scope.EventsPoller.handleResponse(response);
+                $scope.EventsPoller.lastPoll = Math.round(Date.now() / 1000);
+            });
+        },
+        // Big handler of the response. Knows about all event types and data that can be sent.
+        handleResponse: function(response) {
+            var i, events, event, data, index;
+            if (response.length === 0) {
+                return;
+            }
+            events = response;
+            for (i in events) {
+                event = events[i];
+                data = event.data;
+                switch (event.type) {
+                    case 'playerDrafted':
+                        index = $scope.findPlayer(data.id);
+                        if (index === -1) {
+                            return;
+                        }
+
+                        $scope.playersList[index].draft_position = data.draft_position;
+                        $scope.playersList[index].league_team = data.league_team;
+                        $scope.playersList[index].available = false;
+                        $scope.playersList[index].tagged = false;
+                        $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
+                        break;
+                    case 'playerUnassigned':
+                        index = $scope.findPlayer(data.id);
+                        if (index === -1) {
+                            return;
+                        }
+
+                        $scope.playersList[index].draft_position = 0;
+                        $scope.playersList[index].league_team = '';
+                        $scope.playersList[index].available = true;
+                        $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
+                        break;
+                    default:
+                }
+            }
+        },
+        startPolling: function() {
+            $scope.EventsPoller.pollInstance = $interval(function() { $scope.EventsPoller.doPoll(); }, 10000);
+            $scope.EventsPoller.isPolling = true;
+        },
+        stopPolling: function() {
+            $interval.cancel($scope.EventsPoller.pollInstance);
+            $scope.EventsPoller.pollInstance = null;
+            $scope.EventsPoller.isPolling = false;
+        }
+    };
+
+    $scope.findPlayer = function(id) {
+        var i;
+        for (i in $scope.playersList) {
+            if ($scope.playersList[i].id == id) {
+                return i;
+            }
+        }
+        return -1;
     };
 }]);
 
