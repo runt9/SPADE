@@ -1,8 +1,6 @@
-from django.core import serializers
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest, StreamingHttpResponse
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from SPADE_main.exceptions import EmptyRequestError, InvalidArgumentError
-from SPADE_main.models import Players
 from SPADE_main import services
 
 
