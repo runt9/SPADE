@@ -25,13 +25,18 @@
     <script src="{% static "javascript/services.js" %}"></script>
 </head>
 <body ng-app="PlayersApp" ng-controller="playersController">
+    <div class="loadingIndicator absoluteCenterAll" ng-show="loading">
+        <span class="loadingIndicatorHelper"></span>
+        <img src="{% static "images/ajax-loader.gif" %}"/>
+    </div>
     <div class="col-md-9 col-lg-9 playersColumn">
         <div class="jumbotron">
             <div align="center" class="container">
                 <h1>Welcome to SPADE!</h1>
                 <p>Otherwise known as the <b>S</b>imple <b>P</b>layer <b>A</b>nalysis & <b>D</b>raft <b>E</b>ngine</p>
                 <p>* All stats collected are from the 2013 season</p>
-                <button class="btn btn-primary" ng-click="openLoginModal()">Admin Login</button>
+                <button class="btn btn-primary" ng-click="openLoginModal()" ng-show="!authorized">Admin Login</button>
+                <button class="btn btn-primary" ng-click="logout()" ng-show="authorized">Logout</button>
             </div>
         </div>
         <div class="tableHolder">
@@ -281,19 +286,19 @@
             Admin Login
         </div>
         <div class="modal-body">
-            <div ng-show="loading == false">
+            <div ng-show="!loading">
                 <label>Password:&nbsp;<input type="password" ng-model="password.string" /></label>
                 <div id="loginModalError" class="text-danger centered" ng-show="error == true">
                     {[{errorMessage}]}
                 </div>
             </div>
-            <div ng-show="loading == true">
+            <div ng-show="loading">
                 Loading...
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-            <button class="btn btn-primary" ng-click="submit()">Submit</button>
+            <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Submit</button>
         </div>
     </script>
 </body>

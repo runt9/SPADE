@@ -3,6 +3,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
     ['$scope', '$http', '$modal', 'playerTeamService', function($scope, $http, $modal, playerTeamService) {
     "use strict";
 
+    $scope.loading = true;
     $http.get('/api/player/').success(function(playersData) {
         var i;
         $scope.playersList = playersData.objects;
@@ -12,6 +13,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         }
         // Initialize the list of which players belong to which league team
         $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
+        $scope.loading = false;
     });
 
     $scope.positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
@@ -71,6 +73,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         return playerTeamService.getTeamPositionPlayerCount(team, position, $scope.teamsPlayers);
     };
 
+    $scope.authorized = false;
     $scope.openLoginModal = function () {
         $scope.password = {
             string: ''
@@ -80,7 +83,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
             templateUrl: 'login_modal.html',
             backdrop: true,
             size: 'sm',
-            controller: function ($scope, $modalInstance, $log, password) {
+            controller: function ($scope, $modalInstance, password) {
                 $scope.loading = false;
                 $scope.error = false;
                 $scope.errorMessage = '';
@@ -89,7 +92,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                 $scope.submit = function () {
                     $scope.loading = true;
                     $http.post('/admin_login/', {password: $scope.password.string}).success(function () {
-                        $modalInstance.dismiss('success');
+                        $modalInstance.close(true);
                     }).error(function (response) {
                         $scope.error = true;
                         $scope.errorMessage = response;
@@ -98,7 +101,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                 };
 
                 $scope.cancel = function() {
-                    $modalInstance.dismiss('cancel');
+                    $modalInstance.dismiss(false);
                 };
             },
             resolve: {
@@ -106,6 +109,20 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                     return $scope.password;
                 }
             }
+        }).result.then(function(result) {
+            if (result) {
+                $scope.authorized = true;
+            }
+        });
+    };
+
+    $scope.logout = function() {
+        $scope.loading = true;
+        $http.get('/admin_logout/').success(function() {
+            $scope.authorized = false;
+            $scope.loading = false;
+        }).error(function() {
+            $scope.loading = false;
         });
     }
 }]);

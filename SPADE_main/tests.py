@@ -34,3 +34,7 @@ class ApiTestCase(TestCase):
     def test_invalid_admin_login(self):
         response = self.admin_login({'foo': 'bar'})
         self.assertEqual(response.status_code, 400)
+
+    def test_admin_logout(self):
+        response = self.client.get('/admin_logout/')
+        self.assertEqual(response.status_code, 200)

@@ -80,7 +80,27 @@ select {
     position: absolute;
     top: 0;
 }
-.absoluteCenter {
+.absoluteCenterHorizontal {
     left: 0;
     right: 0;
+}
+.absoluteCenterAll {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.loadingIndicator {
+    position: fixed;
+    z-index: 9999;
+    background-color: rgba(0,0,0,0.7);
+}
+.loadingIndicatorHelper {
+    display: inline-block;
+    height: 45%;
+    vertical-align: middle;
+}
+.loadingIndicator img {
+    display: block;
+    margin: 0 auto;
 }

@@ -1,4 +1,5 @@
 import json
+from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render_to_response
 from SPADE import settings
@@ -32,3 +33,8 @@ def admin_login(request):
         return HttpResponse('Success')
     else:
         return HttpResponseForbidden('Invalid Password')
+
+
+def admin_logout(request):
+    request.session['authorized'] = False
+    return HttpResponse('Logged out')
