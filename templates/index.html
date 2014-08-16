@@ -225,7 +225,9 @@
                         </td>
                         
                         <!-- Common to all players -->
-                        <td ng-class="{'sorted': predicate == 'name'}">{[{player.name}]}</td>
+                        <td ng-class="{'sorted': predicate == 'name'}">
+                            <span ng-class="{clickable: authorized}" ng-click="authorized && openDraftPlayerModal(this)">{[{player.name}]}</span>
+                        </td>
                         <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
                         <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
                         <td ng-class="{'sorted': predicate == 'bye_week'}">{[{player.bye_week}]}</td>
@@ -288,7 +290,31 @@
         <div class="modal-body">
             <div ng-show="!loading">
                 <label>Password:&nbsp;<input type="password" ng-model="password.string" /></label>
-                <div id="loginModalError" class="text-danger centered" ng-show="error == true">
+                <div id="loginModalError" class="text-danger centered" ng-show="error">
+                    {[{errorMessage}]}
+                </div>
+            </div>
+            <div ng-show="loading">
+                Loading...
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Submit</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="draft_player_modal.html">
+        <div class="modal-header">
+            Draft Player
+        </div>
+        <div class="modal-body">
+            <div ng-show="!loading">
+                <label>Select Team:&nbsp;
+                    <select ng-model="team.id">
+                        <option ng-repeat="(short,long) in leagueTeams" value="{[{short}]}">{[{long}]}</option>
+                    </select>
+                </label>
+                <div id="loginModalError" class="text-danger centered" ng-show="error">
                     {[{errorMessage}]}
                 </div>
             </div>

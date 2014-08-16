@@ -73,12 +73,16 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         return playerTeamService.getTeamPositionPlayerCount(team, position, $scope.teamsPlayers);
     };
 
+    // Login stuff
     $scope.authorized = false;
     $scope.openLoginModal = function () {
+        // There's weird scoping issues in angular bootstrap-ui. We have to use this password object
+        // to work around this. It would be nice to do this a cleaner way, though
         $scope.password = {
             string: ''
         };
 
+        // Main modal
         $modal.open({
             templateUrl: 'login_modal.html',
             backdrop: true,
@@ -89,6 +93,8 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                 $scope.errorMessage = '';
                 $scope.password = password;
 
+                // On submit, post the password to the login endpoint. If it succeeds, return that success
+                // so we can set global authorization. Otherwise, show an error message and keep the modal up
                 $scope.submit = function () {
                     $scope.loading = true;
                     $http.post('/admin_login/', {password: $scope.password.string}).success(function () {
@@ -116,6 +122,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         });
     };
 
+    // Quick logout method to destroy our authorization
     $scope.logout = function() {
         $scope.loading = true;
         $http.get('/admin_logout/').success(function() {
@@ -124,7 +131,58 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         }).error(function() {
             $scope.loading = false;
         });
-    }
+    };
+
+    // Draft player modal
+    $scope.openDraftPlayerModal = function (clicked) {
+        // Pull in the scope'd stuff we need below
+        var leagueTeams = $scope.leagueTeams;
+        $scope.team = {
+            id: 0
+        };
+
+        // Main modal
+        $modal.open({
+            templateUrl: 'draft_player_modal.html',
+            backdrop: true,
+            size: 'sm',
+            controller: function ($scope, $modalInstance, leagueTeams, playerId, team) {
+                $scope.loading = false;
+                $scope.error = false;
+                $scope.errorMessage = '';
+                $scope.team = team;
+                $scope.leagueTeams = leagueTeams;
+                $scope.playerId = playerId;
+
+                $scope.submit = function () {
+                    $scope.loading = true;
+                    // Post the team id to the player draft endpoint, close the modal on success
+                    $http.post('/api/player/' + $scope.playerId + '/draft/', {teamId: $scope.team.id}).success(function () {
+                        $modalInstance.close(true);
+                    }).error(function (response) {
+                        $scope.error = true;
+                        $scope.errorMessage = response;
+                        $scope.loading = false;
+                    });
+                };
+
+                $scope.cancel = function() {
+                    $modalInstance.dismiss(false);
+                };
+            },
+            resolve: {
+                leagueTeams: function() {
+                    return leagueTeams;
+                },
+                playerId: function() {
+                    return clicked.player.id;
+                },
+                team: function() {
+                    return $scope.team;
+                }
+            }
+        });
+    };
 }]);
 
 angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', 'draftBoardService', '$interval', function($scope, draftBoardService, $interval) {

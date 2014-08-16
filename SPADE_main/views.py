@@ -1,19 +1,13 @@
-import json
-from django.contrib.auth import logout
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
+from django.core import serializers
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest, StreamingHttpResponse
 from django.shortcuts import render_to_response
-from SPADE import settings
-import logging
-
-logger = logging.getLogger(__name__)
+from SPADE_main.exceptions import EmptyRequestError, InvalidArgumentError
+from SPADE_main.models import Players
+from SPADE_main import services
 
 
 def index(request):
     return render_to_response('index.html')
-
-
-def players(request):
-    return render_to_response('players.html')
 
 
 def draft_board(request):
@@ -21,15 +15,14 @@ def draft_board(request):
 
 
 def admin_login(request):
-    if len(request.body) == 0:
+    try:
+        success = services.login(request)
+    except EmptyRequestError:
+        return HttpResponseBadRequest('Must specify a password')
+    except InvalidArgumentError:
         return HttpResponseBadRequest('Must specify a password')
 
-    post_data = json.loads(request.body)
-    if 'password' not in post_data:
-        return HttpResponseBadRequest('Must specify a password')
-
-    if settings.SECRET_PASSWORD == post_data['password']:
-        request.session['authorized'] = True
+    if success:
         return HttpResponse('Success')
     else:
         return HttpResponseForbidden('Invalid Password')
@@ -37,4 +30,4 @@ def admin_login(request):
 
 def admin_logout(request):
     request.session['authorized'] = False
-    return HttpResponse('Logged out')
+    return HttpResponse('Logged out', content_type="application/json")
