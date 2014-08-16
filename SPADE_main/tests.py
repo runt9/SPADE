@@ -28,6 +28,7 @@ class ApiTestCase(TestCase):
             def_interceptions=0,
             dst_touchdowns=0
         )
+        self.admin_login({'password': 'temppw'})
 
     def admin_login(self, input_data):
         post_data = json.dumps(input_data)
@@ -84,3 +85,13 @@ class ApiTestCase(TestCase):
     def test_unassign_player(self):
         response = self.client.get('/api/player/1/unassign/')
         self.assertEqual(response.status_code, 200)
+
+    def test_unauthorized_draft_player(self):
+        self.client.get('/admin_logout/')
+        response = self.client.post('/api/player/1/draft/', content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_unauthorized_unassign_player(self):
+        self.client.get('/admin_logout/')
+        response = self.client.post('/api/player/1/unassign/', content_type='application/json')
+        self.assertEqual(response.status_code, 403)

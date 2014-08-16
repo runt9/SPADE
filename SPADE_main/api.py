@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from tastypie.resources import ModelResource
 from tastypie.utils import trailing_slash
 from SPADE_main.exceptions import EmptyRequestError, InvalidArgumentError
@@ -27,6 +27,9 @@ class PlayerResource(ModelResource):
         ]
 
     def draft(self, request, **kwargs):
+        if 'authorized' not in request.session or not request.session['authorized']:
+            return HttpResponseForbidden('You are not allowed to access this resource')
+
         try:
             self.method_check(request, allowed=['post'])
             basic_bundle = self.build_bundle(request=request)
@@ -42,6 +45,9 @@ class PlayerResource(ModelResource):
         return HttpResponse('Success')
 
     def unassign(self, request, **kwargs):
+        if 'authorized' not in request.session or not request.session['authorized']:
+            return HttpResponseForbidden('You are not allowed to access this resource')
+
         try:
             self.method_check(request, allowed=['get'])
             basic_bundle = self.build_bundle(request=request)
