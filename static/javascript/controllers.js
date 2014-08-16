@@ -183,6 +183,43 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
             }
         });
     };
+
+        // Draft player modal
+    $scope.unassignPlayer = function (player) {
+        // Main modal
+        $modal.open({
+            templateUrl: 'unassign_player_modal.html',
+            backdrop: true,
+            size: 'sm',
+            controller: function ($scope, $modalInstance, player) {
+                $scope.loading = false;
+                $scope.error = false;
+                $scope.errorMessage = '';
+                $scope.player = player;
+
+                $scope.submit = function () {
+                    $scope.loading = true;
+                    // Call the player unassign endpoint and close the modal when done
+                    $http.get('/api/player/' + $scope.player.id + '/unassign/').success(function () {
+                        $modalInstance.close(true);
+                    }).error(function (response) {
+                        $scope.error = true;
+                        $scope.errorMessage = response;
+                        $scope.loading = false;
+                    });
+                };
+
+                $scope.cancel = function() {
+                    $modalInstance.dismiss(false);
+                };
+            },
+            resolve: {
+                player: function() {
+                    return player;
+                }
+            }
+        });
+    };
 }]);
 
 angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', 'draftBoardService', '$interval', function($scope, draftBoardService, $interval) {

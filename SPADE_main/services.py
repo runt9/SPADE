@@ -31,3 +31,9 @@ def draft_player(request, player):
     player.league_team = post_data['teamId']
     player.draft_position = max_draft_position + 1
     player.save()
+
+
+def unassign_player(player):
+    player.league_team = ''
+    player.draft_position = 0
+    player.save()

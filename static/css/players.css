@@ -38,8 +38,14 @@
     font-weight: bold;
 }
 .playerName {
-    padding-right: 15px;
     float: right;
+    padding-right: 15px;
+}
+.byeWeek {
+    text-align: right;
+    float: right;
+    width: 31px;
+    padding-right: 15px;
 }
 .teamListCounts {
     border-top: 1px solid #DDDDDD;

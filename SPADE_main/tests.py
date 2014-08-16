@@ -77,6 +77,10 @@ class ApiTestCase(TestCase):
                                     data=json.dumps({'teamId': 'TEST'}))
         self.assertEqual(response.status_code, 404)
 
-    def test_no_player(self):
+    def test_draft_no_player(self):
         response = self.client.post('/api/player/1/draft/', content_type='application/json')
         self.assertEqual(response.status_code, 400)
+
+    def test_unassign_player(self):
+        response = self.client.get('/api/player/1/unassign/')
+        self.assertEqual(response.status_code, 200)

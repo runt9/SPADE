@@ -274,7 +274,11 @@
         </div>
         <div class="teamPlayer" ng-repeat="position in leaguePositions">
             <span class="playerPosition">{[{position}]}</span>
-            <span class="playerName">{[{getTeamPosition(selectedLeagueTeam, position).name}]}</span>
+            <span class="byeWeek">{[{getTeamPosition(selectedLeagueTeam, position).bye_week}]}</span>
+            <span class="playerName" ng-click="authorized && unassignPlayer(getTeamPosition(selectedLeagueTeam, position))"
+                    ng-class="{clickable: authorized}">
+                {[{getTeamPosition(selectedLeagueTeam, position).name}]}
+            </span>
         </div>
         <div class="teamListCounts fixedFooter">
             <b>TOTALS:&nbsp</b>
@@ -325,6 +329,23 @@
         <div class="modal-footer">
             <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">Cancel</button>
             <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Submit</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="unassign_player_modal.html">
+        <div class="modal-header">
+            Unassign Player
+        </div>
+        <div class="modal-body">
+            <div ng-show="!loading">
+                <p>Are you sure you want to unassign {[{player.name}]}?</p>
+            </div>
+            <div ng-show="loading">
+                Loading...
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">No</button>
+            <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Yes</button>
         </div>
     </script>
 </body>
