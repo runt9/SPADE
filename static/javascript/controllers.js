@@ -54,9 +54,16 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         WAS: 'Washington Redskins'
     };
     $scope.leagueTeams = {
-        MRN: 'Mister Rogers Neighborhood',
-        HS: 'Heavy Sleepers',
-        RD: 'Ricksburg Dealers'
+        'MRN': 'Mister Rogers Neighborhood',
+        'HS': 'Heavy Sleepers',
+        'RD': 'Ricksburg Dealers',
+        'ZZZ': 'Catchin ZZZZs',
+        'JK': 'Tatooine Jedi Knights',
+        'YOUN': 'Team Youngblood',
+        'KRUG': 'Team Kruger',
+        'VARG': 'Team Varghese',
+        'VSL': 'Virtual SideLines',
+        'SKAR': 'Team Skariah'
     };
     $scope.predicate = "name";
     $scope.reverse = false;
@@ -305,35 +312,44 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
     };
 }]);
 
-angular.module('DraftBoardApp.controllers', []).controller('draftBoardController', ['$scope', 'draftBoardService', '$interval', function($scope, draftBoardService, $interval) {
+angular.module('DraftBoardApp.controllers', []).controller('draftBoardController',
+    ['$scope', '$http', 'draftBoardService', '$interval',
+    function($scope, $http, draftBoardService, $interval) {
     "use strict";
-    $scope.draftedPlayers = [
-        {
-            name: "LeSean McCoy",
-            position: "RB",
-            league_team: "Team One",
-            nfl_team: "PHI",
-            round: 1
-        },
-        {
-            name: "Peyton Manning",
-            position: "QB",
-            league_team: "Team Two",
-            nfl_team: "DEN",
-            round: 1,
-        },
-        {
-            name: "Tom Brady",
-            position: "QB",
-            league_team: "Team Three",
-            nfl_team: "NE",
-            round: 1
-        },
-    ];
+
+    $scope.playersList = [];
+    $scope.loading = true;
+    $http.get('/api/player/').success(function(playersData) {
+        var i;
+        $scope.playersList = playersData.objects;
+        for (i in $scope.playersList) {
+            if ($scope.playersList[i].draft_position > 0) {
+                $scope.addToDraftedPlayers($scope.playersList[i]);
+            }
+        }
+        $scope.loading = false;
+        $scope.currentTeam = draftBoardService.getCurrentTeam($scope.playersList, $scope.draftBoard);
+        $scope.EventsPoller.startPolling();
+    });
+
+    $scope.draftedPlayers = [];
     $scope.currentRound = 1;
-    $scope.currentTeam = 'Team Four';
-    $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-    $scope.leagueTeams = ['Team One', 'Team Two', 'Team Three', 'Team Four', 'Team Five', 'Team Six', 'Team Seven', 'Team Eight', 'Team Nine', 'Team Ten'];
+    $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    $scope.leagueTeams = [
+        {pick: 0, short_name: 'MRN', long_name: 'Mister Rogers Neighborhood'},
+        {pick: 1, short_name: 'HS', long_name: 'Heavy Sleepers'},
+        {pick: 2, short_name: 'RD', long_name: 'Ricksburg Dealers'},
+        {pick: 3, short_name: 'ZZZ', long_name: 'Catchin ZZZZs'},
+        {pick: 4, short_name: 'JK', long_name: 'Tatooine Jedi Knights'},
+        {pick: 5, short_name: 'YOUN', long_name: 'Team Youngblood'},
+        {pick: 6, short_name: 'KRUG', long_name: 'Team Kruger'},
+        {pick: 7, short_name: 'VARG', long_name: 'Team Varghese'},
+        {pick: 8, short_name: 'VSL', long_name: 'Virtual SideLines'},
+        {pick: 9, short_name: 'SKAR', long_name: 'Team Skariah'},
+    ];
+    $scope.currentTeam = $scope.leagueTeams[0];
+    $scope.draftBoard = draftBoardService.prepareDraftBoard($scope.rounds, $scope.leagueTeams);
+
     $scope.getDraftedPlayer = function(team, round) {
         return draftBoardService.getDraftedPlayer(team, round, $scope.draftedPlayers)
     };
@@ -415,43 +431,113 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
 
     // Gets the list of teams for on the clock, next up, and on deck
     $scope.getNextTeams = function() {
-        var leagueTeams = $scope.leagueTeams;
-        var currentIndex = leagueTeams.indexOf($scope.currentTeam);
-        var nextIndex;
-        var onDeckIndex;
-        if ($scope.isSnaking()) {
-            nextIndex = (currentIndex - 1 > 0) ? currentIndex - 1 : currentIndex + 1;
-            onDeckIndex = (nextIndex - 1 > 0) ? nextIndex - 1 : nextIndex + 1;
-        } else {
-            nextIndex = (currentIndex + 1 < leagueTeams.length) ? currentIndex + 1 : currentIndex - 1;
-            onDeckIndex = (nextIndex + 1 < leagueTeams.length) ? nextIndex + 1 : nextIndex - 1;
+        var i;
+        var nextTeam, onDeckTeam = 'None';
+        var lastDraftPosition = draftBoardService.getLastDraftPosition($scope.playersList);
+
+        for (i in $scope.draftBoard) {
+            if ($scope.draftBoard[i].draft_position == (lastDraftPosition + 1)) {
+                nextTeam = $scope.draftBoard[i].team.long_name;
+            } else if ($scope.draftBoard[i].draft_position == (lastDraftPosition + 2)) {
+                onDeckTeam = $scope.draftBoard[i].team.long_name;
+            }
         }
 
         return {
-            '1. On the Clock': $scope.currentTeam,
-            '2. Next Up': leagueTeams[nextIndex],
-            '3. On Deck': leagueTeams[onDeckIndex]
+            '1. On the Clock': $scope.currentTeam.long_name,
+            '2. Next Up': nextTeam,
+            '3. On Deck': onDeckTeam
         };
     };
 
-    // TEMPORARY: Exists only for prototype stage. Simulates a draft event coming in.
-    $scope.simulated = false;
-    $scope.simulateDraftEvent = function() {
-        if ($scope.simulated) {
-            return;
+    // Events Poller object
+    $scope.EventsPoller = {
+        isPolling: false,
+        lastPoll: Math.round(Date.now() / 1000), // Tracks the last timestamp of when we polled
+        pollInstance: null,
+        doPoll: function() {
+            // Send along our last poll time to the events endpoint to let the server know
+            // how far back to check for new events to give us
+            $http.get('/events/?time=' + $scope.EventsPoller.lastPoll).success(function(response) {
+                $scope.EventsPoller.handleResponse(response);
+                $scope.EventsPoller.lastPoll = Math.round(Date.now() / 1000);
+            });
+        },
+        // Big handler of the response. Knows about all event types and data that can be sent.
+        handleResponse: function(response) {
+            var i, j, events, event, data, index, player;
+            if (response.length === 0) {
+                return;
+            }
+            events = response;
+            for (i in events) {
+                event = events[i];
+                data = event.data;
+                switch (event.type) {
+                    case 'playerDrafted':
+                        index = $scope.findPlayer(data.id);
+                        if (index === -1) {
+                            return;
+                        }
+
+                        player = $scope.playersList[index];
+                        player.draft_position = data.draft_position;
+                        player.league_team = data.league_team;
+                        $scope.addToDraftedPlayers(player);
+                        $scope.timer.time = 300;
+                        $scope.currentTeam = draftBoardService.getCurrentTeam($scope.playersList, $scope.draftBoard);
+                        break;
+                    case 'playerUnassigned':
+                        index = $scope.findPlayer(data.id);
+                        if (index === -1) {
+                            return;
+                        }
+
+                        player = $scope.playersList[index];
+                        player.draft_position = 0;
+                        player.league_team = '';
+
+                        for (j in $scope.draftedPlayers) {
+                            if ($scope.draftedPlayers[j].id == data.id) {
+                                $scope.draftedPlayers.splice(j, 1);
+                            }
+                        }
+                        $scope.timer.time = 300;
+                        $scope.currentTeam = draftBoardService.getCurrentTeam($scope.playersList, $scope.draftBoard);
+                        break;
+                    default:
+                }
+            }
+        },
+        startPolling: function() {
+            $scope.EventsPoller.pollInstance = $interval(function() { $scope.EventsPoller.doPoll(); }, 10000);
+            $scope.EventsPoller.isPolling = true;
+        },
+        stopPolling: function() {
+            $interval.cancel($scope.EventsPoller.pollInstance);
+            $scope.EventsPoller.pollInstance = null;
+            $scope.EventsPoller.isPolling = false;
         }
+    };
 
+    $scope.addToDraftedPlayers = function(player) {
         $scope.draftedPlayers.push({
-            name: "Calvin Johnson",
-            position: "WR",
-            league_team: "Team Four",
-            nfl_team: "DET",
-            round: 1
-        });
+           id: player.id,
+           name: player.name,
+           position: player.position,
+           league_team: player.league_team,
+           nfl_team: player.nfl_team,
+           round: Math.ceil(player.draft_position / 10)
+       });
+    };
 
-        $scope.timer.time = 300;
-        $scope.currentTeam = 'Team Five';
-
-        $scope.simulated = true;
+    $scope.findPlayer = function(id) {
+        var i;
+        for (i in $scope.playersList) {
+            if ($scope.playersList[i].id == id) {
+                return i;
+            }
+        }
+        return -1;
     };
 }]);

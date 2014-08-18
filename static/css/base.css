@@ -104,3 +104,6 @@ select {
     display: block;
     margin: 0 auto;
 }
+.jumbotron {
+    padding-top: 0;
+}

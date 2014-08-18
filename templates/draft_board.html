@@ -22,6 +22,10 @@
     <script src="{% static "javascript/services.js" %}"></script>
 </head>
 <body ng-app="DraftBoardApp" ng-controller="draftBoardController" ng-init="init()">
+    <div class="loadingIndicator absoluteCenterAll" ng-show="loading">
+        <span class="loadingIndicatorHelper"></span>
+        <img src="{% static "images/ajax-loader.gif" %}"/>
+    </div>
     <div class="holder">
         <div class="jumbotron draftInfo">
             <div class="timerHolder">
@@ -36,14 +40,13 @@
                     <span class="draftTeamName">{[{team}]}</span>
                 </div>
             </div>
-            <div style="padding-top: 10px;"><button ng-click="simulateDraftEvent()">Simulate Draft Event</button></div>
         </div>
         <div class="tableHolder scrollable draftBoardHolder">
             <table class="table table-bordered draftBoardTable">
                 <thead>
                     <tr>
                         <th class="centered">Round</th>
-                        <th class="centered" ng-repeat="team in leagueTeams">{[{team}]}</th>
+                        <th class="centered" ng-repeat="team in leagueTeams">{[{team.long_name}]}</th>
                     </tr>
                 </thead>
                 <tbody>
