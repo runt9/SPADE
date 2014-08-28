@@ -70,6 +70,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
     $scope.selectedLeagueTeam = "";
     $scope.leaguePositions = ['QB', 'RB', 'RB/WR', 'WR', 'WR/TE', 'OP', 'D/ST', 'K', 'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7'];
     $scope.teamsPlayers = [];
+    $scope.sidebarActive = false;
 
     // Given a team and a position, grab the player in that position on the given team and return it
     $scope.getTeamPosition = function(team, position) {

@@ -18,6 +18,7 @@
     display: table;
     padding-left: 0;
     padding-right: 0;
+    background-color: #FFFFFF;
 }
 .teamFilterSelect {
     margin: auto;
@@ -60,4 +61,37 @@
 .searchBox {
     float: right;
     padding-right: 10px;
+}
+.toggleSidebar {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.closeSidebar {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    display: none;
+}
+@media screen and (max-width: 991px) {
+    .toggleSidebar {
+        display: block;
+    }
+    .offCanvas {
+        position: absolute;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+        right: -100%;
+        top: 0;
+        z-index: 1000;
+    }
+    .activeSidebar {
+        right: 0;
+        top: 0;
+    }
+    .activeSidebar .closeSidebar {
+        display: block;
+    }
 }
