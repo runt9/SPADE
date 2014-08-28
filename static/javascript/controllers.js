@@ -337,15 +337,15 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
     $scope.rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
     $scope.leagueTeams = [
         {pick: 0, short_name: 'MRN', long_name: 'Mister Rogers Neighborhood'},
-        {pick: 1, short_name: 'HS', long_name: 'Heavy Sleepers'},
-        {pick: 2, short_name: 'RD', long_name: 'Ricksburg Dealers'},
-        {pick: 3, short_name: 'ZZZ', long_name: 'Catchin ZZZZs'},
-        {pick: 4, short_name: 'JK', long_name: 'Tatooine Jedi Knights'},
-        {pick: 5, short_name: 'YOUN', long_name: 'Team Youngblood'},
-        {pick: 6, short_name: 'KRUG', long_name: 'Team Kruger'},
-        {pick: 7, short_name: 'VARG', long_name: 'Team Varghese'},
-        {pick: 8, short_name: 'VSL', long_name: 'Virtual SideLines'},
-        {pick: 9, short_name: 'SKAR', long_name: 'Team Skariah'},
+        {pick: 7, short_name: 'HS', long_name: 'Heavy Sleepers'},
+        {pick: 9, short_name: 'RD', long_name: 'Ricksburg Dealers'},
+        {pick: 1, short_name: 'ZZZ', long_name: 'Catchin ZZZZs'},
+        {pick: 3, short_name: 'JK', long_name: 'Tatooine Jedi Knights'},
+        {pick: 4, short_name: 'YOUN', long_name: 'Team Youngblood'},
+        {pick: 2, short_name: 'KRUG', long_name: 'Team Kruger'},
+        {pick: 8, short_name: 'VARG', long_name: 'Team Varghese'},
+        {pick: 6, short_name: 'VSL', long_name: 'Virtual SideLines'},
+        {pick: 5, short_name: 'SKAR', long_name: 'Team Skariah'},
     ];
     $scope.currentTeam = $scope.leagueTeams[0];
     $scope.draftBoard = draftBoardService.prepareDraftBoard($scope.rounds, $scope.leagueTeams);
