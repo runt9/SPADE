@@ -453,14 +453,13 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
     // Events Poller object
     $scope.EventsPoller = {
         isPolling: false,
-        lastPoll: Math.round(Date.now() / 1000), // Tracks the last timestamp of when we polled
+        lastId: 0, // Tracks the last timestamp of when we polled
         pollInstance: null,
         doPoll: function() {
             // Send along our last poll time to the events endpoint to let the server know
             // how far back to check for new events to give us
-            $http.get('/events/?time=' + $scope.EventsPoller.lastPoll).success(function(response) {
+            $http.get('/events/?id=' + $scope.EventsPoller.lastId).success(function(response) {
                 $scope.EventsPoller.handleResponse(response);
-                $scope.EventsPoller.lastPoll = Math.round(Date.now() / 1000);
             });
         },
         // Big handler of the response. Knows about all event types and data that can be sent.
@@ -472,6 +471,7 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
             events = response;
             for (i in events) {
                 event = events[i];
+                $scope.EventsPoller.lastId = event.id;
                 data = event.data;
                 switch (event.type) {
                     case 'playerDrafted':
