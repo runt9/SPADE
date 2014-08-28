@@ -46,14 +46,17 @@ def get_events(request):
     if len(request.GET) == 0:
         raise EmptyRequestError('No request parameters sent')
 
-    if 'time' not in request.GET:
-        raise InvalidArgumentError('No timestamp given')
+    if 'id' not in request.GET:
+        raise InvalidArgumentError('No id given')
 
-    timestamp = request.GET['time']
-    events = Events.objects.all().filter(timestamp__gte=timestamp)
     ret_val = []
-    for event in events:
-        ret_val.append({'type': event.type, 'data': event.data})
+    query_id = request.GET['id']
+    if query_id == '0':
+        ret_val.append({'id': Events.objects.latest('id').id})
+    else:
+        events = Events.objects.all().filter(id__gt=query_id)
+        for event in events:
+            ret_val.append({'id': event.id, 'type': event.type, 'data': event.data})
 
     return json.dumps(ret_val)
 

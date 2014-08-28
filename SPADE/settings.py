@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '5c&a6dew=)cbybw23ki24o82kxp-n+16_2yboee7hleepmyp4e'
 
-SECRET_PASSWORD = 'temppw'
+SECRET_PASSWORD = 'pleasedonteverguessthispw'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
