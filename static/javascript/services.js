@@ -53,7 +53,7 @@ angular.module('PlayersApp.services', []).factory('playerTeamService', function(
                     retPosition = this.findFirstUndefinedPosition(team, ['OP', 'RB/WR', 'RB']);
                     break;
                 case 'WR':
-                    retPosition = this.findFirstUndefinedPosition(team, ['OP', 'WR/RB', 'RB/WR', 'WR']);
+                    retPosition = this.findFirstUndefinedPosition(team, ['OP', 'WR/TE', 'RB/WR', 'WR']);
                     break;
                 case 'TE':
                     retPosition = this.findFirstUndefinedPosition(team, ['OP', 'WR/TE']);
