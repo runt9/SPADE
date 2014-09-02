@@ -323,6 +323,16 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
     $http.get('/api/player/').success(function(playersData) {
         var i;
         $scope.playersList = playersData.objects;
+        $scope.playersList.sort(function(a, b) {
+            if (a.draft_position < b.draft_position) {
+                return -1;
+            }
+            if (a.draft_position > b.draft_position) {
+                return 1;
+            }
+
+            return 0
+        });
         for (i in $scope.playersList) {
             if ($scope.playersList[i].draft_position > 0) {
                 $scope.addToDraftedPlayers($scope.playersList[i]);
@@ -528,7 +538,8 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
            position: player.position,
            league_team: player.league_team,
            nfl_team: player.nfl_team,
-           round: Math.ceil(player.draft_position / 10)
+           round: Math.ceil(player.draft_position / 10),
+           draft_position: player.draft_position
        });
     };
 
