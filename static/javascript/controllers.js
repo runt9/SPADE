@@ -287,6 +287,11 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
                         $scope.playersList[index].available = true;
                         $scope.teamsPlayers = playerTeamService.calculateTeamsPlayers($scope.playersList, $scope.leagueTeams);
                         break;
+                    case 'playerAdded':
+                        data.available = true;
+                        data.tagged = false;
+                        $scope.playersList.push(data);
+                        break;
                     default:
                 }
             }
@@ -310,6 +315,66 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
             }
         }
         return -1;
+    };
+
+    // Draft player modal
+    $scope.openAddPlayerModal = function (player) {
+        // Pull in the scope'd stuff we need below
+        var nflTeams = $scope.nflTeams;
+        var positions = $scope.positions;
+        $scope.player = {
+            name: "",
+            position: "",
+            nfl_team: "",
+            bye_week: 0
+        };
+
+        // Main modal
+        $modal.open({
+            templateUrl: 'add_player_modal.html',
+            backdrop: true,
+            size: 'sm',
+            controller: function ($scope, $modalInstance, nflTeams, positions, player) {
+                $scope.loading = false;
+                $scope.error = false;
+                $scope.errorMessage = '';
+                $scope.nflTeams = nflTeams;
+                $scope.positions = positions;
+                $scope.player = player;
+
+                $scope.submit = function () {
+                    var data = {
+                        name: $scope.player.name,
+                        position: $scope.player.position,
+                        nfl_team: $scope.player.nfl_team,
+                        bye_week: $scope.player.bye_week
+                    };
+                    $scope.loading = true;
+                    $http.post('/api/player/new/', data).success(function () {
+                        $modalInstance.close(true);
+                    }).error(function (response) {
+                        $scope.error = true;
+                        $scope.errorMessage = response;
+                        $scope.loading = false;
+                    });
+                };
+
+                $scope.cancel = function() {
+                    $modalInstance.dismiss(false);
+                };
+            },
+            resolve: {
+                nflTeams: function() {
+                    return nflTeams;
+                },
+                positions: function() {
+                    return positions;
+                },
+                player: function() {
+                    return $scope.player;
+                }
+            }
+        });
     };
 }]);
 
@@ -515,6 +580,11 @@ angular.module('DraftBoardApp.controllers', []).controller('draftBoardController
                         }
                         $scope.timer.time = 300;
                         $scope.currentTeam = draftBoardService.getCurrentTeam($scope.playersList, $scope.draftBoard);
+                        break;
+                    case 'playerAdded':
+                        data.available = true;
+                        data.tagged = false;
+                        $scope.playersList.push(data);
                         break;
                     default:
                 }

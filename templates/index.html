@@ -37,6 +37,7 @@
                 <p>* All stats collected are from the 2013 season</p>
                 <button class="btn btn-primary" ng-click="openLoginModal()" ng-show="!authorized">Admin Login</button>
                 <button class="btn btn-primary" ng-click="logout()" ng-show="authorized">Logout</button>
+                <button class="btn btn-primary" ng-click="openAddPlayerModal()" ng-show="authorized">Add Player</button>
                 <button class="toggleSidebar btn btn-default btn-lg" ng-click="sidebarActive = !sidebarActive">
                     <span class="glyphicon glyphicon-list"></span>
                 </button>
@@ -347,6 +348,39 @@
         <div class="modal-footer">
             <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">No</button>
             <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Yes</button>
+        </div>
+    </script>
+    <script type="text/ng-template" id="add_player_modal.html">
+        <div class="modal-header">
+            Add Player
+        </div>
+        <div class="modal-body">
+            <div ng-show="!loading">
+                <label>Name:&nbsp;<input type="text" ng-model="player.name"/></label><br>
+                <label>Position:&nbsp;
+                    <select ng-model="player.position">
+                        <option value="">All</option>
+                        <option ng-repeat="position in positions" value="{[{position}]}">{[{position}]}</option>
+                    </select>
+                </label><br>
+                <label>NFL Team:&nbsp;
+                    <select ng-model="player.nfl_team">
+                        <option value="">All</option>
+                        <option ng-repeat="(short,long) in nflTeams" value="{[{short}]}">{[{long}]}</option>
+                    </select>
+                </label><br>
+                <label>Bye Week:&nbsp;<input type="text" ng-model="player.bye_week"/></label><br>
+                <div id="loginModalError" class="text-danger centered" ng-show="error">
+                    {[{errorMessage}]}
+                </div>
+            </div>
+            <div ng-show="loading">
+                Loading...
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-disabled="loading" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-disabled="loading" ng-click="submit()">Submit</button>
         </div>
     </script>
 </body>

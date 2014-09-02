@@ -23,7 +23,10 @@ class PlayerResource(ModelResource):
                 self.wrap_view('draft'), name="api_player_draft"),
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/unassign%s$" %
                 (self._meta.resource_name, trailing_slash()),
-                self.wrap_view('unassign'), name="api_player_unassign")
+                self.wrap_view('unassign'), name="api_player_unassign"),
+            url(r"^(?P<resource_name>%s)/new%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('new_player'), name="api_player_new_player")
         ]
 
     def draft(self, request, **kwargs):
@@ -55,5 +58,19 @@ class PlayerResource(ModelResource):
             services.unassign_player(player)
         except Players.DoesNotExist:
             return HttpResponseNotFound('Specified player does not exist')
+
+        return HttpResponse('Success')
+
+    def new_player(self, request, **kwargs):
+        if 'authorized' not in request.session or not request.session['authorized']:
+            return HttpResponseForbidden('You are not allowed to access this resource')
+
+        try:
+            self.method_check(request, allowed=['post'])
+            services.add_player(request)
+        except EmptyRequestError:
+            return HttpResponseBadRequest('Must specify all fields')
+        except InvalidArgumentError:
+            return HttpResponseBadRequest('Must specify all fields')
 
         return HttpResponse('Success')
