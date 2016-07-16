@@ -1,4 +1,4 @@
 SPADE
 =====
 
-Simple Player Analysis &amp; Draft Engine
+Simple Player Analysis and Draft Engine
