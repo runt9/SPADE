@@ -1,43 +1,39 @@
 <!DOCTYPE html>
-{% load staticfiles %}
 <html>
 <head>
     <title>Simple Player Analysis & Draft Engine</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CDN for Bootstrap 3.2.0 -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="/webjars/angular/1.5.8/angular.min.js"></script>
+    <script src="/webjars/angular-ui-bootstrap-bower/2.0.2/ui-bootstrap-tpls.min.js"></script>
 
-    <!-- CDN for AngularJS 1.2.18 -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/draftBoard.css">
 
-    <!-- Staticfiles loading for our local css -->
-    <link rel="stylesheet" href="{% static "css/base.css" %}">
-    <link rel="stylesheet" href="{% static "css/draft_board.css" %}">
-
-    <!-- Staticfiles loading for our local javascript -->
-    <script src="{% static "javascript/app.js" %}"></script>
-    <script src="{% static "javascript/controllers.js" %}"></script>
-    <script src="{% static "javascript/services.js" %}"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/controllers.js"></script>
+    <script src="/js/services.js"></script>
 </head>
 <body ng-app="DraftBoardApp" ng-controller="draftBoardController" ng-init="init()">
     <div class="loadingIndicator absoluteCenterAll" ng-show="loading">
         <span class="loadingIndicatorHelper"></span>
-        <img src="{% static "images/ajax-loader.gif" %}"/>
+        <i class="fa fa-spin fa-spinner"></i>
     </div>
     <div class="holder">
         <div class="jumbotron draftInfo">
             <div class="timerHolder">
                 <span>Time to Pick:</span>
                 <span class="timer" ng-click="timer.toggle()" ng-class="{'text-danger': timer.time < 30}">
-                    {[{timer.formatTime()}]}
+                    {{timer.formatTime()}}
                 </span>
             </div>
             <div class="draftTeamInfo">
                 <div ng-repeat="(key, team) in getNextTeams()" style="display: inline-block">
-                    <span class="draftTeamHeader">{[{key}]}:&nbsp;</span>
-                    <span class="draftTeamName">{[{team}]}</span>
+                    <span class="draftTeamHeader">{{key}}:&nbsp;</span>
+                    <span class="draftTeamName">{{team}}</span>
                 </div>
             </div>
         </div>
@@ -46,20 +42,20 @@
                 <thead>
                     <tr>
                         <th class="centered">Round</th>
-                        <th class="centered" ng-repeat="team in leagueTeams">{[{team.long_name}]}</th>
+                        <th class="centered" ng-repeat="team in leagueTeams">{{team.long_name}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="round in rounds">
                         <td class="boardPlayerCell centered">
-                            <div class="boardPlayerCell">Round {[{round}]}</div>
+                            <div class="boardPlayerCell">Round {{round}}</div>
                         </td>
                         <td class="boardPlayerCell centered" ng-repeat="team in leagueTeams" ng-class="getCssClassForPlayer(getDraftedPlayer(team, round))">
                             <div>
-                                {[{getDraftedPlayer(team, round).name}]}
+                                {{getDraftedPlayer(team, round).name}}
                             </div>
                             <div ng-show="!isObjectEmpty(getDraftedPlayer(team, round))">
-                                {[{getDraftedPlayer(team, round).position}]}&nbsp;({[{getDraftedPlayer(team, round).nfl_team}]})
+                                {{getDraftedPlayer(team, round).position}}&nbsp;({{getDraftedPlayer(team, round).nfl_team}})
                             </div>
                         </td>
                     </tr>
@@ -69,7 +65,7 @@
         <div class="tickerBox" id="tickerBox" ng-mouseover="ticker.moveFlag = false" ng-mouseleave="ticker.moveFlag = true">
             <div class="ticker" id="ticker" ng-style="{'left': ticker.getTickerLeft()}">
                 <span class="tickerElement" ng-repeat="(key, player) in draftedPlayers track by $index">
-                    {[{$index + 1}]}. {[{player.name}]} - {[{player.position}]} ({[{player.nfl_team}]})
+                    {{$index + 1}}. {{player.name}} - {{player.position}} ({{player.nfl_team}})
                 </span>
             </div>
         </div>

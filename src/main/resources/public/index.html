@@ -1,33 +1,26 @@
 <!DOCTYPE html>
-{% load staticfiles %}
 <html>
 <head>
     <title>Simple Player Analysis & Draft Engine</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CDN for Bootstrap 3.2.0 -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="/webjars/angular/1.5.8/angular.min.js"></script>
+    <script src="/webjars/angular-ui-bootstrap-bower/2.0.2/ui-bootstrap-tpls.min.js"></script>
 
-    <!-- CDN for AngularJS 1.2.18 -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/players.css">
 
-    <!-- CDN for angular-ui-bootstrap 0.11.0 -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
-
-    <!-- Staticfiles loading for our local css -->
-    <link rel="stylesheet" href="{% static "css/base.css" %}">
-    <link rel="stylesheet" href="{% static "css/players.css" %}">
-
-    <!-- Staticfiles loading for our local javascript -->
-    <script src="{% static "javascript/app.js" %}"></script>
-    <script src="{% static "javascript/controllers.js" %}"></script>
-    <script src="{% static "javascript/services.js" %}"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/controllers.js"></script>
+    <script src="/js/services.js"></script>
 </head>
 <body ng-app="PlayersApp" ng-controller="playersController">
     <div class="loadingIndicator absoluteCenterAll" ng-show="loading">
         <span class="loadingIndicatorHelper"></span>
-        <img src="{% static "images/ajax-loader.gif" %}"/>
+        <i class="fa fa-spin fa-spinner"></i>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 playersColumn">
         <div class="jumbotron">
@@ -52,7 +45,7 @@
                     <label>Position:&nbsp;
                         <select ng-model="search.position">
                             <option value="">All</option>
-                            <option ng-repeat="position in positions" value="{[{position}]}">{[{position}]}</option>
+                            <option ng-repeat="position in positions" value="{{position}}">{{position}}</option>
                         </select>
                     </label>
                 </div>
@@ -60,7 +53,7 @@
                     <label>NFL Team:&nbsp;
                         <select ng-model="search.nfl_team">
                             <option value="">All</option>
-                            <option ng-repeat="(short,long) in nflTeams" value="{[{short}]}">{[{long}]}</option>
+                            <option ng-repeat="(short,long) in nflTeams" value="{{short}}">{{long}}</option>
                         </select>
                     </label>
                 </div>
@@ -230,37 +223,37 @@
                         
                         <!-- Common to all players -->
                         <td ng-class="{'sorted': predicate == 'name'}">
-                            <span ng-class="{clickable: authorized}" ng-click="authorized && playerClicked(this)">{[{player.name}]}</span>
+                            <span ng-class="{clickable: authorized}" ng-click="authorized && playerClicked(this)">{{player.name}}</span>
                         </td>
-                        <td ng-class="{'sorted': predicate == 'position'}">{[{player.position}]}</td>
-                        <td ng-class="{'sorted': predicate == 'nfl_team'}">{[{player.nfl_team}]}</td>
-                        <td ng-class="{'sorted': predicate == 'bye_week'}">{[{player.bye_week}]}</td>
-                        <td ng-class="{'sorted': predicate == 'games_played'}">{[{player.games_played}]}</td>
-                        <td ng-class="{'sorted': predicate == 'last_season_points'}">{[{player.last_season_points}]}</td>
-                        <td ng-class="{'sorted': predicate == 'league_team'}">{[{player.league_team}]}</td>
+                        <td ng-class="{'sorted': predicate == 'position'}">{{player.position}}</td>
+                        <td ng-class="{'sorted': predicate == 'nfl_team'}">{{player.nfl_team}}</td>
+                        <td ng-class="{'sorted': predicate == 'bye_week'}">{{player.bye_week}}</td>
+                        <td ng-class="{'sorted': predicate == 'games_played'}">{{player.games_played}}</td>
+                        <td ng-class="{'sorted': predicate == 'last_season_points'}">{{player.last_season_points}}</td>
+                        <td ng-class="{'sorted': predicate == 'league_team'}">{{player.league_team}}</td>
 
                         <!-- QB stats -->
-                        <td ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">{[{player.passing_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'passing_touchdowns'}" ng-show="search.position == 'QB'">{[{player.passing_touchdowns}]}</td>
-                        <td ng-class="{'sorted': predicate == 'interceptions'}" ng-show="search.position == 'QB'">{[{player.interceptions}]}</td>
-                        <td ng-class="{'sorted': predicate == 'completion_percentage'}" ng-show="search.position == 'QB'">{[{player.completion_percentage}]}</td>
+                        <td ng-class="{'sorted': predicate == 'passing_yards'}" ng-show="search.position == 'QB'">{{player.passing_yards}}</td>
+                        <td ng-class="{'sorted': predicate == 'passing_touchdowns'}" ng-show="search.position == 'QB'">{{player.passing_touchdowns}}</td>
+                        <td ng-class="{'sorted': predicate == 'interceptions'}" ng-show="search.position == 'QB'">{{player.interceptions}}</td>
+                        <td ng-class="{'sorted': predicate == 'completion_percentage'}" ng-show="search.position == 'QB'">{{player.completion_percentage}}</td>
 
                         <!-- RB -->
-                        <td ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">{[{player.rushing_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'rushing_touchdowns'}" ng-show="search.position == 'RB'">{[{player.rushing_touchdowns}]}</td>
+                        <td ng-class="{'sorted': predicate == 'rushing_yards'}" ng-show="search.position == 'RB'">{{player.rushing_yards}}</td>
+                        <td ng-class="{'sorted': predicate == 'rushing_touchdowns'}" ng-show="search.position == 'RB'">{{player.rushing_touchdowns}}</td>
 
                         <!-- WR/TE -->
-                        <td ng-class="{'sorted': predicate == 'receiving_yards'}" ng-show="search.position == 'WR' || search.position == 'TE'">{[{player.receiving_yards}]}</td>
-                        <td ng-class="{'sorted': predicate == 'receiving_touchdowns'}" ng-show="search.position == 'WR' || search.position == 'TE'">{[{player.receiving_touchdowns}]}</td>
+                        <td ng-class="{'sorted': predicate == 'receiving_yards'}" ng-show="search.position == 'WR' || search.position == 'TE'">{{player.receiving_yards}}</td>
+                        <td ng-class="{'sorted': predicate == 'receiving_touchdowns'}" ng-show="search.position == 'WR' || search.position == 'TE'">{{player.receiving_touchdowns}}</td>
                         
                         <!-- K -->
-                        <td ng-class="{'sorted': predicate == 'fg_percentage'}" ng-show="search.position == 'K'">{[{player.fg_percentage}]}</td>
-                        <td ng-class="{'sorted': predicate == 'longest_fg'}" ng-show="search.position == 'K'">{[{player.longest_fg}]}</td>
+                        <td ng-class="{'sorted': predicate == 'fg_percentage'}" ng-show="search.position == 'K'">{{player.fg_percentage}}</td>
+                        <td ng-class="{'sorted': predicate == 'longest_fg'}" ng-show="search.position == 'K'">{{player.longest_fg}}</td>
                         
                         <!-- D/ST -->
-                        <td ng-class="{'sorted': predicate == 'def_points_per_game'}" ng-show="search.position == 'D/ST'">{[{player.def_points_per_game}]}</td>
-                        <td ng-class="{'sorted': predicate == 'def_interceptions'}" ng-show="search.position == 'D/ST'">{[{player.def_interceptions}]}</td>
-                        <td ng-class="{'sorted': predicate == 'dst_touchdowns'}" ng-show="search.position == 'D/ST'">{[{player.dst_touchdowns}]}</td>
+                        <td ng-class="{'sorted': predicate == 'def_points_per_game'}" ng-show="search.position == 'D/ST'">{{player.def_points_per_game}}</td>
+                        <td ng-class="{'sorted': predicate == 'def_interceptions'}" ng-show="search.position == 'D/ST'">{{player.def_interceptions}}</td>
+                        <td ng-class="{'sorted': predicate == 'dst_touchdowns'}" ng-show="search.position == 'D/ST'">{{player.dst_touchdowns}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -272,20 +265,20 @@
             <div class="teamFilterSelect">
                 <label>Select Team:&nbsp;
                     <select ng-model="selectedLeagueTeam">
-                        <option ng-repeat="(short,long) in leagueTeams" value="{[{short}]}">{[{long}]}</option>
+                        <option ng-repeat="(short,long) in leagueTeams" value="{{short}}">{{long}}</option>
                     </select>
                 </label>
             </div>
         </div>
         <div class="teamPlayer" ng-repeat="position in leaguePositions">
-            <span class="playerPosition">{[{position}]}</span>
-            <span class="byeWeek">{[{getTeamPosition(selectedLeagueTeam, position).bye_week}]}</span>
-            <span class="playerName">{[{getTeamPosition(selectedLeagueTeam, position).name}]}</span>
+            <span class="playerPosition">{{position}}</span>
+            <span class="byeWeek">{{getTeamPosition(selectedLeagueTeam, position).bye_week}}</span>
+            <span class="playerName">{{getTeamPosition(selectedLeagueTeam, position).name}}</span>
         </div>
         <div class="teamListCounts fixedFooter">
             <b>TOTALS:&nbsp</b>
             <span ng-repeat="position in positions" class="playerCount">
-                {[{position}]}: {[{getTeamPositionPlayerCount(selectedLeagueTeam, position)}]}
+                {{position}}: {{getTeamPositionPlayerCount(selectedLeagueTeam, position)}}
             </span>
         </div>
     </div>
@@ -297,7 +290,7 @@
             <div ng-show="!loading">
                 <label>Password:&nbsp;<input type="password" ng-model="password.string" /></label>
                 <div id="loginModalError" class="text-danger centered" ng-show="error">
-                    {[{errorMessage}]}
+                    {{errorMessage}}
                 </div>
             </div>
             <div ng-show="loading">
@@ -317,11 +310,11 @@
             <div ng-show="!loading">
                 <label>Select Team:&nbsp;
                     <select ng-model="team.id">
-                        <option ng-repeat="(short,long) in leagueTeams" value="{[{short}]}">{[{long}]}</option>
+                        <option ng-repeat="(short,long) in leagueTeams" value="{{short}}">{{long}}</option>
                     </select>
                 </label>
                 <div id="loginModalError" class="text-danger centered" ng-show="error">
-                    {[{errorMessage}]}
+                    {{errorMessage}}
                 </div>
             </div>
             <div ng-show="loading">
@@ -339,7 +332,7 @@
         </div>
         <div class="modal-body">
             <div ng-show="!loading">
-                <p>Are you sure you want to unassign {[{player.name}]}?</p>
+                <p>Are you sure you want to unassign {{player.name}}?</p>
             </div>
             <div ng-show="loading">
                 Loading...
@@ -360,18 +353,18 @@
                 <label>Position:&nbsp;
                     <select ng-model="player.position">
                         <option value="">All</option>
-                        <option ng-repeat="position in positions" value="{[{position}]}">{[{position}]}</option>
+                        <option ng-repeat="position in positions" value="{{position}}">{{position}}</option>
                     </select>
                 </label><br>
                 <label>NFL Team:&nbsp;
                     <select ng-model="player.nfl_team">
                         <option value="">All</option>
-                        <option ng-repeat="(short,long) in nflTeams" value="{[{short}]}">{[{long}]}</option>
+                        <option ng-repeat="(short,long) in nflTeams" value="{{short}}">{{long}}</option>
                     </select>
                 </label><br>
                 <label>Bye Week:&nbsp;<input type="text" ng-model="player.bye_week"/></label><br>
                 <div id="loginModalError" class="text-danger centered" ng-show="error">
-                    {[{errorMessage}]}
+                    {{errorMessage}}
                 </div>
             </div>
             <div ng-show="loading">
