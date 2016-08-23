@@ -6,19 +6,7 @@ var playersApp = angular.module('PlayersApp', [
     'ui.bootstrap'
 ]);
 
-playersApp.config(function($interpolateProvider) {
-    "use strict";
-    $interpolateProvider.startSymbol('{[{');
-    $interpolateProvider.endSymbol('}]}');
-});
-
 var draftBoardApp = angular.module('DraftBoardApp', [
     'DraftBoardApp.controllers',
     'DraftBoardApp.services'
 ]);
-
-draftBoardApp.config(function($interpolateProvider) {
-    "use strict";
-    $interpolateProvider.startSymbol('{[{');
-    $interpolateProvider.endSymbol('}]}');
-});

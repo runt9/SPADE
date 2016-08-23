@@ -1,13 +1,13 @@
 // Initialize our PlayersApp controller
 angular.module('PlayersApp.controllers', []).controller('playersController',
-    ['$scope', '$http', '$modal', '$interval', 'playerTeamService',
-    function($scope, $http, $modal, $interval, playerTeamService) {
+    ['$scope', '$http', '$uibModal', '$interval', 'playerTeamService',
+    function($scope, $http, $uibModal, $interval, playerTeamService) {
     "use strict";
 
     $scope.loading = true;
-    $http.get('/api/player/').success(function(playersData) {
+    $http.get('/api/player').success(function(playersData) {
         var i;
-        $scope.playersList = playersData.objects;
+        $scope.playersList = playersData.content;
         for (i in $scope.playersList) {
             $scope.playersList[i].available = $scope.playersList[i].draft_position === 0;
             $scope.playersList[i].tagged = false;
@@ -93,7 +93,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         };
 
         // Main modal
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'login_modal.html',
             backdrop: true,
             size: 'sm',
@@ -161,7 +161,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         };
 
         // Main modal
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'draft_player_modal.html',
             backdrop: true,
             size: 'sm',
@@ -206,7 +206,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
     // Draft player modal
     $scope.unassignPlayer = function (player) {
         // Main modal
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'unassign_player_modal.html',
             backdrop: true,
             size: 'sm',
@@ -330,7 +330,7 @@ angular.module('PlayersApp.controllers', []).controller('playersController',
         };
 
         // Main modal
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'add_player_modal.html',
             backdrop: true,
             size: 'sm',
