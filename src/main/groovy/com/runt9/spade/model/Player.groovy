@@ -1,19 +1,24 @@
 package com.runt9.spade.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.Document
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToOne
 
-@Document(indexName = "player")
+@Entity
 class Player {
     @Id
-    String id
+    Long id
     String name
-    String nflTeam
-    String leagueTeam
     Integer byeWeek
     Integer draftPosition
     PlayerPosition position
     Integer gamesPlayed
-    Integer lastSeasonPoints
-    Map<String, BigDecimal> stats
+
+    @OneToOne
+    NFLTeam nflTeam
+
+    @OneToOne
+    FantasyTeam fantasyTeam
+
+    // TODO: Stats
 }
