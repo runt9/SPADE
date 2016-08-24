@@ -1,4 +1,4 @@
-package com.runt9.spade.controller.api
+package com.runt9.spade.controller
 
 import com.runt9.spade.repository.PlayerRepository
 import org.springframework.beans.factory.annotation.Autowired

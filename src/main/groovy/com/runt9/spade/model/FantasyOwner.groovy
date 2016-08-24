@@ -10,6 +10,7 @@ class FantasyOwner {
     Long id
     String firstName
     String lastName
+    String username
     String emailAddress
     String password
 

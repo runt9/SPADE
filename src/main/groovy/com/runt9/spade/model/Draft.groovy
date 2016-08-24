@@ -1,14 +1,16 @@
 package com.runt9.spade.model
 
-import javax.persistence.Id
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
+import javax.persistence.*
 
+@Entity
 class Draft {
     @Id
     Long id
     String name
     String leagueName
+
+    @OneToOne
+    FantasyOwner leagueOwner
 
     @ManyToMany
     @JoinTable(name = 'draft_fantasy_teams')

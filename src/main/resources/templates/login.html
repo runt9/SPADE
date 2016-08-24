@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/head :: headFragment">
+    <link rel="stylesheet" href="/css/login.css"/>
+</head>
+<body>
+<div class="container">
+    <div>
+        <div th:if="${param.error}">
+            <uib-alert>Invalid username and/or password.</uib-alert>
+        </div>
+        <div th:if="${param.logout}">
+            <uib-alert>You have been logged out.</uib-alert>
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div><label> User Name : <input class="form-control" type="text" name="username"/> </label></div>
+            <div><label> Password: <input class="form-control" type="password" name="password"/> </label></div>
+            <div><input class="btn btn-primary" type="submit" value="Sign In"/></div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

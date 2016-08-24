@@ -1,21 +1,7 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Simple Player Analysis & Draft Engine</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <script src="/webjars/angular/1.5.8/angular.min.js"></script>
-    <script src="/webjars/angular-ui-bootstrap-bower/2.0.2/ui-bootstrap-tpls.min.js"></script>
-
-    <link rel="stylesheet" href="/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/webjars/font-awesome/4.6.3/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/players.css">
-
-    <script src="/js/app.js"></script>
-    <script src="/js/controllers.js"></script>
-    <script src="/js/services.js"></script>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/head :: headFragment">
+    <link rel="stylesheet" href="/css/players.css"/>
 </head>
 <body ng-app="PlayersApp" ng-controller="playersController">
     <div class="loadingIndicator absoluteCenterAll" ng-show="loading">
