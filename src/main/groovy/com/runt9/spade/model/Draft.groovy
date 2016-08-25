@@ -1,20 +1,13 @@
 package com.runt9.spade.model
 
-import javax.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.elasticsearch.annotations.Document
 
-@Entity
+@Document(indexName = "draft")
 class Draft {
     @Id
-    Long id
+    String id
     String name
     String leagueName
-
-    @OneToOne
-    FantasyOwner leagueOwner
-
-    @ManyToMany
-    @JoinTable(name = 'draft_fantasy_teams',
-            joinColumns = @JoinColumn(name = 'draft_id'),
-            inverseJoinColumns = @JoinColumn(name = 'fantasy_team_id'))
-    List<FantasyTeam> fantasyTeams
+    List<String> fantasyTeams
 }

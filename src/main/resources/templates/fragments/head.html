@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="headFragment">
+<head th:fragment="headFragment(pageName)">
     <title>Simple Player Analysis &amp; Draft Engine</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -11,8 +11,10 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.6/dist/css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{/webjars/font-awesome/4.6.3/css/font-awesome.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/{pageName}.css(pageName=${pageName})}"/>
 
     <script th:src="@{/js/App.js}"></script>
+    <script th:src="@{/js/controllers/{pageName}Controller.js(pageName=${pageName})}"></script>
 </head>
 <body>
 

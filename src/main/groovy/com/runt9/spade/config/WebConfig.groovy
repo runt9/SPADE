@@ -9,8 +9,7 @@ class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController('/').setViewName('index')
-        registry.addViewController('/login').setViewName('login')
         registry.addViewController('/draft/{draftId}').setViewName('draft')
-        registry.addViewController('/draftBoard').setViewName('draftBoard')
+        registry.addViewController('/draft/{draftId}/draftBoard').setViewName('draftBoard')
     }
 }
