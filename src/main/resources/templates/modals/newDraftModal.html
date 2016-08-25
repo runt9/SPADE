@@ -1,0 +1,31 @@
+<h4 class="modal-header">Create New SPADE Draft</h4>
+<div class="modal-body">
+    <div class="alert alert-danger" ng-if="$ctrl.error">An unknown error occurred while creating draft. Please try again.</div>
+    <table class="table">
+        <tbody>
+        <tr>
+            <td>League Name:</td>
+            <td><input class="form-control" type="text" ng-model="$ctrl.draft.leagueName" ng-disabled="$ctrl.loading"/></td>
+        </tr>
+        <tr>
+            <td>Draft Name:</td>
+            <td><input class="form-control" type="text" ng-model="$ctrl.draft.name" ng-disabled="$ctrl.loading"/></td>
+        </tr>
+        <tr>
+            <td>PPR League:</td>
+            <td><input type="checkbox" ng-model="$ctrl.draft.ppr" ng-disabled="$ctrl.loading"/></td>
+        </tr>
+        <tr>
+            <td>Enter Team Names (One per Line):</td>
+            <td>
+                <textarea class="form-control" ng-model="$ctrl.draft.fantasyTeams" rows="10"
+                          ng-list="&#10;" ng-trim="false" ng-disabled="$ctrl.loading"></textarea>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-disabled="$ctrl.loading" ng-click="$ctrl.submit()">Submit</button>
+    <button class="btn btn-danger" ng-disabled="$ctrl.loading" ng-click="$ctrl.cancel()">Cancel</button>
+</div>

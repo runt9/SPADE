@@ -1,7 +1,7 @@
 package com.runt9.spade.repository
 
-import com.runt9.spade.model.Player
+import com.runt9.spade.model.Draft
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
-interface PlayerRepository extends ElasticsearchRepository<Player, String> {
+interface DraftRepository extends ElasticsearchRepository<Draft, String> {
 }

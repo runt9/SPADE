@@ -1,18 +1,19 @@
 'use strict';
 
 (function(module) {
-    function IndexController($window, $http) {
+    function IndexController($uibModal) {
         var self = this;
 
-        self.login = function () {
-            $window.location.href = '/login';
-        };
-
-        self.logout = function () {
-            $http.post('/logout');
+        self.newDraft = function () {
+            var modalInstance = $uibModal.open({
+                templateUrl: '/modals/newDraftModal',
+                backdrop: true,
+                size: 'lg',
+                controller: 'NewDraftModalController as $ctrl'
+            });
         };
     }
 
-    IndexController.$inject = ['$window', '$http'];
+    IndexController.$inject = ['$uibModal'];
     module.controller('IndexController', IndexController);
 })(angular.module('SpadeApp'));

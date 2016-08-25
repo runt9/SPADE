@@ -9,5 +9,7 @@ class Draft {
     String id
     String name
     String leagueName
+    Boolean ppr
+    // TODO: More scoring handling than just ppr
     List<String> fantasyTeams
 }
