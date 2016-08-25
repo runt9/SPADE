@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/head :: headFragment">
+<head th:replace="fragments/head :: headFragment">
+    <script type="text/javascript" th:src="@{/js/controllers/IndexController.js}"></script>
 </head>
-<body>
+<body ng-app="SpadeApp" ng-controller="IndexController">
+<div class="container">
+    <div class="jumbotron">
+        <div align="center" class="container">
+            <h1>Welcome to SPADE!</h1>
+            <p>Otherwise known as the <b>S</b>imple <b>P</b>layer <b>A</b>nalysis &amp; <b>D</b>raft <b>E</b>ngine</p>
+            <button class="btn btn-primary" ng-click="login()" ng-show="!authorized">Login</button>
+            <button class="btn btn-primary" ng-click="logout()" ng-show="authorized">Logout</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

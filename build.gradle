@@ -33,10 +33,6 @@ dependencies {
     runtime 'org.springframework.boot:spring-boot-devtools'
     runtime 'com.h2database:h2'
 
-    // Manually versioned stuff
-    compile 'org.xerial:sqlite-jdbc:3.8.11.2'
-    compile 'net.kemitix:sqlite-dialect:0.1.0'
-
     // Webjars
     compile 'org.webjars.npm:bootstrap:3.3.6'
     compile 'org.webjars.npm:angular:1.5.8'

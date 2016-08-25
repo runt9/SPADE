@@ -13,6 +13,8 @@ class Draft {
     FantasyOwner leagueOwner
 
     @ManyToMany
-    @JoinTable(name = 'draft_fantasy_teams')
+    @JoinTable(name = 'draft_fantasy_teams',
+            joinColumns = @JoinColumn(name = 'draft_id'),
+            inverseJoinColumns = @JoinColumn(name = 'fantasy_team_id'))
     List<FantasyTeam> fantasyTeams
 }

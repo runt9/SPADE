@@ -1,8 +1,5 @@
 .idea/
-*.iml
 .gradle/
 build/
 gradle/
-src/assets/vendor/
-.asscache
 spadeDb*

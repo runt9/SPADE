@@ -2,7 +2,7 @@ package com.runt9.spade.model
 
 import javax.persistence.Entity
 import javax.persistence.Id
-import javax.persistence.OneToOne
+import javax.persistence.ManyToOne
 
 @Entity
 class FantasyTeam {
@@ -10,6 +10,6 @@ class FantasyTeam {
     Long id
     String name
 
-    @OneToOne
+    @ManyToOne
     FantasyOwner fantasyOwner
 }

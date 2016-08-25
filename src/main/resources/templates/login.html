@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/head :: headFragment">
-    <link rel="stylesheet" href="/css/login.css"/>
+<head th:replace="fragments/head :: headFragment">
+    <link rel="stylesheet" th:href="@{/css/login.css}"/>
 </head>
 <body>
 <div class="container">
