@@ -1,12 +1,12 @@
 'use strict';
 
-(function(module) {
+(function (module) {
     function IndexController($uibModal) {
         var self = this;
 
         self.newDraft = function () {
-            var modalInstance = $uibModal.open({
-                templateUrl: '/modals/newDraftModal',
+            $uibModal.open({
+                templateUrl: '/newDraftModal',
                 backdrop: true,
                 size: 'lg',
                 controller: 'NewDraftModalController as $ctrl'

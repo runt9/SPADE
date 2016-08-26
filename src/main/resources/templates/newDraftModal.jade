@@ -1,0 +1,31 @@
+h4.modal-header Create New SPADE Draft
+.modal-body
+    .alert.alert-danger(ng-if='$ctrl.error') An unknown error occurred while creating draft. Please try again.
+    table.table
+        tbody
+            tr
+                td League Name:
+                td
+                    input.form-control(type='text', ng-model='$ctrl.draft.leagueName', ng-disabled='$ctrl.loading')
+            tr
+                td Draft Name:
+                td
+                    input.form-control(type='text', ng-model='$ctrl.draft.name', ng-disabled='$ctrl.loading')
+            tr
+                td PPR League:
+                td
+                    input(type='checkbox', ng-model='$ctrl.draft.ppr', ng-disabled='$ctrl.loading')
+            tr
+                td Enter Team Names (One per line):
+                td
+                    textarea.form-control(ng-model='$ctrl.draft.fantasyTeams', rows='10', ng-disabled='$ctrl.loading')
+            tr
+                td
+                    | Enter League Positions (One per line, Choose from list below):
+                    ul
+                        li(ng-repeat='pos in $ctrl.leaguePositions') {{pos}}
+                td
+                    textarea.form-control(ng-model='$ctrl.draft.positions', rows='15', cols='4', ng-disabled='$ctrl.loading')
+.modal-footer
+    button.btn.btn-primary(ng-disabled='$ctrl.loading', ng-click='$ctrl.submit()') Submit
+    button.btn.btn-danger(ng-disabled='$ctrl.loading', ng-click='$ctrl.cancel()') Cancel

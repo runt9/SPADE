@@ -1,0 +1,10 @@
+.modal-header
+    | Unassign Player
+.modal-body
+    div(ng-show='!loading')
+        p Are you sure you want to unassign {{player.name}}?
+    div(ng-show='loading')
+        | Loading...
+.modal-footer
+    button.btn.btn-warning(ng-disabled='loading', ng-click='cancel()') No
+    button.btn.btn-primary(ng-disabled='loading', ng-click='submit()') Yes

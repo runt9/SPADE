@@ -9,7 +9,7 @@ class Player {
     String id
     String name
     Integer byeWeek
-    PlayerPosition position
+    String position
     NFLTeam nflTeam
     Integer gamesPlayed
 

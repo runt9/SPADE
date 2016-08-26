@@ -1,0 +1,15 @@
+doctype html
+html
+    head
+        include commonHeader
+        script(src='/js/controller/indexController.js')
+        script(src='/js/controller/newDraftModalController.js')
+        link(rel='stylesheet', href='/css/index.css')
+
+    body(ng-app='SpadeApp', ng-controller='IndexController as ctrl')
+        .container
+            .jumbotron
+                .container(align='center')
+                    h1 Welcome to SPADE!
+                    p Otherwise known as the Simple Player Analysis & Draft Engine
+                    button.btn.btn-primary(ng-click='ctrl.newDraft()') Create New Draft

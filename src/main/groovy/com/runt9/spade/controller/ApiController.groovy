@@ -1,7 +1,7 @@
 package com.runt9.spade.controller
 
 import com.runt9.spade.model.Draft
-import com.runt9.spade.model.LeaguePosition
+import com.runt9.spade.model.Position
 import com.runt9.spade.repository.DraftRepository
 import com.runt9.spade.repository.PlayerRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,6 +31,6 @@ class ApiController {
 
     @RequestMapping(value = '/leaguePositions', method = RequestMethod.GET)
     getLeaguePositions() {
-        LeaguePosition.allPositions
+        Position.leaguePositions
     }
 }

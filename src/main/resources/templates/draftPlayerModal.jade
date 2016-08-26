@@ -1,0 +1,15 @@
+.modal-header
+    | Draft Player
+.modal-body
+    div(ng-show='!loading')
+        label
+            | Select Team: 
+            select(ng-model='team.id')
+                option(ng-repeat='(short,long) in leagueTeams', value='{{short}}') {{long}}
+        #loginModalError.text-danger.centered(ng-show='error')
+            | {{errorMessage}}
+    div(ng-show='loading')
+        | Loading...
+.modal-footer
+    button.btn.btn-warning(ng-disabled='loading', ng-click='cancel()') Cancel
+    button.btn.btn-primary(ng-disabled='loading', ng-click='submit()') Submit
