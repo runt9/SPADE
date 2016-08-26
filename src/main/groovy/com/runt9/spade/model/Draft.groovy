@@ -12,4 +12,5 @@ class Draft {
     Boolean ppr
     // TODO: More scoring handling than just ppr
     List<String> fantasyTeams
+    List<LeaguePosition> positions
 }

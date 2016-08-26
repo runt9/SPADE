@@ -3,9 +3,20 @@
 (function (module) {
     function NewDraftModalController($uibModalInstance, $http, $window) {
         var self = this;
-        self.loading = false;
+        self.loading = true;
         self.error = false;
+        self.leaguePositions = [];
         self.draft = {};
+
+        self.$onInit = function () {
+            $http.get('/api/leaguePositions').then(function (data) {
+                self.leaguePositions = data.data;
+                self.loading = false;
+            }, function (err) {
+                self.loading = false;
+                console.error(err);
+            });
+        };
 
         self.submit = function () {
             self.loading = true;

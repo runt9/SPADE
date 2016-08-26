@@ -30,6 +30,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     runtime 'org.springframework.boot:spring-boot-devtools'
     compile 'org.codehaus.groovy:groovy-all'
+    // TODO: Remove this when upgrade to spring boot 1.4.1
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.6'
 
     // Webjars
     compile 'org.webjars.npm:bootstrap:3.3.6'
