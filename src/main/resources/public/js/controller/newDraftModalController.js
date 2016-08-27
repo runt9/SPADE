@@ -3,9 +3,16 @@
 (function (module) {
     function NewDraftModalController($uibModalInstance, $http, $window) {
         var self = this;
-        self.loading = true;
+        //self.loading = true;
         self.error = false;
-        self.draft = {};
+        self.emptyTeam = {abbr: '', name: ''};
+        self.draft = {
+            fantasyTeams: [self.emptyTeam]
+        };
+
+        self.addFantasyTeam = function () {
+            self.draft.fantasyTeams.push(self.emptyTeam);
+        };
 
         self.submit = function () {
             self.loading = true;
@@ -24,6 +31,6 @@
         }
     }
 
-    NewDraftModalController.$inject = ['$uibModalInstance', '$http', '$window', 'appConstants'];
+    NewDraftModalController.$inject = ['$uibModalInstance', '$http', '$window'];
     module.controller('NewDraftModalController', NewDraftModalController);
 })(angular.module('SpadeApp'));
