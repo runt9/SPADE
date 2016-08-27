@@ -1,11 +1,9 @@
 'use strict';
 
 (function (module) {
-    function DraftController($http, $uibModal, $interval, appConstants, draftService) {
+    function DraftController($http, $uibModal, $interval, draftService) {
         var self = this;
 
-        self.positions = appConstants.positions;
-        self.nflTeams = appConstants.nflTeams;
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
         self.draft = {};
 
@@ -222,6 +220,6 @@
         };
     }
 
-    DraftController.$inject = ['$http', '$uibModal', '$interval', 'appConstants', 'draftService'];
+    DraftController.$inject = ['$http', '$uibModal', '$interval', 'draftService'];
     module.controller('DraftController', DraftController);
 })(angular.module('SpadeApp'));

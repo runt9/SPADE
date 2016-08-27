@@ -1,7 +1,7 @@
 package com.runt9.spade.repository
 
 import com.runt9.spade.model.Draft
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
+import org.springframework.data.repository.CrudRepository
 
-interface DraftRepository extends ElasticsearchRepository<Draft, String> {
+interface DraftRepository extends CrudRepository<Draft, Long> {
 }

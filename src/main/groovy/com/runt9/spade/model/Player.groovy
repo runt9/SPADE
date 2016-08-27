@@ -1,17 +1,29 @@
 package com.runt9.spade.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.Document
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 
-@Document(indexName = "player")
+@Entity
 class Player {
     @Id
-    String id
+    Long id
     String name
-    Integer byeWeek
-    String position
-    String nflTeam
-    Integer gamesPlayed
+    String injuryStatus
+    BigDecimal averageDraftPosition
+    Integer projectedRank
+    Integer draftRank
 
-    Map<String, BigDecimal> stats;
+    @ManyToOne
+    Position position
+
+    @ManyToOne(optional = true)
+    NflTeam nflTeam
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = 'player_id')
+    List<PlayerStat> stats = []
 }

@@ -1,16 +1,29 @@
 package com.runt9.spade.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.Document
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.OneToMany
 
-@Document(indexName = "draft")
+// TODO: Scoring settings. Let's do all of them
+
+@Entity
 class Draft {
     @Id
-    String id
-    String name
+    @GeneratedValue
+    Long id
     String leagueName
-    Boolean ppr
-    // TODO: More scoring handling than just ppr
-    List<String> fantasyTeams
-    List<String> positions
+
+    @OneToMany
+    @JoinColumn(name = 'draft_id')
+    List<FantasyTeam> fantasyTeams = []
+
+    @OneToMany
+    @JoinColumn(name = 'draft_id')
+    List<DraftPositionCount> draftPositionCounts = []
+
+    @OneToMany
+    @JoinColumn(name = 'draft_id')
+    List<DraftPlayer> draftPlayers = []
 }
