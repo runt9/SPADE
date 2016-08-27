@@ -10,7 +10,7 @@ class Player {
     String name
     Integer byeWeek
     String position
-    NFLTeam nflTeam
+    String nflTeam
     Integer gamesPlayed
 
     Map<String, BigDecimal> stats;

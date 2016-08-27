@@ -1,10 +1,11 @@
 package com.runt9.spade.controller
 
 import com.runt9.spade.model.Draft
-import com.runt9.spade.model.Position
+
 import com.runt9.spade.repository.DraftRepository
 import com.runt9.spade.repository.PlayerRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -29,8 +30,8 @@ class ApiController {
         draftRepository.save(draft)
     }
 
-    @RequestMapping(value = '/leaguePositions', method = RequestMethod.GET)
-    getLeaguePositions() {
-        Position.leaguePositions
+    @RequestMapping(value = '/draft/{draftId}', method = RequestMethod.GET)
+    getDraft(@PathVariable String draftId) {
+        draftRepository.findOne(draftId)
     }
 }

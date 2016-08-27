@@ -1,74 +1,36 @@
 'use strict';
 
 (function (module) {
-    function DraftController($http, $uibModal, $interval, draftService) {
+    function DraftController($http, $uibModal, $interval, appConstants, draftService) {
         var self = this;
 
-        self.loading = true;
-        $http.get('/api/player').success(function (playersData) {
-            var i;
-            self.playersList = playersData.content;
-            for (i in self.playersList) {
-                self.playersList[i].available = self.playersList[i].draft_position === 0;
-                self.playersList[i].tagged = false;
-            }
-            // Initialize the list of which players belong to which league team
-            self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
-            self.loading = false;
-            self.EventsPoller.startPolling();
-        });
+        self.positions = appConstants.positions;
+        self.nflTeams = appConstants.nflTeams;
+        self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
+        self.draft = {};
 
-        self.positions = ['QB', 'RB', 'WR', 'TE', 'D/ST', 'K'];
-        self.nflTeams = {
-            ARI: 'Arizona Cardinals',
-            ATL: 'Atlanta Falcons',
-            BAL: 'Baltimore Ravens',
-            BUF: 'Buffalo Bills',
-            CAR: 'Carolina Panthers',
-            CHI: 'Chicago Bears',
-            CIN: 'Cincinnati Bengals',
-            CLE: 'Cleveland Browns',
-            DAL: 'Dallas Cowboys',
-            DEN: 'Denver Broncos',
-            DET: 'Detroit Lions',
-            GB: 'Green Bay Packers',
-            HOU: 'Houston Texans',
-            IND: 'Indianapolis Colts',
-            JAX: 'Jacksonville Jaguars',
-            KC: 'Kansas City Chiefs',
-            MIA: 'Miami Dolphins',
-            MIN: 'Minnesota Vikings',
-            NE: 'New England Patriots',
-            NO: 'New Orleans Saints',
-            NYG: 'New York Giants',
-            NYJ: 'New York Jets',
-            OAK: 'Oakland Raiders',
-            PHI: 'Philadelphia Eagles',
-            PIT: 'Pittsburgh Steelers',
-            SD: 'San Diego Chargers',
-            SEA: 'Seattle Seahawks',
-            SF: 'San Francisco 49ers',
-            STL: 'Saint Louis Rams',
-            TB: 'Tampa Bay Buccaneers',
-            TEN: 'Tennessee Titans',
-            WAS: 'Washington Redskins'
+        self.$onInit = function () {
+            self.loading = true;
+
+            $http.get('/api/draft/' + self.draftId).success(function (draftData) {
+                self.draft = draftData.content;
+                return $http.get('/api/player');
+            }).success(function (playersData) {
+                var i;
+                self.playersList = playersData.content;
+                for (i in self.playersList) {
+                    self.playersList[i].available = self.playersList[i].draft_position === 0;
+                    self.playersList[i].tagged = false;
+                }
+                // Initialize the list of which players belong to which league team
+                self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
+                self.loading = false;
+            });
         };
-        self.leagueTeams = {
-            'MRN': 'Mister Rogers Neighborhood',
-            'HS': 'Heavy Sleepers',
-            'RD': 'Ricksburg Dealers',
-            'ZZZ': 'Catchin ZZZZs',
-            'JK': 'Tatooine Jedi Knights',
-            'YOUN': 'Team Youngblood',
-            'KRUG': 'Team Kruger',
-            'VARG': 'Team Varghese',
-            'VSL': 'Virtual SideLines',
-            'SKAR': 'Team Skariah'
-        };
+
         self.predicate = "name";
         self.reverse = false;
         self.selectedLeagueTeam = "";
-        self.leaguePositions = ['QB', 'RB', 'RB/WR', 'WR', 'WR/TE', 'OP', 'D/ST', 'K', 'BN1', 'BN2', 'BN3', 'BN4', 'BN5', 'BN6', 'BN7'];
         self.teamsPlayers = [];
         self.sidebarActive = false;
 
@@ -260,6 +222,6 @@
         };
     }
 
-    DraftController.$inject = ['$http', '$uibModal', '$interval', 'draftService'];
+    DraftController.$inject = ['$http', '$uibModal', '$interval', 'appConstants', 'draftService'];
     module.controller('DraftController', DraftController);
 })(angular.module('SpadeApp'));

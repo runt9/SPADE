@@ -1,22 +1,12 @@
 'use strict';
 
 (function (module) {
-    function NewDraftModalController($uibModalInstance, $http, $window) {
+    function NewDraftModalController($uibModalInstance, $http, $window, appConstants) {
         var self = this;
         self.loading = true;
         self.error = false;
-        self.leaguePositions = [];
+        self.leaguePositions = appConstants.possibleLeaguePositions;
         self.draft = {};
-
-        self.$onInit = function () {
-            $http.get('/api/leaguePositions').then(function (data) {
-                self.leaguePositions = data.data;
-                self.loading = false;
-            }, function (err) {
-                self.loading = false;
-                console.error(err);
-            });
-        };
 
         self.submit = function () {
             self.loading = true;
@@ -40,6 +30,6 @@
         }
     }
 
-    NewDraftModalController.$inject = ['$uibModalInstance', '$http', '$window'];
+    NewDraftModalController.$inject = ['$uibModalInstance', '$http', '$window', 'appConstants'];
     module.controller('NewDraftModalController', NewDraftModalController);
 })(angular.module('SpadeApp'));
