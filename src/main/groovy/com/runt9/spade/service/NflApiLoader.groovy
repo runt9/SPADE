@@ -107,9 +107,6 @@ class NflApiLoader {
         List<Position> positions = positionRepository.findAll().asList()
         List<NflTeam> nflTeams = nflTeamRepository.findAll().asList()
 
-        // We need to do stats after we save players, so hold them in a list temporarily
-        List<PlayerStat> playerStats = []
-
         URL playersUrl = buildUrl('players/draftClient', [positionCategories: POSITION_CATEGORIES])
         List<Player> players = getUrlJson(playersUrl)?.games?.'102016'?.players?.collect { id, Map player ->
             logger.debug("Processing player ${player?.name}")
@@ -130,7 +127,7 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
-                    playerStats.add(new PlayerStat(
+                    player.stats.add(new PlayerStat(
                             year: year as Integer,
                             stat: stats.find { it.id == statId as Long },
                             player: playerEntity,
@@ -144,7 +141,7 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
-                    playerStats.add(new PlayerStat(
+                    player.stats.add(new PlayerStat(
                             year: year as Integer,
                             stat: stats.find { it.id == statId as Long },
                             player: playerEntity,
@@ -157,6 +154,5 @@ class NflApiLoader {
         }
 
         playerRepository.save(players)
-        playerStatRepository.save(playerStats)
     }
 }

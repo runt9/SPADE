@@ -5,13 +5,19 @@
         var self = this;
         //self.loading = true;
         self.error = false;
-        self.emptyTeam = {abbr: '', name: ''};
+        self.randomDraftOrder = true;
         self.draft = {
-            fantasyTeams: [self.emptyTeam]
+            fantasyTeams: [{abbr: '', name: '', draftOrder: 0}]
         };
 
-        self.addFantasyTeam = function () {
-            self.draft.fantasyTeams.push(self.emptyTeam);
+        self.addTeam = function () {
+            var draftOrder = self.draft.fantasyTeams.length;
+            self.draft.fantasyTeams.push({abbr: '', name: '', draftOrder: draftOrder});
+        };
+
+        self.removeTeam = function (team) {
+            var i = self.draft.fantasyTeams.indexOf(team);
+            self.draft.fantasyTeams.splice(i, 1);
         };
 
         self.submit = function () {

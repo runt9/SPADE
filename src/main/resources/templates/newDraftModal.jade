@@ -8,17 +8,25 @@ h4.modal-header Create New SPADE Draft
                 td
                     input.form-control(type='text', ng-model='$ctrl.draft.leagueName', ng-disabled='$ctrl.loading')
             tr
+                td.draft-order-label
+                    | Random Draft Order
+                    i.glyphicon.glyphicon-question-sign(uib-tooltip='If unchecked, ensure league teams below are created in proper draft order')
+                td
+                    input(type='checkbox', ng-model='$ctrl.randomDraftOrder', ng-disabled='$ctrl.loading')
+            tr
                 td Enter League Teams:
                 td
                     table
                         tbody
-                            tr(ng-repeat='team in $ctrl.draft.fantasyTeams track by $index')
-                                td
-                                    input.form-control(type='text', placeholder="Abbr", ng-model='team.abbr', ng-disabled='$ctrl.loading')
-                                td
-                                    input.form-control(type='text', placeholder="Team Name", ng-model='team.name', ng-disabled='$ctrl.loading')
+                            tr.league-team-row(ng-repeat='team in $ctrl.draft.fantasyTeams track by team.draftOrder')
+                                td.col-xs-3
+                                    input.form-control(type='text', placeholder='Abbreviation', ng-model='team.abbr', ng-disabled='$ctrl.loading')
+                                td.col-xs-8
+                                    input.form-control(type='text', placeholder='Team Name', ng-model='team.name', ng-disabled='$ctrl.loading')
+                                td.col-xs-1
+                                    i.glyphicon.glyphicon-trash(ng-click='$ctrl.removeTeam(team)')
 
-                    button.btn.btn-success(ng-click='$ctrl.addFantasyTeam()', ng-disabled='$ctrl.loading')
+                    button.btn.btn-success(ng-click='$ctrl.addTeam()', ng-disabled='$ctrl.loading')
                         i.glyphicon.glyphicon-plus
                         | Add Team
 

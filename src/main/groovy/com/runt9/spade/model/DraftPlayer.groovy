@@ -1,5 +1,7 @@
 package com.runt9.spade.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -15,6 +17,7 @@ class DraftPlayer {
     Long id
 
     @ManyToOne
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     Draft draft
 
     @ManyToOne

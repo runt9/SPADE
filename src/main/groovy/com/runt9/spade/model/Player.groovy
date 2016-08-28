@@ -1,7 +1,7 @@
 package com.runt9.spade.model
 
+import javax.persistence.CascadeType
 import javax.persistence.Entity
-import javax.persistence.FetchType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
@@ -23,7 +23,7 @@ class Player {
     @ManyToOne(optional = true)
     NflTeam nflTeam
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'player_id')
     List<PlayerStat> stats = []
 }
