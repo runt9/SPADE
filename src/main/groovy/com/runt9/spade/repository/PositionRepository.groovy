@@ -1,6 +1,6 @@
 package com.runt9.spade.repository
 
-import com.runt9.spade.model.Position
+import com.runt9.spade.model.common.Position
 import org.springframework.data.repository.CrudRepository
 
 interface PositionRepository extends CrudRepository<Position, Long> {

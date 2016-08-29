@@ -1,6 +1,6 @@
 package com.runt9.spade.controller
 
-import com.runt9.spade.model.Draft
+import com.runt9.spade.model.draft.Draft
 import com.runt9.spade.repository.DraftRepository
 import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PositionRepository

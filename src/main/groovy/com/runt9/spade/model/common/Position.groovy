@@ -1,4 +1,4 @@
-package com.runt9.spade.model
+package com.runt9.spade.model.common
 
 import javax.persistence.Entity
 import javax.persistence.Id

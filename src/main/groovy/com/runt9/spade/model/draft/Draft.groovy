@@ -1,4 +1,4 @@
-package com.runt9.spade.model
+package com.runt9.spade.model.draft
 
 import javax.persistence.CascadeType
 import javax.persistence.Entity
@@ -26,4 +26,8 @@ class Draft {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')
     List<DraftPlayer> draftPlayers = []
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = 'draft_id')
+    List<ScoringSetting> scoringSettings;
 }

@@ -1,4 +1,7 @@
-package com.runt9.spade.model
+package com.runt9.spade.model.player
+
+import com.runt9.spade.model.common.NflTeam
+import com.runt9.spade.model.common.Position
 
 import javax.persistence.CascadeType
 import javax.persistence.Entity

@@ -1,4 +1,4 @@
-package com.runt9.spade.model
+package com.runt9.spade.model.player
 
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -11,4 +11,5 @@ class Stat {
     String name
     String shortName
     String groupName
+    String scoringType
 }

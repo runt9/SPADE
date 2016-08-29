@@ -1,10 +1,10 @@
 package com.runt9.spade.service
 
-import com.runt9.spade.model.NflTeam
-import com.runt9.spade.model.Player
-import com.runt9.spade.model.PlayerStat
-import com.runt9.spade.model.Position
-import com.runt9.spade.model.Stat
+import com.runt9.spade.model.common.NflTeam
+import com.runt9.spade.model.player.Player
+import com.runt9.spade.model.player.PlayerStat
+import com.runt9.spade.model.common.Position
+import com.runt9.spade.model.player.Stat
 import com.runt9.spade.repository.NflTeamRepository
 import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PlayerStatRepository
@@ -63,7 +63,8 @@ class NflApiLoader {
                     abbr: stat?.abbr,
                     name: stat?.name,
                     shortName: stat?.shortName,
-                    groupName: stat?.groupName
+                    groupName: stat?.groupName,
+                    scoringType: stat?.scoringType
             )
         }
         statRepository.save(stats)
