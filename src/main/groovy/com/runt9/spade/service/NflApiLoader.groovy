@@ -127,7 +127,7 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
-                    player.stats.add(new PlayerStat(
+                    playerEntity.stats.add(new PlayerStat(
                             year: year as Integer,
                             stat: stats.find { it.id == statId as Long },
                             player: playerEntity,
@@ -141,7 +141,7 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
-                    player.stats.add(new PlayerStat(
+                    playerEntity.stats.add(new PlayerStat(
                             year: year as Integer,
                             stat: stats.find { it.id == statId as Long },
                             player: playerEntity,

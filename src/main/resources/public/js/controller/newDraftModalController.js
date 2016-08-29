@@ -3,11 +3,26 @@
 (function (module) {
     function NewDraftModalController($uibModalInstance, $http, $window) {
         var self = this;
-        //self.loading = true;
+
+        self.loading = true;
         self.error = false;
         self.randomDraftOrder = true;
         self.draft = {
-            fantasyTeams: [{abbr: '', name: '', draftOrder: 0}]
+            fantasyTeams: [{abbr: '', name: '', draftOrder: 0}],
+            draftPositionCounts: []
+        };
+
+        self.$onInit = function () {
+            $http.get('/api/position').success(function (data) {
+                angular.forEach(data, function (p) {
+                    self.draft.draftPositionCounts.push({
+                        position: p,
+                        count: 0
+                    });
+                });
+
+                self.loading = false;
+            });
         };
 
         self.addTeam = function () {

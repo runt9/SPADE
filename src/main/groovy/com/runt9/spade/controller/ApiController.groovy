@@ -3,6 +3,7 @@ package com.runt9.spade.controller
 import com.runt9.spade.model.Draft
 import com.runt9.spade.repository.DraftRepository
 import com.runt9.spade.repository.PlayerRepository
+import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.service.NflApiLoader
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
@@ -19,10 +20,13 @@ class ApiController {
     private final static Logger logger = LogManager.getLogger(ApiController)
 
     @Autowired
-    PlayerRepository playerRepository;
+    PlayerRepository playerRepository
 
     @Autowired
-    DraftRepository draftRepository;
+    DraftRepository draftRepository
+
+    @Autowired
+    PositionRepository positionRepository
 
     @Autowired
     NflApiLoader nflApiLoader
@@ -30,6 +34,11 @@ class ApiController {
     @RequestMapping(value = '/player', method = RequestMethod.GET)
     getPlayers() {
         playerRepository.findAll()
+    }
+
+    @RequestMapping(value = '/position', method = RequestMethod.GET)
+    getPositions() {
+        positionRepository.findAll()
     }
 
     @RequestMapping(value = '/draft', method = RequestMethod.POST)

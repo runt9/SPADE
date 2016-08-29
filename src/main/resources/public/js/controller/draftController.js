@@ -11,7 +11,7 @@
             self.loading = true;
 
             $http.get('/api/draft/' + self.draftId).success(function (draftData) {
-                self.draft = draftData.content;
+                self.draft = draftData;
                 return $http.get('/api/player');
             }).success(function (playersData) {
                 var i;
