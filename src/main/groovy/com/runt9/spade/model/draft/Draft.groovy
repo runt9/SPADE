@@ -30,5 +30,5 @@ class Draft {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')
-    List<ScoringSetting> scoringSettings;
+    List<ScoringSetting> scoringSettings = [];
 }

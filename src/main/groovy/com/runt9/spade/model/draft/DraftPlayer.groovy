@@ -27,12 +27,12 @@ class DraftPlayer {
     @ManyToOne
     Player player
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     FantasyTeam team
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_player_id')
-    List<DraftPlayerPointTotal> playerPointTotals;
+    List<DraftPlayerPointTotal> playerPointTotals = [];
 
     Integer draftRound
 }

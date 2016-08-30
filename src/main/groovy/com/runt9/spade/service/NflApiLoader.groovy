@@ -146,9 +146,15 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
+                    Stat statEntity = stats.find { it.id == statId as Long }
+                    if (statEntity == null) {
+                        logger.warn("Found null statId $statId")
+                        return
+                    }
+
                     playerEntity.stats.add(new PlayerStat(
                             year: year as Integer,
-                            stat: stats.find { it.id == statId as Long },
+                            stat: statEntity,
                             player: playerEntity,
                             value: value as BigDecimal
                     ))
@@ -160,9 +166,15 @@ class NflApiLoader {
                     // Skip pts, we calculate that ourselves
                     if (statId == "pts") return
 
+                    Stat statEntity = stats.find { it.id == statId as Long }
+                    if (statEntity == null) {
+                        logger.warn("Found null statId $statId")
+                        return
+                    }
+
                     playerEntity.stats.add(new PlayerStat(
                             year: year as Integer,
-                            stat: stats.find { it.id == statId as Long },
+                            stat: statEntity,
                             player: playerEntity,
                             value: value as BigDecimal
                     ))

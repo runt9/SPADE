@@ -7,6 +7,7 @@ import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.repository.StatRepository
 import com.runt9.spade.service.NflApiLoader
+import com.runt9.spade.service.PlayerStatsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -32,6 +33,9 @@ class ApiController {
     @Autowired
     NflApiLoader nflApiLoader
 
+    @Autowired
+    PlayerStatsService playerStatsService
+
     @RequestMapping(value = '/player', method = RequestMethod.GET)
     getPlayers() {
         playerRepository.findAll()
@@ -53,7 +57,7 @@ class ApiController {
 
     @RequestMapping(value = '/draft', method = RequestMethod.POST)
     createDraft(@RequestBody Draft draft) {
-        draftRepository.save(draft)
+        playerStatsService.recalculatePlayerPoints(draft)
     }
 
     @RequestMapping(value = '/draft/{draftId}', method = RequestMethod.GET)
