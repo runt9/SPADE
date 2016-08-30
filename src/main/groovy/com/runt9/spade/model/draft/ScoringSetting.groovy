@@ -1,5 +1,6 @@
 package com.runt9.spade.model.draft
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.runt9.spade.model.player.Stat
 
 import javax.persistence.Entity
@@ -14,6 +15,7 @@ class ScoringSetting {
     Long id
 
     @ManyToOne
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     Draft draft
 
     @ManyToOne

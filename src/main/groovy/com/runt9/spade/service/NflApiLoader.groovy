@@ -52,27 +52,48 @@ class NflApiLoader {
         new JsonSlurper().parse(url)
     }
 
+    void refreshAll() {
+        logger.info('Beginning full refresh')
+        playerStatRepository.deleteAll()
+
+        loadNflTeams()
+        loadPositions()
+        loadStats()
+        loadPlayers()
+        logger.info('Completed full refresh')
+    }
+
     void loadStats() {
         logger.info('Reloading stats')
-        statRepository.deleteAll()
         URL statsUrl = buildUrl('game/stats')
-        List<Stat> stats = getUrlJson(statsUrl)?.games?.'102016'?.stats?.collect { id, Map stat ->
-            logger.debug("Processing stat ${stat?.name}")
-            new Stat(
-                    id: id as Long,
-                    abbr: stat?.abbr,
-                    name: stat?.name,
-                    shortName: stat?.shortName,
-                    groupName: stat?.groupName,
-                    scoringType: stat?.scoringType
-            )
+        List<Stat> stats = []
+        getUrlJson(statsUrl)?.games?.'102016'?.stats?.forEach { id, Map stat ->
+            if (stat?.positionCategory != 'DP') { // Skip D player stats for now
+                logger.debug("Processing stat ${stat?.name}")
+                def groupName = stat?.groupName
+                if (stat?.positionCategory == 'DT') {
+                    groupName = 'Defense'
+                } else if (stat?.positionCategory == 'K') {
+                    groupName = 'Kicking'
+                } else if (stat?.positionCategory == 'O' && !['Passing', 'Rushing', 'Receiving'].contains(stat?.groupName)) {
+                    groupName = 'Misc'
+                }
+
+                stats.add(new Stat(
+                        id: id as Long,
+                        abbr: stat?.abbr,
+                        name: stat?.name,
+                        shortName: stat?.shortName,
+                        groupName: groupName,
+                        scoringType: stat?.scoringType
+                ))
+            }
         }
         statRepository.save(stats)
     }
 
     void loadNflTeams() {
         logger.info('Reloading NFL Teams')
-        nflTeamRepository.deleteAll()
         URL scheduleUrl = buildUrl('nfl/schedule')
         List<NflTeam> teams = getUrlJson(scheduleUrl)?.nflTeams?.collect { id, Map team ->
             logger.debug("Processing team ${team?.abbr}")
@@ -89,7 +110,6 @@ class NflApiLoader {
 
     void loadPositions() {
         logger.info('Reloading positions')
-        positionRepository.deleteAll()
         URL rosterSlotsUrl = buildUrl('game/rosterslots')
         List<Position> positions = getUrlJson(rosterSlotsUrl)?.games?.'102016'?.rosterSlots?.collect { id, Map position ->
             logger.debug("Processing position ${position?.name}")
@@ -101,8 +121,6 @@ class NflApiLoader {
 
     void loadPlayers() {
         logger.info('Reloading players')
-        playerStatRepository.deleteAll()
-        playerRepository.deleteAll()
         // Cache stats, teams, and positions so we don't hit the database so much
         List<Stat> stats = statRepository.findAll().asList()
         List<Position> positions = positionRepository.findAll().asList()

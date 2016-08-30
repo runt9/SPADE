@@ -14,6 +14,7 @@ class Draft {
     @GeneratedValue
     Long id
     String leagueName
+    LeagueType leagueType
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')
@@ -21,7 +22,7 @@ class Draft {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')
-    List<DraftPositionCount> draftPositionCounts = []
+    List<DraftPositionCount> positionCounts = []
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')
