@@ -136,7 +136,7 @@ class NflApiLoader {
                     averageDraftPosition: player?.researchStats?.season?.'2016'?.averageDraftPosition as BigDecimal,
                     projectedRank: player?.ranks?.season?.'2016'?.projectedRank as Integer,
                     draftRank: player?.ranks?.season?.'2016'?.draftRank as Integer,
-                    nflTeam: nflTeams.find { it.id == player?.nflTeamId },
+                    nflTeam: nflTeams.find { it.id == player?.nflTeamId as Long },
                     position: positions.find { it.abbr == player?.position }
             )
 

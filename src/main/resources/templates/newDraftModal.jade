@@ -17,12 +17,8 @@ h4.modal-header Create New SPADE Draft
                             select(ng-options='lt for lt in $ctrl.leagueTypes', ng-model='$ctrl.draft.leagueType', ng-disabled='$ctrl.loading')
                     tr
                         td.draft-label
-                            | Random Draft Order
-                            i.glyphicon.glyphicon-exclamation-sign(uib-tooltip='If unchecked, ensure league teams below are created in proper draft order')
-                        td
-                            input(type='checkbox', ng-model='$ctrl.randomDraftOrder', ng-disabled='$ctrl.loading')
-                    tr
-                        td.draft-label Enter League Teams:
+                            | Enter League Teams:
+                            i.glyphicon.glyphicon-exclamation-sign(uib-tooltip='Ensure league teams below are created in proper draft order')
                         td
                             table
                                 tbody

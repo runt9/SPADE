@@ -69,7 +69,6 @@ class ApiController {
         [
                 draft: draftRepository.findOne(draftId),
                 nflTeams: nflTeamRepository.findAll(),
-                positions: positionRepository.findAll(),
                 stats: statRepository.findAll()
         ]
     }

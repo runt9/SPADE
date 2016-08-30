@@ -6,6 +6,9 @@
 
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
         self.draft = {};
+        self.possiblePositions = [];
+        self.teamPositions = [];
+        self.year = new Date().getFullYear();
 
         self.$onInit = function () {
             self.loading = true;
@@ -13,8 +16,17 @@
             $http.get('/api/draft/' + self.draftId).success(function (data) {
                 self.draft = data.draft;
                 self.nflTeams = data.nflTeams;
-                self.positions = data.positions;
                 self.stats = data.stats;
+
+                angular.forEach(self.draft.positionCounts, function (pc) {
+                    if (pc.count !== null) {
+                        self.possiblePositions.push(pc.position);
+                        for (var i = 0; i < pc.count; i++) {
+                            self.teamPositions.push(pc.position);
+                        }
+                    }
+                });
+
                 self.loading = false;
             });
         };
@@ -24,6 +36,10 @@
         self.selectedLeagueTeam = "";
         self.teamsPlayers = [];
         self.sidebarActive = false;
+
+        self.isPlayerAvailable = function (player) {
+            return player.team === null;
+        };
 
         // Given a team and a position, grab the player in that position on the given team and return it
         self.getTeamPosition = function (team, position) {
