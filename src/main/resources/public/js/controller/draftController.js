@@ -10,18 +10,11 @@
         self.$onInit = function () {
             self.loading = true;
 
-            $http.get('/api/draft/' + self.draftId).success(function (draftData) {
-                self.draft = draftData;
-                return $http.get('/api/player');
-            }).success(function (playersData) {
-                var i;
-                self.playersList = playersData.content;
-                for (i in self.playersList) {
-                    self.playersList[i].available = self.playersList[i].draft_position === 0;
-                    self.playersList[i].tagged = false;
-                }
-                // Initialize the list of which players belong to which league team
-                self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
+            $http.get('/api/draft/' + self.draftId).success(function (data) {
+                self.draft = data.draft;
+                self.nflTeams = data.nflTeams;
+                self.positions = data.positions;
+                self.stats = data.stats;
                 self.loading = false;
             });
         };

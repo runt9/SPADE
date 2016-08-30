@@ -3,6 +3,7 @@ package com.runt9.spade.controller
 import com.runt9.spade.model.draft.Draft
 import com.runt9.spade.model.draft.LeagueType
 import com.runt9.spade.repository.DraftRepository
+import com.runt9.spade.repository.NflTeamRepository
 import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.repository.StatRepository
@@ -31,6 +32,9 @@ class ApiController {
     StatRepository statRepository
 
     @Autowired
+    NflTeamRepository nflTeamRepository
+
+    @Autowired
     NflApiLoader nflApiLoader
 
     @Autowired
@@ -46,7 +50,7 @@ class ApiController {
         [
                 leagueTypes: LeagueType.values(),
                 positions: positionRepository.findAll(),
-                stats: statRepository.findAll(),
+                stats: statRepository.findAll()
         ]
     }
 
@@ -62,7 +66,12 @@ class ApiController {
 
     @RequestMapping(value = '/draft/{draftId}', method = RequestMethod.GET)
     getDraft(@PathVariable Long draftId) {
-        draftRepository.findOne(draftId)
+        [
+                draft: draftRepository.findOne(draftId),
+                nflTeams: nflTeamRepository.findAll(),
+                positions: positionRepository.findAll(),
+                stats: statRepository.findAll()
+        ]
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)
