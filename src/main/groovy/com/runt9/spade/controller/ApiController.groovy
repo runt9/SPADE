@@ -1,5 +1,6 @@
 package com.runt9.spade.controller
 
+import com.runt9.spade.dto.DraftPlayerQueryDTO
 import com.runt9.spade.model.draft.Draft
 import com.runt9.spade.model.draft.LeagueType
 import com.runt9.spade.repository.DraftRepository
@@ -7,9 +8,11 @@ import com.runt9.spade.repository.NflTeamRepository
 import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.repository.StatRepository
+import com.runt9.spade.service.DraftPlayerService
 import com.runt9.spade.service.NflApiLoader
 import com.runt9.spade.service.PlayerStatsService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -33,6 +36,9 @@ class ApiController {
 
     @Autowired
     NflTeamRepository nflTeamRepository
+
+    @Autowired
+    DraftPlayerService draftPlayerService
 
     @Autowired
     NflApiLoader nflApiLoader
@@ -71,6 +77,11 @@ class ApiController {
                 nflTeams: nflTeamRepository.findAll(),
                 stats: statRepository.findAll()
         ]
+    }
+
+    @RequestMapping(value = '/draft/{draftId}/players', method = RequestMethod.GET)
+    getDraftPlayers(@PathVariable Long draftId, Pageable pageable, @RequestBody DraftPlayerQueryDTO queryDTO) {
+        draftPlayerService.getAllForDraftAndQuery(draftId, pageable, queryDTO)
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)
