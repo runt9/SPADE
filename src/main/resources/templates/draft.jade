@@ -7,7 +7,7 @@ html
         link(rel='stylesheet', href='/css/draft.css')
 
     body(ng-app='SpadeApp', ng-controller='DraftController as ctrl')
-        .loadingIndicator.absoluteCenterAll(ng-show='loading')
+        .loadingIndicator.absoluteCenterAll(ng-show='ctrl.loading')
             span.loadingIndicatorHelper
             i.fa.fa-spin.fa-spinner
         .col-xs-12.col-sm-12.col-md-9.col-lg-9.playersColumn
@@ -15,69 +15,49 @@ html
             .tableHolder
                 .filters
                     .searchBox
-                        input.form-control(type='text', ng-model='ctrl.search.player.name', placeholder='Search Name')
+                        input.form-control(type='text', ng-model='ctrl.draftQuery.nameSearch', placeholder='Search Name', ng-model-options='{debounce: 500}')
                     .filterSelect
                         label
                             | Position: 
-                            select(ng-model='ctrl.search.player.position.id')
-                                option(value='') All
+                            select(ng-model='ctrl.draftQuery.positionId')
+                                option(value='{{ null }}') All
                                 option(ng-repeat='pos in ctrl.possiblePositions', value='{{ pos.id }}') {{ pos.abbr }}
                     .filterSelect
                         label
                             | NFL Team: 
-                            select(ng-model='ctrl.search.player.nflTeam.id')
-                                option(value='') All
+                            select(ng-model='ctrl.draftQuery.nflTeamId')
+                                option(value='{{ null }}') All
                                 option(ng-repeat='team in ctrl.nflTeams', value='{{ team.id }}') {{ team.city + ' ' + team.nickName }}
                     .filterSelect
                         label
                             | Availability: 
-                            select(ng-model='ctrl.search.available')
-                                option(value='') All
-                                option(value='true') Only Available
-                                option(value='false') Only Unavailable
+                            select(ng-model='ctrl.draftQuery.available')
+                                option(value='{{ null }}') All
+                                option(value='{{ true }}') Only Available
+                                option(value='{{ false }}') Only Unavailable
                     .filterSelect
                         label
                             | Tagged: 
-                            select(ng-model='ctrl.search.tagged')
-                                option(value='') All
-                                option(value='true') Tagged
-                                option(value='false') Untagged
+                            select(ng-model='ctrl.draftQuery.positionId')
+                                option(value='{{ null }}') All
+                                option(value='{{ true }}') Tagged
+                                option(value='{{ false }}') Untagged
                 table.table.table-hover
                     thead
                         tr
                             th Tag
-                            // Common to all players
-                            th(ng-class="{'sorted': predicate == 'player.name'}")
-                                .sortableHeader.noSelect(ng-click="predicate = 'player.name'; reverse = !reverse")
-                                    | Name
-                                    span(ng-class="{'caret': predicate == 'player.name', 'caret-reversed': reverse}")
-                            th(ng-class="{'sorted': predicate == 'player.position.abbr'}")
-                                .sortableHeader.noSelect(ng-click="predicate = 'player.position.abbr'; reverse = !reverse")
-                                    | Pos
-                                    span(ng-class="{'caret': predicate == 'player.position.abbr', 'caret-reversed': reverse}")
-                            th(ng-class="{'sorted': predicate == 'player.nflTeam.abbr'}")
-                                .sortableHeader.noSelect(ng-click="predicate = 'player.nflTeam.abbr'; reverse = !reverse")
-                                    | NFL Team
-                                    span(ng-class="{'caret': predicate == 'player.nflTeam.abbr', 'caret-reversed': reverse}")
-                            th(ng-class="{'sorted': predicate == 'player.nflTeam.byeWeek'}")
-                                .sortableHeader.noSelect(ng-click="predicate = 'player.nflTeam.byeWeek'; reverse = !reverse")
-                                    | Bye
-                                    span(ng-class="{'caret': predicate == 'player.nflTeam.byeWeek', 'caret-reversed': reverse}")
-                            th(ng-class="{'sorted': predicate == 'player.team.abbr'}")
-                                .sortableHeader.noSelect(ng-click="predicate = 'player.team.abbr'; reverse = !reverse")
-                                    | Bye
-                                    span(ng-class="{'caret': predicate == 'player.team.abbr', 'caret-reversed': reverse}")
+                            th(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
+                                .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = col.sortKey; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
+                                    | {{ col.name }}
+                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === col.sortKey, 'caret-reversed': !ctrl.draftQuery.ascending}")
                     tbody
-                        tr(ng-repeat='player in ctrl.draft.draftPlayers | orderBy:predicate:reverse | filter:ctrl.search', ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': player.tagged}")
+                        tr(ng-repeat='player in ctrl.players', ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': player.tagged}")
                             td.noSelect(ng-click='player.tagged = player.available ? !player.tagged : false', ng-class="{'tagBox': ctrl.isPlayerAvailable(player)}")
                                 input(type='checkbox', ng-checked='player.tagged', ng-disabled='!ctrl.isPlayerAvailable(player)')
                             // Common to all players
-                            td(ng-class="{'sorted': predicate == 'player.name'}")
-                                span(ng-class='{clickable: authorized}', ng-click='authorized && playerClicked(this)') {{ player.player.name }}
-                            td(ng-class="{'sorted': predicate == 'player.position.abbr'}") {{ player.player.position.abbr }}
-                            td(ng-class="{'sorted': predicate == 'player.nflTeam.abbr'}") {{ player.player.nflTeam.abbr }}
-                            td(ng-class="{'sorted': predicate == 'player.nflTeam.byeWeek'}") {{ player.player.nflTeam.byeWeek }}
-                            td(ng-class="{'sorted': predicate == 'player.team.abbr'}") {{ player.team.abbr }}
+                            td(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
+                                | {{ col.getter(player) }}
+
         .col-xs-8.col-sm-5.col-md-3.col-lg-3.teamList.offCanvas(ng-class='{activeSidebar: sidebarActive}')
             .filters(align='center')
                 button.closeSidebar.btn.btn-default.btn-xs(ng-click='sidebarActive = !sidebarActive') X

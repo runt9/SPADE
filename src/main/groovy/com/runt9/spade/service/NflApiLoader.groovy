@@ -111,9 +111,18 @@ class NflApiLoader {
     void loadPositions() {
         logger.info('Reloading positions')
         URL rosterSlotsUrl = buildUrl('game/rosterslots')
+        Map<Long, List<String>> possiblePositionMap = [:]
         List<Position> positions = getUrlJson(rosterSlotsUrl)?.games?.'102016'?.rosterSlots?.collect { id, Map position ->
             logger.debug("Processing position ${position?.name}")
+            possiblePositionMap.put(id as Long, position?.playerPositions as List)
             new Position(id: id as Long, abbr: position?.abbr, name: position?.name)
+        }
+
+        possiblePositionMap.forEach { Long id, List<String> positionAbbrs ->
+            List<Position> possiblePositions = positionAbbrs.collect { abbr ->
+                positions.find { it.abbr == abbr }
+            }
+            positions.find { it.id == id }?.setPossiblePositions(possiblePositions)
         }
 
         positionRepository.save(positions)

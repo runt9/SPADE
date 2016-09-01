@@ -81,7 +81,6 @@
         };
 
         $scope.$watch('$ctrl.draft.leagueType', function () {
-
             self.recalculateScoringDefaults();
         });
     }

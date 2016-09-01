@@ -1,14 +1,52 @@
 'use strict';
 
 (function (module) {
-    function DraftController($http, $uibModal, $interval, draftService) {
+    function DraftController($scope, $http, $uibModal, $interval, draftService) {
         var self = this;
 
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
         self.draft = {};
+        self.players = [];
         self.possiblePositions = [];
         self.teamPositions = [];
         self.year = new Date().getFullYear();
+        self.selectedLeagueTeam = "";
+        self.sidebarActive = false;
+        self.pages = 0;
+
+        // Setup the initial draftQuery
+        self.draftQuery = {
+            pageSize: 50,
+            page: 0,
+            sortProperty: 'player.draftRank',
+            ascending: true,
+            nameSearch: null,
+            positionId: null,
+            nflTeamId: null,
+            available: null,
+            tagged: null,
+            showFreeAgents: false // TODO: Allow people to see free agents
+        };
+
+        self.columns = [
+            {name: 'Name', sortKey: 'player.name', getter: function(player){return player.player.name;}},
+            {name: 'Pos', sortKey: 'player.position.abbr', getter: function(player){return player.player.position.abbr;}},
+            {name: 'NFL Team', sortKey: 'player.nflTeam.abbr', getter: function(player){return player.player.nflTeam && player.player.nflTeam.abbr;}},
+            {name: 'Bye', sortKey: 'player.nflTeam.byeWeek', getter: function(player){return player.player.nflTeam && player.player.nflTeam.byeWeek;}},
+            {name: 'Team', sortKey: 'player.team.abbr', getter: function(player){return player.team && player.team.abbr;}},
+            {name: '2015 Points', sortKey: 'points.2015', getter: function(player){return self.getPlayerPoints(player, 2015);}}
+        ];
+
+        self.getPlayerPoints = function (player, year) {
+            for (var i in player.playerPointTotals) {
+                var pt = player.playerPointTotals[i];
+                if (pt.year == year) {
+                    return pt.value;
+                }
+            }
+
+            return null;
+        };
 
         self.$onInit = function () {
             self.loading = true;
@@ -27,15 +65,23 @@
                     }
                 });
 
-                self.loading = false;
+                self.reloadPlayers();
             });
         };
 
-        self.predicate = "name";
-        self.reverse = false;
-        self.selectedLeagueTeam = "";
-        self.teamsPlayers = [];
-        self.sidebarActive = false;
+        $scope.$watch('ctrl.draftQuery', function () {
+            self.reloadPlayers();
+        }, true);
+
+        self.reloadPlayers = function () {
+            self.loading = true;
+
+            $http.post('/api/draft/' + self.draftId + '/players', self.draftQuery).success(function (data) {
+                self.players = data.content;
+                self.pages = data.totalPages;
+                self.loading = false;
+            });
+        };
 
         self.isPlayerAvailable = function (player) {
             return player.team === null;
@@ -229,6 +275,6 @@
         };
     }
 
-    DraftController.$inject = ['$http', '$uibModal', '$interval', 'draftService'];
+    DraftController.$inject = ['$scope', '$http', '$uibModal', '$interval', 'draftService'];
     module.controller('DraftController', DraftController);
 })(angular.module('SpadeApp'));

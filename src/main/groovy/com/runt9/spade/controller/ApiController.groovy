@@ -12,7 +12,6 @@ import com.runt9.spade.service.DraftPlayerService
 import com.runt9.spade.service.NflApiLoader
 import com.runt9.spade.service.PlayerStatsService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -79,9 +78,9 @@ class ApiController {
         ]
     }
 
-    @RequestMapping(value = '/draft/{draftId}/players', method = RequestMethod.GET)
-    getDraftPlayers(@PathVariable Long draftId, Pageable pageable, @RequestBody DraftPlayerQueryDTO queryDTO) {
-        draftPlayerService.getAllForDraftAndQuery(draftId, pageable, queryDTO)
+    @RequestMapping(value = '/draft/{draftId}/players', method = RequestMethod.POST)
+    getDraftPlayers(@PathVariable Long draftId, @RequestBody DraftPlayerQueryDTO queryDTO) {
+        draftPlayerService.getAllForDraftAndQuery(draftId, queryDTO)
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)

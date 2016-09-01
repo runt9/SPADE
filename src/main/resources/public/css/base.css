@@ -89,15 +89,16 @@ select {
     position: fixed;
     z-index: 9999;
     background-color: rgba(0,0,0,0.7);
+    text-align: center;
 }
 .loadingIndicatorHelper {
     display: inline-block;
-    height: 45%;
+    height: 100%;
     vertical-align: middle;
 }
-.loadingIndicator img {
-    display: block;
-    margin: 0 auto;
+.loadingIndicator i {
+    font-size: 8em;
+    color: #CCCCCC;
 }
 .jumbotron {
     padding-top: 0;

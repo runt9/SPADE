@@ -22,7 +22,7 @@ class PlayerStatsService {
     DraftRepository draftRepository
 
     private static BigDecimal calculatePlayerStatPoints(PlayerStat playerStat, ScoringSetting scoringSetting) {
-        if (scoringSetting == null || scoringSetting.valuePerStat == null) {
+        if (scoringSetting == null || scoringSetting.valuePerStat == null || scoringSetting.valuePerStat == 0.0) {
             return 0.0
         }
 

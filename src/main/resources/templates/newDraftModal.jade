@@ -50,7 +50,7 @@ h4.modal-header Create New SPADE Draft
                             tr(ng-repeat='ss in $ctrl.draft.scoringSettings | filter: {stat: {groupName: category}} | orderBy: "stat.id"')
                                 td.draft-label {{ ss.stat.name }}
                                 td
-                                    input.form-control(type='number', min='1', max='100', ng-model='ss.valuePerStat', ng-disabled='$ctrl.loading')
+                                    input.form-control(type='number', min='-100', max='100', ng-model='ss.valuePerStat', ng-disabled='$ctrl.loading')
                                 td {{ ss.stat.scoringType | removeUnderscores }}
 
 .modal-footer
