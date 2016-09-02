@@ -9,7 +9,6 @@ import org.springframework.beans.support.MutableSortDefinition
 import org.springframework.beans.support.PagedListHolder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -75,13 +74,14 @@ class DraftPlayerService {
         }
 
         PagedListHolder<DraftPlayer> playerPagedList = new PagedListHolder<>(players)
-        playerPagedList.setPageSize(queryDTO.pageSize)
-        playerPagedList.setPage(queryDTO.page)
         if (!alreadySorted && queryDTO.sortProperty != null) {
             playerPagedList.setSort(new MutableSortDefinition(queryDTO.sortProperty, true, queryDTO.ascending))
             playerPagedList.resort()
         }
 
-        new PageImpl<DraftPlayer>(playerPagedList.getPageList(), new PageRequest(queryDTO.page, queryDTO.pageSize), players.size())
+        playerPagedList.setPageSize(queryDTO.pageSize)
+        playerPagedList.setPage(queryDTO.page - 1)
+
+        new PageImpl<DraftPlayer>(playerPagedList.getPageList(), null, players.size())
     }
 }

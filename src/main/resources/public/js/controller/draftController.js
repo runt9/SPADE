@@ -1,7 +1,7 @@
 'use strict';
 
 (function (module) {
-    function DraftController($scope, $http, $uibModal, $interval, draftService) {
+    function DraftController($scope, $http, $uibModal, $interval, $cookies, draftService) {
         var self = this;
 
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
@@ -10,14 +10,18 @@
         self.possiblePositions = [];
         self.teamPositions = [];
         self.year = new Date().getFullYear();
+        self.statsYear = new Date().getFullYear() - 1;
         self.selectedLeagueTeam = "";
         self.sidebarActive = false;
         self.pages = 0;
+        self.totalItems = 0;
+        self.commish = false;
+        self.myTeam = {};
 
         // Setup the initial draftQuery
         self.draftQuery = {
             pageSize: 50,
-            page: 0,
+            page: 1,
             sortProperty: 'player.draftRank',
             ascending: true,
             nameSearch: null,
@@ -28,20 +32,22 @@
             showFreeAgents: false // TODO: Allow people to see free agents
         };
 
-        self.columns = [
-            {name: 'Name', sortKey: 'player.name', getter: function(player){return player.player.name;}},
-            {name: 'Pos', sortKey: 'player.position.abbr', getter: function(player){return player.player.position.abbr;}},
-            {name: 'NFL Team', sortKey: 'player.nflTeam.abbr', getter: function(player){return player.player.nflTeam && player.player.nflTeam.abbr;}},
-            {name: 'Bye', sortKey: 'player.nflTeam.byeWeek', getter: function(player){return player.player.nflTeam && player.player.nflTeam.byeWeek;}},
-            {name: 'Team', sortKey: 'player.team.abbr', getter: function(player){return player.team && player.team.abbr;}},
-            {name: '2015 Points', sortKey: 'points.2015', getter: function(player){return self.getPlayerPoints(player, 2015);}}
-        ];
-
         self.getPlayerPoints = function (player, year) {
             for (var i in player.playerPointTotals) {
                 var pt = player.playerPointTotals[i];
                 if (pt.year == year) {
                     return pt.value;
+                }
+            }
+
+            return null;
+        };
+
+        self.getPlayerStat = function (player, year, statId) {
+            for (var i in player.player.stats) {
+                var stat = player.player.stats[i];
+                if (stat.year == year && stat.stat.id == statId) {
+                    return stat.value;
                 }
             }
 
@@ -58,29 +64,96 @@
 
                 angular.forEach(self.draft.positionCounts, function (pc) {
                     if (pc.count !== null) {
-                        self.possiblePositions.push(pc.position);
+                        if (pc.position.abbr !== 'BN') {
+                            self.possiblePositions.push(pc.position);
+                        }
                         for (var i = 0; i < pc.count; i++) {
                             self.teamPositions.push(pc.position);
                         }
                     }
                 });
 
-                self.reloadPlayers();
+                self.commish = $cookies.get('spade-commish') == self.draftId;
+                self.loadTeam();
             });
         };
 
         $scope.$watch('ctrl.draftQuery', function () {
+            self.refreshColumns();
             self.reloadPlayers();
         }, true);
+
+        $scope.$watch('ctrl.statsYear', function () {
+            self.refreshColumns();
+        });
+
+        self.loadTeam = function () {
+            var teamId = $cookies.get('spade-draft-' + self.draftId);
+            if (teamId) {
+                for (var i in self.draft.fantasyTeams) {
+                    var team = self.draft.fantasyTeams[i];
+                    if (team.id == teamId) {
+                        self.myTeam = team;
+                    }
+                }
+            } else {
+                self.openSelectTeamModal();
+            }
+        };
 
         self.reloadPlayers = function () {
             self.loading = true;
 
             $http.post('/api/draft/' + self.draftId + '/players', self.draftQuery).success(function (data) {
                 self.players = data.content;
-                self.pages = data.totalPages;
+                self.totalItems = data.totalElements;
                 self.loading = false;
             });
+        };
+
+        self.refreshColumns = function () {
+            self.columns = [
+                {name: 'Name', sortKey: 'player.name', getter: function(player){return player.player.name;}},
+                {name: 'Pos', sortKey: 'player.position.abbr', getter: function(player){return player.player.position.abbr;}},
+                {name: 'NFL Team', sortKey: 'player.nflTeam.abbr', getter: function(player){return player.player.nflTeam && player.player.nflTeam.abbr;}},
+                {name: 'Bye', sortKey: 'player.nflTeam.byeWeek', getter: function(player){return player.player.nflTeam && player.player.nflTeam.byeWeek;}},
+                {name: 'Team', sortKey: 'player.team.abbr', getter: function(player){return player.team && player.team.abbr;}},
+                {name: 'ADP', sortKey: 'player.averageDraftPosition', getter: function(player){return player.player.averageDraftPosition;}},
+                {name: 'Proj. Rank', sortKey: 'player.draftRank', getter: function(player){return player.player.draftRank;}},
+                {name: 'Pos. Rank', sortKey: 'player.projectedRank', getter: function(player){return player.player.projectedRank;}},
+                {name: 'Points', sortKey: 'points.' + self.statsYear, getter: function(player, year){return self.getPlayerPoints(player, year);}}
+            ];
+
+            angular.forEach(self.stats, function (s) {
+                if (self.draftQuery.positionId !== null && self.isStatScored(s)) {
+                    if (
+                        (self.draftQuery.positionId == 1 && ['Passing', 'Rushing'].lastIndexOf(s.groupName) > -1) ||
+                        ([2, 3, 5, 6].lastIndexOf(parseInt(self.draftQuery.positionId)) > -1 && ['Rushing', 'Receiving'].lastIndexOf(s.groupName) > -1) ||
+                        (self.draftQuery.positionId == 7 && s.groupName == 'Kicking') ||
+                        (self.draftQuery.positionId == 8 && s.groupName == 'Defense')
+                    ) {
+                        self.columns.push({
+                            statId: s.id,
+                            name: s.shortName,
+                            sortKey: 'stat.' + self.statsYear + '.' + s.id,
+                            getter: function (player, year, col) {
+                                return self.getPlayerStat(player, year, col.statId);
+                            }
+                        });
+                    }
+                }
+            });
+        };
+
+        self.isStatScored = function (stat) {
+            for (var i in self.draft.scoringSettings) {
+                var ss = self.draft.scoringSettings[i];
+                if (ss.valuePerStat !== undefined && ss.valuePerStat != 0 && ss.stat.id == stat.id) {
+                    return true;
+                }
+            }
+
+            return false;
         };
 
         self.isPlayerAvailable = function (player) {
@@ -98,13 +171,34 @@
             return draftService.getTeamPositionPlayerCount(team, position, self.teamsPlayers);
         };
 
-        self.playerClicked = function (clicked) {
-            var player = clicked.player;
-            if (player.available) {
+        self.playerClicked = function (player) {
+            if (!self.commish) return;
+
+            if (self.isPlayerAvailable(player)) {
                 self.openDraftPlayerModal(player)
             } else {
                 self.unassignPlayer(player);
             }
+        };
+
+        self.openSelectTeamModal = function () {
+            var modal = $uibModal.open({
+                templateUrl: '/selectTeamModal',
+                backdrop: 'static',
+                keyboard: false,
+                size: 'sm',
+                controller: 'SelectTeamModalController as $ctrl',
+                resolve: {
+                    teams: function() {
+                        return self.draft.fantasyTeams;
+                    }
+                }
+            });
+
+            modal.result.then(function (data) {
+                self.myTeam = data;
+                $cookies.put('spade-draft-' + self.draftId, data.id);
+            });
         };
 
         // Draft player modal
@@ -275,6 +369,6 @@
         };
     }
 
-    DraftController.$inject = ['$scope', '$http', '$uibModal', '$interval', 'draftService'];
+    DraftController.$inject = ['$scope', '$http', '$uibModal', '$interval', '$cookies', 'draftService'];
     module.controller('DraftController', DraftController);
 })(angular.module('SpadeApp'));

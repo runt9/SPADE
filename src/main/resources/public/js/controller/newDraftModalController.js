@@ -1,7 +1,7 @@
 'use strict';
 
 (function (module) {
-    function NewDraftModalController($scope, $uibModalInstance, $http, $window, scoringDefaultsService) {
+    function NewDraftModalController($scope, $uibModalInstance, $http, $window, $cookies, scoringDefaultsService) {
         var self = this;
 
         self.loading = true;
@@ -68,6 +68,7 @@
             self.loading = true;
 
             $http.post('/api/draft', self.draft).then(function (data) {
+                $cookies.put('spade-commish', data.data.id);
                 $window.location.href = '/draft/' + data.data.id;
             }, function (err) {
                 self.error = true;
@@ -85,6 +86,6 @@
         });
     }
 
-    NewDraftModalController.$inject = ['$scope', '$uibModalInstance', '$http', '$window', 'scoringDefaultsService'];
+    NewDraftModalController.$inject = ['$scope', '$uibModalInstance', '$http', '$window', '$cookies', 'scoringDefaultsService'];
     module.controller('NewDraftModalController', NewDraftModalController);
 })(angular.module('SpadeApp'));

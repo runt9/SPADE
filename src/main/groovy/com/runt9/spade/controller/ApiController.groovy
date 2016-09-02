@@ -74,7 +74,7 @@ class ApiController {
         [
                 draft: draftRepository.findOne(draftId),
                 nflTeams: nflTeamRepository.findAll(),
-                stats: statRepository.findAll()
+                stats: statRepository.findAll().sort { a,b -> return a.id <=> b.id }
         ]
     }
 

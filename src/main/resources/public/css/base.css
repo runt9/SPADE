@@ -24,6 +24,7 @@ select {
     padding-top: 4px;
     padding-bottom: 4px;
     height: 34px;
+    background-color: white;
 }
 .tableHolder {
     width: 95%;
@@ -41,10 +42,6 @@ select {
 }
 .clickable {
     cursor: pointer;
-    color: mediumblue;
-}
-.clickable:hover {
-    color: slateblue;
 }
 .centered {
     text-align: center;

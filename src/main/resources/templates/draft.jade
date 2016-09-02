@@ -4,6 +4,7 @@ html
         include commonHeader
         script(src='/js/service/draftService.js')
         script(src='/js/controller/draftController.js')
+        script(src='/js/controller/selectTeamModalController.js')
         link(rel='stylesheet', href='/css/draft.css')
 
     body(ng-app='SpadeApp', ng-controller='DraftController as ctrl')
@@ -12,36 +13,40 @@ html
             i.fa.fa-spin.fa-spinner
         .col-xs-12.col-sm-12.col-md-9.col-lg-9.playersColumn
             h2.text-center(ng-cloak) Welcome to the {{ ctrl.year }} {{ ctrl.draft.leagueName }} draft!
+            ul.draft-pager(uib-pagination, boundary-links='true', ng-model='ctrl.draftQuery.page', class='pagination-sm', previous-text='<',
+            next-text='>', first-text='<<', last-text='>>', total-items='ctrl.totalItems', items-per-page='ctrl.draftQuery.pageSize')
             .tableHolder
                 .filters
                     .searchBox
                         input.form-control(type='text', ng-model='ctrl.draftQuery.nameSearch', placeholder='Search Name', ng-model-options='{debounce: 500}')
                     .filterSelect
-                        label
-                            | Position: 
+                        label Position: 
                             select(ng-model='ctrl.draftQuery.positionId')
                                 option(value='{{ null }}') All
                                 option(ng-repeat='pos in ctrl.possiblePositions', value='{{ pos.id }}') {{ pos.abbr }}
                     .filterSelect
-                        label
-                            | NFL Team: 
+                        label NFL Team: 
                             select(ng-model='ctrl.draftQuery.nflTeamId')
                                 option(value='{{ null }}') All
                                 option(ng-repeat='team in ctrl.nflTeams', value='{{ team.id }}') {{ team.city + ' ' + team.nickName }}
                     .filterSelect
-                        label
-                            | Availability: 
+                        label Availability: 
                             select(ng-model='ctrl.draftQuery.available')
                                 option(value='{{ null }}') All
                                 option(value='{{ true }}') Only Available
                                 option(value='{{ false }}') Only Unavailable
                     .filterSelect
-                        label
-                            | Tagged: 
+                        label Tagged: 
                             select(ng-model='ctrl.draftQuery.positionId')
                                 option(value='{{ null }}') All
                                 option(value='{{ true }}') Tagged
                                 option(value='{{ false }}') Untagged
+                    .filterSelect
+                        label Stat Year:
+                            select(ng-model='ctrl.statsYear')
+                                // TODO: No hardcode!
+                                option(value='2015', ng-selected='ctrl.statsYear == 2015') 2015 Season
+                                option(value='2016') 2016 Projections
                 table.table.table-hover
                     thead
                         tr
@@ -49,14 +54,15 @@ html
                             th(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
                                 .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = col.sortKey; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
                                     | {{ col.name }}
-                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === col.sortKey, 'caret-reversed': !ctrl.draftQuery.ascending}")
+                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === col.sortKey, 'caret-reversed': ctrl.draftQuery.ascending}")
                     tbody
-                        tr(ng-repeat='player in ctrl.players', ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': player.tagged}")
+                        tr(ng-repeat='player in ctrl.players', ng-click='ctrl.playerClicked(player)',
+                        ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': player.tagged, 'draftable-player': ctrl.commish}",)
                             td.noSelect(ng-click='player.tagged = player.available ? !player.tagged : false', ng-class="{'tagBox': ctrl.isPlayerAvailable(player)}")
                                 input(type='checkbox', ng-checked='player.tagged', ng-disabled='!ctrl.isPlayerAvailable(player)')
-                            // Common to all players
+
                             td(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
-                                | {{ col.getter(player) }}
+                                | {{ col.getter(player, ctrl.statsYear, col) }}
 
         .col-xs-8.col-sm-5.col-md-3.col-lg-3.teamList.offCanvas(ng-class='{activeSidebar: sidebarActive}')
             .filters(align='center')

@@ -42,6 +42,12 @@
     float: right;
     padding-right: 15px;
 }
+tr.draftable-player {
+    cursor: pointer;
+}
+tr.draftable-player:hover {
+    color: #0FBBFF;
+}
 .byeWeek {
     text-align: right;
     float: right;
@@ -73,6 +79,12 @@
     left: 2px;
     top: 2px;
     display: none;
+}
+tr.selected-team {
+    background-color: #98BEDE !important;
+}
+ul.draft-pager {
+    margin-left: 2.5%;
 }
 @media screen and (max-width: 991px) {
     .toggleSidebar {

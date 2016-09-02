@@ -14,7 +14,7 @@ h4.modal-header Create New SPADE Draft
                             | League Type:
                             i.glyphicon.glyphicon-exclamation-sign(uib-tooltip='NOTE: Changing your league type will clear all custom scoring settings!')
                         td
-                            select(ng-options='lt for lt in $ctrl.leagueTypes', ng-model='$ctrl.draft.leagueType', ng-disabled='$ctrl.loading')
+                            select.form-control(ng-options='lt for lt in $ctrl.leagueTypes', ng-model='$ctrl.draft.leagueType', ng-disabled='$ctrl.loading')
                     tr
                         td.draft-label
                             | Enter League Teams:

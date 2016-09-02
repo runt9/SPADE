@@ -35,6 +35,7 @@ dependencies {
     // Webjars
     compile 'org.webjars.npm:bootstrap:3.3.6'
     compile 'org.webjars.npm:angular:1.5.8'
+    compile 'org.webjars.npm:angular-cookies:1.5.8'
     compile 'org.webjars.bower:angular-ui-bootstrap-bower:2.0.2'
     compile 'org.webjars.bower:font-awesome:4.6.3'
 }
