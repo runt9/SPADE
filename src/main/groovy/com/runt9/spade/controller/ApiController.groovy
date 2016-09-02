@@ -78,9 +78,19 @@ class ApiController {
         ]
     }
 
-    @RequestMapping(value = '/draft/{draftId}/players', method = RequestMethod.POST)
+    @RequestMapping(value = '/draft/{draftId}/player', method = RequestMethod.POST)
     getDraftPlayers(@PathVariable Long draftId, @RequestBody DraftPlayerQueryDTO queryDTO) {
         draftPlayerService.getAllForDraftAndQuery(draftId, queryDTO)
+    }
+
+    @RequestMapping(value = '/draft/player/{draftPlayerId}/team/{teamId}', method = RequestMethod.POST)
+    assignPlayerToTeam(@PathVariable Long draftPlayerId, @PathVariable Long teamId) {
+        draftPlayerService.assignPlayerToTeam(draftPlayerId, teamId)
+    }
+
+    @RequestMapping(value = '/draft/player/{draftPlayerId}/unassign', method = RequestMethod.POST)
+    unassignPlayer(@PathVariable Long draftPlayerId) {
+        draftPlayerService.unassignPlayer(draftPlayerId)
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)

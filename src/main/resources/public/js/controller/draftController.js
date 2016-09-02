@@ -104,7 +104,7 @@
         self.reloadPlayers = function () {
             self.loading = true;
 
-            $http.post('/api/draft/' + self.draftId + '/players', self.draftQuery).success(function (data) {
+            $http.post('/api/draft/' + self.draftId + '/player', self.draftQuery).success(function (data) {
                 self.players = data.content;
                 self.totalItems = data.totalElements;
                 self.loading = false;
@@ -335,11 +335,6 @@
                             self.playersList[index].league_team = '';
                             self.playersList[index].available = true;
                             self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
-                            break;
-                        case 'playerAdded':
-                            data.available = true;
-                            data.tagged = false;
-                            self.playersList.push(data);
                             break;
                         default:
                     }

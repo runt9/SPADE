@@ -1,6 +1,7 @@
 package com.runt9.spade.model.draft
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.runt9.spade.model.common.Position
 import com.runt9.spade.model.player.Player
 
 import javax.persistence.CascadeType
@@ -29,6 +30,9 @@ class DraftPlayer {
 
     @ManyToOne(optional = true)
     FantasyTeam team
+
+    @ManyToOne(optional = true)
+    Position teamPosition
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_player_id')

@@ -1,8 +1,12 @@
 package com.runt9.spade.service
 
 import com.runt9.spade.dto.DraftPlayerQueryDTO
+import com.runt9.spade.model.common.Position
 import com.runt9.spade.model.draft.DraftPlayer
+import com.runt9.spade.model.draft.DraftPositionCount
+import com.runt9.spade.model.draft.FantasyTeam
 import com.runt9.spade.repository.DraftPlayerRepository
+import com.runt9.spade.repository.FantasyTeamRepository
 import com.runt9.spade.repository.PositionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.support.MutableSortDefinition
@@ -18,6 +22,12 @@ class DraftPlayerService {
 
     @Autowired
     PositionRepository positionRepository
+
+    @Autowired
+    FantasyTeamRepository fantasyTeamRepository
+
+    @Autowired
+    DraftEventService draftEventService
 
     Page<DraftPlayer> getAllForDraftAndQuery(Long draftId, DraftPlayerQueryDTO queryDTO) {
         List<DraftPlayer> players = draftPlayerRepository.findByDraftId(draftId).findAll { player ->
@@ -83,5 +93,45 @@ class DraftPlayerService {
         playerPagedList.setPage(queryDTO.page - 1)
 
         new PageImpl<DraftPlayer>(playerPagedList.getPageList(), null, players.size())
+    }
+
+    void assignPlayerToTeam(Long draftPlayerId, Long teamId) {
+        DraftPlayer player = draftPlayerRepository.findOne(draftPlayerId)
+        FantasyTeam team = fantasyTeamRepository.findOne(teamId)
+
+
+        List<DraftPlayer> teamPlayers = draftPlayerRepository.findByTeamId(teamId)
+        Integer maxDraftRound = teamPlayers.max { it.draftRound }?.draftRound
+        if (maxDraftRound == null) {
+            player.draftRound = 1
+        } else {
+            player.draftRound = maxDraftRound + 1
+        }
+        player.teamPosition = calculatePlayerTeamPosition(teamPlayers, player)
+        player.team = team
+        draftPlayerRepository.save(player)
+        draftEventService.playerDrafted(player)
+    }
+
+    void unassignPlayer(Long draftPlayerId) {
+        DraftPlayer player = draftPlayerRepository.findOne(draftPlayerId)
+        player.draftRound = null
+        player.teamPosition = null
+        player.team = null
+        draftPlayerRepository.save(player)
+        draftEventService.playerUnassigned(player)
+    }
+
+    private static Position calculatePlayerTeamPosition(List<DraftPlayer> teamPlayers, DraftPlayer player) {
+        List<DraftPositionCount> positions = player.draft.positionCounts.sort { a, b -> a.position.id <=> b.position.id }
+        for (DraftPositionCount pos : positions) {
+            if (pos.position.possiblePositions.contains(player.player.position)) {
+                if (teamPlayers.count { it.teamPosition == pos.position } < pos.count) {
+                    return pos.position
+                }
+            }
+        }
+
+        return null
     }
 }
