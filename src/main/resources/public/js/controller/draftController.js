@@ -61,6 +61,7 @@
                 self.draft = data.draft;
                 self.nflTeams = data.nflTeams;
                 self.stats = data.stats;
+                self.EventsPoller.lastId = data.latestEventId;
 
                 angular.forEach(self.draft.positionCounts, function (pc) {
                     if (pc.count !== null) {
@@ -75,6 +76,7 @@
 
                 self.commish = $cookies.get('spade-commish') == self.draftId;
                 self.loadTeam();
+                self.EventsPoller.startPolling();
             });
         };
 
@@ -203,50 +205,17 @@
 
         // Draft player modal
         self.openDraftPlayerModal = function (player) {
-            // Pull in the scope'd stuff we need below
-            var leagueTeams = self.leagueTeams;
-            self.team = {
-                id: 0
-            };
-
-            // Main modal
             $uibModal.open({
-                templateUrl: 'draft_player_modal.html',
+                templateUrl: '/draftPlayerModal',
                 backdrop: true,
                 size: 'sm',
-                controller: function (self, $modalInstance, leagueTeams, playerId, team) {
-                    self.loading = false;
-                    self.error = false;
-                    self.errorMessage = '';
-                    self.team = team;
-                    self.leagueTeams = leagueTeams;
-                    self.playerId = playerId;
-
-                    self.submit = function () {
-                        self.loading = true;
-                        // Post the team id to the player draft endpoint, close the modal on success
-                        $http.post('/api/player/' + self.playerId + '/draft/', {teamId: self.team.id}).success(function () {
-                            $modalInstance.close(true);
-                        }).error(function (response) {
-                            self.error = true;
-                            self.errorMessage = response;
-                            self.loading = false;
-                        });
-                    };
-
-                    self.cancel = function () {
-                        $modalInstance.dismiss(false);
-                    };
-                },
+                controller: 'DraftPlayerModalController as $ctrl',
                 resolve: {
-                    leagueTeams: function () {
-                        return leagueTeams;
+                    teams: function () {
+                        return self.draft.fantasyTeams;
                     },
-                    playerId: function () {
-                        return player.id;
-                    },
-                    team: function () {
-                        return self.team;
+                    player: function () {
+                        return player;
                     }
                 }
             });
@@ -256,31 +225,10 @@
         self.unassignPlayer = function (player) {
             // Main modal
             $uibModal.open({
-                templateUrl: 'unassign_player_modal.html',
+                templateUrl: '/unassignPlayerModal',
                 backdrop: true,
                 size: 'sm',
-                controller: function (self, $modalInstance, player) {
-                    self.loading = false;
-                    self.error = false;
-                    self.errorMessage = '';
-                    self.player = player;
-
-                    self.submit = function () {
-                        self.loading = true;
-                        // Call the player unassign endpoint and close the modal when done
-                        $http.get('/api/player/' + self.player.id + '/unassign/').success(function () {
-                            $modalInstance.close(true);
-                        }).error(function (response) {
-                            self.error = true;
-                            self.errorMessage = response;
-                            self.loading = false;
-                        });
-                    };
-
-                    self.cancel = function () {
-                        $modalInstance.dismiss(false);
-                    };
-                },
+                controller: 'UnassignPlayerModalController as $ctrl',
                 resolve: {
                     player: function () {
                         return player;
@@ -297,53 +245,34 @@
             doPoll: function () {
                 // Send along our last poll time to the events endpoint to let the server know
                 // how far back to check for new events to give us
-                $http.get('/events/?id=' + self.EventsPoller.lastId).success(function (response) {
+                $http.get('/api/draft/' + self.draftId + '/event/new?id=' + self.EventsPoller.lastId).success(function (response) {
                     self.EventsPoller.handleResponse(response);
                 });
             },
             // Big handler of the response. Knows about all event types and data that can be sent.
-            handleResponse: function (response) {
-                var i, events, event, data, index;
-                if (response.length === 0) {
+            handleResponse: function (events) {
+                if (events.length === 0) {
                     return;
                 }
-                events = response;
-                for (i in events) {
-                    event = events[i];
+
+                angular.forEach(events, function(event) {
                     self.EventsPoller.lastId = event.id;
-                    data = event.data;
-                    switch (event.type) {
-                        case 'playerDrafted':
-                            index = self.findPlayer(data.id);
-                            if (index === -1) {
-                                return;
-                            }
 
-                            self.playersList[index].draft_position = data.draft_position;
-                            self.playersList[index].league_team = data.league_team;
-                            self.playersList[index].available = false;
-                            self.playersList[index].tagged = false;
-                            self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
-                            break;
-                        case 'playerUnassigned':
-                            index = self.findPlayer(data.id);
-                            if (index === -1) {
-                                return;
-                            }
-
-                            self.playersList[index].draft_position = 0;
-                            self.playersList[index].league_team = '';
-                            self.playersList[index].available = true;
-                            self.teamsPlayers = draftService.calculateTeamsPlayers(self.playersList, self.leagueTeams);
-                            break;
-                        default:
+                    var player = self.findPlayer(event.player.id);
+                    if (player === null) {
+                        return;
                     }
-                }
+
+                    // At least for now the event type doesn't matter. Just update the player as they are in the event.
+                    player.draftRound = event.player.draftRound;
+                    player.team = event.player.team;
+                    player.teamPosition = event.player.teamPosition;
+                });
             },
             startPolling: function () {
                 self.EventsPoller.pollInstance = $interval(function () {
                     self.EventsPoller.doPoll();
-                }, 10000);
+                }, 5000);
                 self.EventsPoller.isPolling = true;
             },
             stopPolling: function () {
@@ -354,13 +283,12 @@
         };
 
         self.findPlayer = function (id) {
-            var i;
-            for (i in self.playersList) {
-                if (self.playersList[i].id == id) {
-                    return i;
+            for (var i in self.players) {
+                if (self.players[i].id == id) {
+                    return self.players[i];
                 }
             }
-            return -1;
+            return null;
         };
     }
 

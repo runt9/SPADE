@@ -12,10 +12,18 @@ class DraftEventService {
     DraftEventRepository draftEventRepository
 
     void playerDrafted(DraftPlayer player) {
-        draftEventRepository.save(new DraftEvent(type: DraftEvent.EventType.PLAYER_DRAFTED, player: player))
+        draftEventRepository.save(new DraftEvent(type: DraftEvent.EventType.PLAYER_DRAFTED, player: player, draft: player.draft))
     }
 
     void playerUnassigned(DraftPlayer player) {
-        draftEventRepository.save(new DraftEvent(type: DraftEvent.EventType.PLAYER_UNASSIGNED, player: player))
+        draftEventRepository.save(new DraftEvent(type: DraftEvent.EventType.PLAYER_UNASSIGNED, player: player, draft: player.draft))
+    }
+
+    List<DraftEvent> findNewEvents(Long draftId, Long fromId) {
+        draftEventRepository.findByDraftIdAndIdGreaterThan(draftId, fromId)
+    }
+
+    Long getLastEventId(Long draftId) {
+        draftEventRepository.findFirstByDraftIdOrderByIdDesc(draftId)?.id
     }
 }

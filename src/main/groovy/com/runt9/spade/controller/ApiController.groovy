@@ -8,6 +8,7 @@ import com.runt9.spade.repository.NflTeamRepository
 import com.runt9.spade.repository.PlayerRepository
 import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.repository.StatRepository
+import com.runt9.spade.service.DraftEventService
 import com.runt9.spade.service.DraftPlayerService
 import com.runt9.spade.service.NflApiLoader
 import com.runt9.spade.service.PlayerStatsService
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RequestMapping('/api')
@@ -38,6 +40,9 @@ class ApiController {
 
     @Autowired
     DraftPlayerService draftPlayerService
+
+    @Autowired
+    DraftEventService draftEventService
 
     @Autowired
     NflApiLoader nflApiLoader
@@ -74,7 +79,8 @@ class ApiController {
         [
                 draft: draftRepository.findOne(draftId),
                 nflTeams: nflTeamRepository.findAll(),
-                stats: statRepository.findAll().sort { a,b -> return a.id <=> b.id }
+                stats: statRepository.findAll().sort { a,b -> return a.id <=> b.id },
+                latestEventId: draftEventService.getLastEventId(draftId)
         ]
     }
 
@@ -91,6 +97,11 @@ class ApiController {
     @RequestMapping(value = '/draft/player/{draftPlayerId}/unassign', method = RequestMethod.POST)
     unassignPlayer(@PathVariable Long draftPlayerId) {
         draftPlayerService.unassignPlayer(draftPlayerId)
+    }
+
+    @RequestMapping(value = '/draft/{draftId}/event/new', method = RequestMethod.GET)
+    getNewEvents(@PathVariable Long draftId, @RequestParam Long id) {
+        draftEventService.findNewEvents(draftId, id)
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)

@@ -13,5 +13,7 @@ class WebConfig extends WebMvcConfigurerAdapter {
         registry.addViewController('/draft/{draftId}/draftBoard').setViewName('draftBoard')
         registry.addViewController('/newDraftModal').setViewName('newDraftModal')
         registry.addViewController('/selectTeamModal').setViewName('selectTeamModal')
+        registry.addViewController('/draftPlayerModal').setViewName('draftPlayerModal')
+        registry.addViewController('/unassignPlayerModal').setViewName('unassignPlayerModal')
     }
 }

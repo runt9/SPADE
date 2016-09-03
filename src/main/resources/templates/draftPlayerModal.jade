@@ -1,15 +1,10 @@
 .modal-header
     | Draft Player
 .modal-body
-    div(ng-show='!loading')
-        label
-            | Select Team: 
-            select(ng-model='team.id')
-                option(ng-repeat='(short,long) in leagueTeams', value='{{short}}') {{long}}
-        #loginModalError.text-danger.centered(ng-show='error')
-            | {{errorMessage}}
-    div(ng-show='loading')
-        | Loading...
+    .alert.alert-danger(ng-if='$ctrl.error') An unknown error occurred while drafting player. Please try again.
+    div
+        label Select Team: 
+            select(ng-model='$ctrl.selectedTeam', ng-options='team as team.name for team in $ctrl.teams track by id', ng-disabled='$ctrl.loading')
 .modal-footer
-    button.btn.btn-warning(ng-disabled='loading', ng-click='cancel()') Cancel
-    button.btn.btn-primary(ng-disabled='loading', ng-click='submit()') Submit
+    button.btn.btn-warning(ng-disabled='$ctrl.loading', ng-click='$ctrl.cancel()') Cancel
+    button.btn.btn-primary(ng-disabled='$ctrl.loading || $ctrl.selectedTeam === null', ng-click='$ctrl.submit()') Submit
