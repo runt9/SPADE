@@ -7,6 +7,7 @@
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
         self.draft = {};
         self.players = [];
+        self.taggedPlayers = [];
         self.possiblePositions = [];
         self.teamPositions = [];
         self.year = new Date().getFullYear();
@@ -62,7 +63,14 @@
                 self.draft = data.draft;
                 self.nflTeams = data.nflTeams;
                 self.stats = data.stats;
-                self.EventsPoller.lastId = data.latestEventId;
+
+                if (data.latestEventId) {
+                    self.EventsPoller.lastId = data.latestEventId;
+                }
+
+                if (data.taggedPlayers) {
+                    self.taggedPlayers = data.taggedPlayers;
+                }
 
                 angular.forEach(self.draft.positionCounts, function (pc) {
                     if (pc.count !== null) {
@@ -101,6 +109,7 @@
                     var team = self.draft.fantasyTeams[i];
                     if (team.id == teamId) {
                         self.myTeam = team;
+                        self.selectedLeagueTeam = team;
                     }
                 }
             } else {
@@ -115,16 +124,46 @@
                 self.players = data.content;
                 self.totalItems = data.totalElements;
                 self.loading = false;
+            }).error(function (err) {
+                // TODO: error handling
+                console.error(err);
             });
+        };
+
+        self.toggleTagPlayer = function (player) {
+            if (!self.isPlayerAvailable(player)) {
+                return;
+            }
+
+            var path = self.isPlayerTagged(player) ? '/untag' : '/tag';
+            self.loading = true;
+
+            $http.post('/api/draft/' + self.draftId + '/player/' + player.id + path).success(function (data) {
+                self.taggedPlayers = data;
+                self.loading = false;
+                self.reloadPlayers();
+            }).error(function (err) {
+                // TODO: Handle errors
+                console.log(err);
+            });
+        };
+
+        self.isPlayerTagged = function (player) {
+            for (var i in self.taggedPlayers) {
+                if (self.taggedPlayers[i] == player.id) {
+                    return true;
+                }
+            }
+
+            return false;
         };
 
         self.refreshColumns = function () {
             self.columns = [
-                {name: 'Name', sortKey: 'player.name', getter: function(player){return player.player.name;}},
                 {name: 'Pos', sortKey: 'player.position.abbr', getter: function(player){return player.player.position.abbr;}},
                 {name: 'NFL Team', sortKey: 'player.nflTeam.abbr', getter: function(player){return player.player.nflTeam && player.player.nflTeam.abbr;}},
                 {name: 'Bye', sortKey: 'player.nflTeam.byeWeek', getter: function(player){return player.player.nflTeam && player.player.nflTeam.byeWeek;}},
-                {name: 'Team', sortKey: 'player.team.abbr', getter: function(player){return player.team && player.team.abbr;}},
+                {name: 'Team', sortKey: 'team.abbr', getter: function(player){return player.team && player.team.abbr;}},
                 {name: 'ADP', sortKey: 'player.averageDraftPosition', getter: function(player){return player.player.averageDraftPosition;}},
                 {name: 'Proj. Rank', sortKey: 'player.draftRank', getter: function(player){return player.player.draftRank;}},
                 {name: 'Pos. Rank', sortKey: 'player.projectedRank', getter: function(player){return player.player.projectedRank;}},
@@ -168,39 +207,38 @@
         };
 
         self.refreshSelectedTeamPlayers = function () {
-            var teamPlayers = [];
-            self.selectedLeagueTeamPlayers = [];
-
-            for (var i in self.players) {
-                var p = self.players[i];
-                if (p.team !== null && p.team.id == self.selectedLeagueTeam.id) {
-                    teamPlayers.push(p);
-                }
+            if (self.selectedLeagueTeam === null) {
+                return;
             }
 
-            teamPlayers.sort(function (a, b) {
-                return a.draftRound - b.draftRound;
-            });
+            self.selectedLeagueTeamPlayers = [];
+            self.loading = true;
 
-            angular.forEach(self.teamPositions, function (pos) {
-                var tpObj = {position: pos, player: null};
-                for (var j in teamPlayers) {
-                    var p = teamPlayers[j];
+            $http.get('/api/team/' + self.selectedLeagueTeam.id + '/player').success(function (teamPlayers) {
+                teamPlayers.sort(function (a, b) {
+                    return a.draftRound - b.draftRound;
+                });
 
-                    if (p.teamPosition.id == pos.id) {
-                        tpObj.player = p;
-                        teamPlayers.splice(teamPlayers.indexOf(p), 1);
-                        break;
+                angular.forEach(self.teamPositions, function (pos) {
+                    var tpObj = {position: pos, player: null};
+                    for (var j in teamPlayers) {
+                        var p = teamPlayers[j];
+
+                        if (p.teamPosition.id == pos.id) {
+                            tpObj.player = p;
+                            teamPlayers.splice(teamPlayers.indexOf(p), 1);
+                            break;
+                        }
                     }
-                }
 
-                self.selectedLeagueTeamPlayers.push(tpObj);
+                    self.selectedLeagueTeamPlayers.push(tpObj);
+                });
+
+                self.loading = false;
+            }).error(function (err) {
+                // TODO: Error handling
+                console.log(err);
             });
-        };
-
-        // Wrapper for service layer handler
-        self.getTeamPositionPlayerCount = function (team, position) {
-            return draftService.getTeamPositionPlayerCount(team, position, self.teamsPlayers);
         };
 
         self.playerClicked = function (player) {
@@ -229,6 +267,7 @@
 
             modal.result.then(function (data) {
                 self.myTeam = data;
+                self.selectedLeagueTeam = data;
                 $cookies.put('spade-draft-' + self.draftId, data.id);
             });
         };
@@ -297,6 +336,7 @@
                     player.draftRound = event.player.draftRound;
                     player.team = event.player.team;
                     player.teamPosition = event.player.teamPosition;
+                    self.reloadPlayers();
                     self.refreshSelectedTeamPlayers();
                 });
             },

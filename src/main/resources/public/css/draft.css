@@ -23,9 +23,6 @@
 .teamFilterSelect {
     margin: auto;
 }
-.tagBox {
-    cursor: pointer;
-}
 .teamPlayer {
     padding-top: 8px;
     padding-bottom: 8px;
@@ -42,11 +39,17 @@
     float: right;
     padding-right: 15px;
 }
-tr.draftable-player {
+td.draftable-player {
     cursor: pointer;
 }
-tr.draftable-player:hover {
+td.draftable-player:hover {
     color: #0FBBFF;
+}
+i.injured {
+    color: red;
+    font-size: 0.8em;
+    vertical-align: top;
+    margin-left: 3px;
 }
 .byeWeek {
     text-align: right;

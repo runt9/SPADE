@@ -39,7 +39,7 @@ html
                                 option(value='{{ false }}') Only Unavailable
                     .filterSelect
                         label Tagged: 
-                            select(ng-model='ctrl.draftQuery.positionId')
+                            select(ng-model='ctrl.draftQuery.tagged')
                                 option(value='{{ null }}') All
                                 option(value='{{ true }}') Tagged
                                 option(value='{{ false }}') Untagged
@@ -53,16 +53,24 @@ html
                     thead
                         tr
                             th Tag
+                            // We do special things with player name, so separate it from the rest of the columns
+                            th(ng-class="{'sorted': ctrl.draftQuery.sortProperty === 'player.name'}")
+                                .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = 'player.name'; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
+                                    | Name
+                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === 'player.name', 'caret-reversed': ctrl.draftQuery.ascending}")
+
                             th(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
                                 .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = col.sortKey; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
                                     | {{ col.name }}
                                     span(ng-class="{'caret': ctrl.draftQuery.sortProperty === col.sortKey, 'caret-reversed': ctrl.draftQuery.ascending}")
                     tbody
-                        tr(ng-repeat='player in ctrl.players', ng-click='ctrl.playerClicked(player)',
-                        ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': player.tagged, 'draftable-player': ctrl.commish}",)
-                            td.noSelect(ng-click='player.tagged = player.available ? !player.tagged : false', ng-class="{'tagBox': ctrl.isPlayerAvailable(player)}")
-                                input(type='checkbox', ng-checked='player.tagged', ng-disabled='!ctrl.isPlayerAvailable(player)')
+                        tr(ng-repeat='player in ctrl.players', ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': ctrl.isPlayerTagged(player), 'bg-success': player.team == ctrl.myTeam}")
+                            td.noSelect(ng-click='ctrl.toggleTagPlayer(player)', ng-class="{'clickable': ctrl.isPlayerAvailable(player)}")
+                                input(type='checkbox', ng-checked='ctrl.isPlayerTagged(player)', ng-disabled='!ctrl.isPlayerAvailable(player)')
 
+                            td(ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey, 'draftable-player': ctrl.commish}", ng-click='ctrl.playerClicked(player)')
+                                | {{ player.player.name }}
+                                i.glyphicon.glyphicon-plus.injured(ng-if='player.player.injuryStatus', uib-tooltip='{{ player.player.injuryStatus }}')
                             td(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
                                 | {{ col.getter(player, ctrl.statsYear, col) }}
 
@@ -76,7 +84,3 @@ html
                 span.playerPosition {{ tp.position.abbr }}
                 span.byeWeek {{ tp.player.player.nflTeam.byeWeek }}
                 span.playerName {{ tp.player.player.name }}
-            .teamListCounts.fixedFooter
-                b TOTALS:
-                span.playerCount(ng-repeat='pos in ctrl.possiblePositions')
-                    | {{ pos.abbr }}: {{ getTeamPositionPlayerCount(selectedLeagueTeam, position) }}

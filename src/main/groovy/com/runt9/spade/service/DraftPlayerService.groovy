@@ -29,14 +29,14 @@ class DraftPlayerService {
     @Autowired
     DraftEventService draftEventService
 
-    Page<DraftPlayer> getAllForDraftAndQuery(Long draftId, DraftPlayerQueryDTO queryDTO) {
+    Page<DraftPlayer> getAllForDraftAndQuery(Long draftId, DraftPlayerQueryDTO queryDTO, List<Long> taggedPlayers) {
         List<DraftPlayer> players = draftPlayerRepository.findByDraftId(draftId).findAll { player ->
             if (queryDTO.showFreeAgents != null && !queryDTO.showFreeAgents && player.player.nflTeam == null) return false
             if (queryDTO.nameSearch != null && !player.player.name.toLowerCase().contains(queryDTO.nameSearch.toLowerCase())) return false
             if (queryDTO.positionId != null && !positionRepository.findOne(queryDTO.positionId)?.possiblePositions?.collect { it.id }?.contains(player.player.position.id)) return false
             if (queryDTO.nflTeamId != null && player.player.nflTeam?.id != queryDTO.nflTeamId) return false
             if (queryDTO.available != null && (player.team == null) != queryDTO.available) return false
-            // TODO: Tagged: if (queryDTO.tagged != null && ) return false
+            if (queryDTO.tagged != null && taggedPlayers.contains(player.id) != queryDTO.tagged) return false
 
             return true
         }
@@ -68,6 +68,23 @@ class DraftPlayerService {
                 players = players.sort { a, b ->
                     BigDecimal v1 = a.player.stats.find { it.year == statsYear && it.stat?.id == statId }?.value
                     BigDecimal v2 = b.player.stats.find { it.year == statsYear && it.stat?.id == statId }?.value
+
+                    Integer result
+                    if (v1 != null) {
+                        result = (v2 != null ? v1 <=> v2 : 1);
+                    } else {
+                        result = (v2 != null ? -1 : 0);
+                    }
+
+                    return queryDTO.ascending ? result : -result
+                }
+
+                alreadySorted = true
+            } else if (queryDTO.sortProperty == 'team.abbr') {
+                // This one is just so we don't get a ton of null errors in the logs. It sorts fine usually otherwise.
+                players = players.sort { a, b ->
+                    String v1 = a.team?.abbr
+                    String v2 = b.team?.abbr
 
                     Integer result
                     if (v1 != null) {

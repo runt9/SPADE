@@ -10,8 +10,10 @@ import com.runt9.spade.repository.PositionRepository
 import com.runt9.spade.repository.StatRepository
 import com.runt9.spade.service.DraftEventService
 import com.runt9.spade.service.DraftPlayerService
+import com.runt9.spade.service.FantasyTeamService
 import com.runt9.spade.service.NflApiLoader
 import com.runt9.spade.service.PlayerStatsService
+import com.runt9.spade.service.SessionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+import javax.servlet.http.HttpServletRequest
+
+// TODO: Break this guy up into smaller controllers
 @RequestMapping('/api')
 @RestController
 class ApiController {
@@ -43,6 +48,9 @@ class ApiController {
 
     @Autowired
     DraftEventService draftEventService
+
+    @Autowired
+    FantasyTeamService fantasyTeamService
 
     @Autowired
     NflApiLoader nflApiLoader
@@ -75,18 +83,29 @@ class ApiController {
     }
 
     @RequestMapping(value = '/draft/{draftId}', method = RequestMethod.GET)
-    getDraft(@PathVariable Long draftId) {
+    getDraft(@PathVariable Long draftId, HttpServletRequest request) {
         [
                 draft: draftRepository.findOne(draftId),
                 nflTeams: nflTeamRepository.findAll(),
                 stats: statRepository.findAll().sort { a,b -> return a.id <=> b.id },
-                latestEventId: draftEventService.getLastEventId(draftId)
+                latestEventId: draftEventService.getLastEventId(draftId),
+                taggedPlayers: SessionService.getTaggedPlayers(draftId, request)
         ]
     }
 
     @RequestMapping(value = '/draft/{draftId}/player', method = RequestMethod.POST)
-    getDraftPlayers(@PathVariable Long draftId, @RequestBody DraftPlayerQueryDTO queryDTO) {
-        draftPlayerService.getAllForDraftAndQuery(draftId, queryDTO)
+    getDraftPlayers(@PathVariable Long draftId, @RequestBody DraftPlayerQueryDTO queryDTO, HttpServletRequest request) {
+        draftPlayerService.getAllForDraftAndQuery(draftId, queryDTO, SessionService.getTaggedPlayers(draftId, request))
+    }
+
+    @RequestMapping(value = '/draft/{draftId}/player/{draftPlayerId}/tag', method = RequestMethod.POST)
+    tagPlayer(@PathVariable Long draftId, @PathVariable Long draftPlayerId, HttpServletRequest request) {
+        SessionService.tagPlayer(draftId, draftPlayerId, request)
+    }
+
+    @RequestMapping(value = '/draft/{draftId}/player/{draftPlayerId}/untag', method = RequestMethod.POST)
+    untagPlayer(@PathVariable Long draftId, @PathVariable Long draftPlayerId, HttpServletRequest request) {
+        SessionService.untagPlayer(draftId, draftPlayerId, request)
     }
 
     @RequestMapping(value = '/draft/player/{draftPlayerId}/team/{teamId}', method = RequestMethod.POST)
@@ -102,6 +121,11 @@ class ApiController {
     @RequestMapping(value = '/draft/{draftId}/event/new', method = RequestMethod.GET)
     getNewEvents(@PathVariable Long draftId, @RequestParam Long id) {
         draftEventService.findNewEvents(draftId, id)
+    }
+
+    @RequestMapping(value = '/team/{teamId}/player', method = RequestMethod.GET)
+    getTeamPlayers(@PathVariable Long teamId) {
+        fantasyTeamService.getTeamPlayers(teamId)
     }
 
     @RequestMapping(value = '/refreshAll', method = RequestMethod.GET)
