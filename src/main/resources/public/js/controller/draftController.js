@@ -11,7 +11,8 @@
         self.teamPositions = [];
         self.year = new Date().getFullYear();
         self.statsYear = new Date().getFullYear() - 1;
-        self.selectedLeagueTeam = "";
+        self.selectedLeagueTeam = null;
+        self.selectedLeagueTeamPlayers = [];
         self.sidebarActive = false;
         self.pages = 0;
         self.totalItems = 0;
@@ -89,6 +90,10 @@
             self.refreshColumns();
         });
 
+        $scope.$watch('ctrl.selectedLeagueTeam', function () {
+            self.refreshSelectedTeamPlayers();
+        });
+
         self.loadTeam = function () {
             var teamId = $cookies.get('spade-draft-' + self.draftId);
             if (teamId) {
@@ -162,10 +167,35 @@
             return player.team === null;
         };
 
-        // Given a team and a position, grab the player in that position on the given team and return it
-        self.getTeamPosition = function (team, position) {
-            var teamsPlayers = self.teamsPlayers;
-            return (teamsPlayers[team] !== undefined && teamsPlayers[team][position] !== undefined) ? teamsPlayers[team][position] : undefined;
+        self.refreshSelectedTeamPlayers = function () {
+            var teamPlayers = [];
+            self.selectedLeagueTeamPlayers = [];
+
+            for (var i in self.players) {
+                var p = self.players[i];
+                if (p.team !== null && p.team.id == self.selectedLeagueTeam.id) {
+                    teamPlayers.push(p);
+                }
+            }
+
+            teamPlayers.sort(function (a, b) {
+                return a.draftRound - b.draftRound;
+            });
+
+            angular.forEach(self.teamPositions, function (pos) {
+                var tpObj = {position: pos, player: null};
+                for (var j in teamPlayers) {
+                    var p = teamPlayers[j];
+
+                    if (p.teamPosition.id == pos.id) {
+                        tpObj.player = p;
+                        teamPlayers.splice(teamPlayers.indexOf(p), 1);
+                        break;
+                    }
+                }
+
+                self.selectedLeagueTeamPlayers.push(tpObj);
+            });
         };
 
         // Wrapper for service layer handler
@@ -267,6 +297,7 @@
                     player.draftRound = event.player.draftRound;
                     player.team = event.player.team;
                     player.teamPosition = event.player.teamPosition;
+                    self.refreshSelectedTeamPlayers();
                 });
             },
             startPolling: function () {

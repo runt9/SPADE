@@ -5,7 +5,7 @@
         var self = this;
         self.teams = teams;
         self.player = player;
-        self.selectedTeam = teams[0];
+        self.selectedTeam = null;
         self.loading = false;
         self.error = false;
 

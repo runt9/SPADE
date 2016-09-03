@@ -70,14 +70,13 @@ html
             .filters(align='center')
                 button.closeSidebar.btn.btn-default.btn-xs(ng-click='sidebarActive = !sidebarActive') X
                 .teamFilterSelect
-                    label
-                        | Select Team: 
+                    label Select Team: 
                         select(ng-model='ctrl.selectedLeagueTeam', ng-options='team as team.name for team in ctrl.draft.fantasyTeams track by team.id')
-            .teamPlayer(ng-repeat='pos in ctrl.teamPositions track by $index')
-                span.playerPosition {{ pos.abbr }}
-                span.byeWeek {{ getTeamPosition(selectedLeagueTeam, position).bye_week }}
-                span.playerName {{ getTeamPosition(selectedLeagueTeam, position).name }}
+            .teamPlayer(ng-repeat='tp in ctrl.selectedLeagueTeamPlayers')
+                span.playerPosition {{ tp.position.abbr }}
+                span.byeWeek {{ tp.player.player.nflTeam.byeWeek }}
+                span.playerName {{ tp.player.player.name }}
             .teamListCounts.fixedFooter
-                b TOTALS:&nbsp
+                b TOTALS:
                 span.playerCount(ng-repeat='pos in ctrl.possiblePositions')
-                    | {{ pos.abbr }}: {{getTeamPositionPlayerCount(selectedLeagueTeam, position) }}
+                    | {{ pos.abbr }}: {{ getTeamPositionPlayerCount(selectedLeagueTeam, position) }}
