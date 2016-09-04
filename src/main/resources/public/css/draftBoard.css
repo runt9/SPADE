@@ -72,3 +72,6 @@
 .table>tbody>tr>td {
     vertical-align: middle;
 }
+.round-column {
+    width: 50px;
+}

@@ -11,6 +11,7 @@
         self.scoringSettingCategories = [];
         self.draft = {
             leagueType: null,
+            minutesToPick: 5,
             fantasyTeams: [{abbr: '', name: '', draftOrder: 0}],
             positionCounts: [],
             scoringSettings: []

@@ -18,6 +18,7 @@ class Draft {
     Long id
     String leagueName
     LeagueType leagueType
+    Integer minutesToPick
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = 'draft_id')

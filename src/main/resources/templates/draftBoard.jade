@@ -26,16 +26,14 @@ html
                 table.table.table-bordered.draftBoardTable
                     thead
                         tr
-                            th.centered Rnd.
+                            th.centered.round-column Rnd.
                             th.centered(ng-repeat='team in ctrl.draft.fantasyTeams | orderBy: "draftOrder"') {{ team.name }}
                     tbody
                         tr(ng-repeat='round in ctrl.rounds track by $index', ng-init='round = $index')
                             td.boardPlayerCell.centered
                                 .boardPlayerCell {{ round + 1 }}
                             td.boardPlayerCell.centered(ng-repeat='team in ctrl.draft.fantasyTeams | orderBy: "draftOrder"',
-                                                        ng-init='player = ctrl.getDraftedPlayer(team, round)',
-                                                        ng-class='ctrl.getCssClassForPlayer(player)')
-
-                                div(ng-if='player !== null')
-                                    div {{ player.player.name }}
-                                    div {{ player.player.position.abbr}} ({{ player.player.nflTeam.abbr }})
+                                                        ng-class='ctrl.getCssClassForPlayer(ctrl.getDraftedPlayer(team, round))')
+                                div(ng-if='ctrl.getDraftedPlayer(team, round) !== null')
+                                    div {{ ctrl.getDraftedPlayer(team, round).player.name }}
+                                    div {{ ctrl.getDraftedPlayer(team, round).player.position.abbr}} ({{ ctrl.getDraftedPlayer(team, round).player.nflTeam.abbr }})

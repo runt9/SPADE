@@ -10,14 +10,17 @@ h4.modal-header Create New SPADE Draft
                         td
                             input.form-control(type='text', ng-model='$ctrl.draft.leagueName', ng-disabled='$ctrl.loading')
                     tr
-                        td.draft-label
-                            | League Type:
+                        td.draft-label League Type:
                             i.glyphicon.glyphicon-exclamation-sign(uib-tooltip='NOTE: Changing your league type will clear all custom scoring settings!')
                         td
                             select.form-control(ng-options='lt for lt in $ctrl.leagueTypes', ng-model='$ctrl.draft.leagueType', ng-disabled='$ctrl.loading')
                     tr
-                        td.draft-label
-                            | Enter League Teams:
+                        td.draft-label Time to Pick:
+                        td
+                            input.form-control.minutes-picker(type='number', min='1', max='20', ng-model='$ctrl.draft.minutesToPick')
+                            .minutes-label Minutes
+                    tr
+                        td.draft-label Enter League Teams:
                             i.glyphicon.glyphicon-exclamation-sign(uib-tooltip='Ensure league teams below are created in proper draft order')
                         td
                             table

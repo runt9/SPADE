@@ -7,6 +7,7 @@
         self.draftId = location.pathname.split('/')[2];
         self.draft = null;
         self.teamsPlayers = {};
+        self.roundsPlayers = {};
 
         self.$onInit = function () {
             self.loading = true;
@@ -26,6 +27,8 @@
                 self.rounds = new Array(roundCount);
                 self.eventsPoller = new EventsPoller(self.draftId, data.latestEventId, self.handleEventsPollerResponse);
                 self.eventsPoller.startPolling();
+                self.timer.startingTime = self.draft.minutesToPick * 60;
+                self.timer.resetTime();
                 $interval(self.timer.updateTimer, 1000);
                 self.loading = false;
             });
@@ -34,6 +37,7 @@
         // Timer object to maintain configuration and updating of the timer
         self.timer = {
             time: 300,
+            startingTime: 300,
             playing: false,
 
             updateTimer: function () {
@@ -51,6 +55,9 @@
                 }
 
                 return minutes + ":" + seconds;
+            },
+            resetTime: function () {
+                self.timer.time = self.timer.startingTime;
             },
             toggle: function () {
                 self.timer.playing = !self.timer.playing;
@@ -204,21 +211,24 @@
             angular.forEach(events, function(event) {
                 self.eventsPoller.lastId = event.id;
 
-                var player = self.findPlayer(event.player.id);
-                if (player === null) {
-                    return;
+                var player = event.player;
+                if (event.type == 'PLAYER_DRAFTED') {
+                    var teamPlayerList = self.teamsPlayers[player.team.id];
+                    teamPlayerList.push(player);
+                } else if (event.type == 'PLAYER_UNASSIGNED') {
+                    for (var i in self.teamsPlayers) {
+                        var players = self.teamsPlayers[i];
+                        for (var j in players) {
+                            var p = players[j];
+                            if (p.id == player.id) {
+                                self.teamsPlayers[i].splice(j, 1);
+                            }
+                        }
+                    }
                 }
-            });
-        };
 
-        self.findPlayer = function (id) {
-            var i;
-            for (i in self.playersList) {
-                if (self.playersList[i].id == id) {
-                    return i;
-                }
-            }
-            return -1;
+                self.timer.resetTime();
+            });
         };
     }
 
