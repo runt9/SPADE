@@ -93,6 +93,15 @@ class ApiController {
         ]
     }
 
+    @RequestMapping(value = '/draft/{draftId}/draftBoard', method = RequestMethod.GET)
+    getDraftBoard(@PathVariable Long draftId) {
+        [
+                draft: draftRepository.findOne(draftId),
+                latestEventId: draftEventService.getLastEventId(draftId),
+                teamsPlayers: fantasyTeamService.getAllTeamsPlayers(draftId)
+        ]
+    }
+
     @RequestMapping(value = '/draft/{draftId}/player', method = RequestMethod.POST)
     getDraftPlayers(@PathVariable Long draftId, @RequestBody DraftPlayerQueryDTO queryDTO, HttpServletRequest request) {
         draftPlayerService.getAllForDraftAndQuery(draftId, queryDTO, SessionService.getTaggedPlayers(draftId, request))

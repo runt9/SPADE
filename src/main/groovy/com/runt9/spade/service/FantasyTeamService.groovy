@@ -13,4 +13,12 @@ class FantasyTeamService {
     List<DraftPlayer> getTeamPlayers(Long teamId) {
         fantasyTeamRepository.findOne(teamId)?.players
     }
+
+    Map<Long, List<DraftPlayer>> getAllTeamsPlayers(Long draftId) {
+        Map<Long, List<DraftPlayer>> retval = [:]
+        fantasyTeamRepository.findByDraftId(draftId).forEach {
+            retval.put(it.id, it.players)
+        }
+        return retval
+    }
 }

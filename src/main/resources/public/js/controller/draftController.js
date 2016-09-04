@@ -59,12 +59,8 @@
 
                 self.commish = $cookies.get('spade-commish') == self.draftId;
                 self.loadTeam();
-                self.eventsPoller = new EventsPoller(self.draftId, self.handleEventsPollerResponse);
+                self.eventsPoller = new EventsPoller(self.draftId, data.latestEventId, self.handleEventsPollerResponse);
                 self.eventsPoller.startPolling();
-
-                if (data.latestEventId) {
-                    self.eventsPoller.lastId = data.latestEventId;
-                }
             });
         };
 

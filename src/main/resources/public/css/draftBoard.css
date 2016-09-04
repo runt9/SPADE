@@ -49,6 +49,7 @@
 .timer {
     cursor: pointer;
     display: inline-block;
+    margin-left: 10px;
 }
 .draftInfo {
     text-align: center;

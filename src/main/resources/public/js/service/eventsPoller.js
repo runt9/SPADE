@@ -2,12 +2,12 @@
 
 (function (module) {
     function EventsPoller($http, $interval) {
-        return function (draftId, handleResponseCallback) {
+        return function (draftId, initialEventId, handleResponseCallback) {
             var self = this;
 
             self.draftId = draftId;
             self.isPolling = false;
-            self.lastId = 0; // Tracks the last id we got
+            self.lastId = initialEventId === null ? 0 : initialEventId; // Tracks the last id we got
             self.pollInstance = null;
 
             self.doPoll = function () {
