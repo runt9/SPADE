@@ -10,6 +10,7 @@
         self.error = false;
 
         self.submit = function () {
+            self.loading = true;
             $http.post('/api/draft/player/' + self.player.id + '/team/' + self.selectedTeam.id).success(function () {
                 $uibModalInstance.close(true);
             }).error(function (err) {

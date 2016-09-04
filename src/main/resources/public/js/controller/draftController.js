@@ -1,7 +1,7 @@
 'use strict';
 
 (function (module) {
-    function DraftController($scope, $http, $uibModal, $interval, $cookies, draftService) {
+    function DraftController($scope, $http, $uibModal, $cookies, $window, EventsPoller) {
         var self = this;
 
         self.draftId = location.pathname.substr(location.pathname.lastIndexOf('/') + 1);
@@ -34,6 +34,40 @@
             showFreeAgents: false // TODO: Allow people to see free agents
         };
 
+        self.$onInit = function () {
+            self.loading = true;
+
+            $http.get('/api/draft/' + self.draftId).success(function (data) {
+                self.draft = data.draft;
+                self.nflTeams = data.nflTeams;
+                self.stats = data.stats;
+
+                if (data.taggedPlayers) {
+                    self.taggedPlayers = data.taggedPlayers;
+                }
+
+                angular.forEach(self.draft.positionCounts, function (pc) {
+                    if (pc.count !== null) {
+                        if (pc.position.abbr !== 'BN') {
+                            self.possiblePositions.push(pc.position);
+                        }
+                        for (var i = 0; i < pc.count; i++) {
+                            self.teamPositions.push(pc.position);
+                        }
+                    }
+                });
+
+                self.commish = $cookies.get('spade-commish') == self.draftId;
+                self.loadTeam();
+                self.eventsPoller = new EventsPoller(self.draftId, self.handleEventsPollerResponse);
+                self.eventsPoller.startPolling();
+
+                if (data.latestEventId) {
+                    self.eventsPoller.lastId = data.latestEventId;
+                }
+            });
+        };
+
         self.getPlayerPoints = function (player, year) {
             for (var i in player.playerPointTotals) {
                 var pt = player.playerPointTotals[i];
@@ -54,39 +88,6 @@
             }
 
             return null;
-        };
-
-        self.$onInit = function () {
-            self.loading = true;
-
-            $http.get('/api/draft/' + self.draftId).success(function (data) {
-                self.draft = data.draft;
-                self.nflTeams = data.nflTeams;
-                self.stats = data.stats;
-
-                if (data.latestEventId) {
-                    self.EventsPoller.lastId = data.latestEventId;
-                }
-
-                if (data.taggedPlayers) {
-                    self.taggedPlayers = data.taggedPlayers;
-                }
-
-                angular.forEach(self.draft.positionCounts, function (pc) {
-                    if (pc.count !== null) {
-                        if (pc.position.abbr !== 'BN') {
-                            self.possiblePositions.push(pc.position);
-                        }
-                        for (var i = 0; i < pc.count; i++) {
-                            self.teamPositions.push(pc.position);
-                        }
-                    }
-                });
-
-                self.commish = $cookies.get('spade-commish') == self.draftId;
-                self.loadTeam();
-                self.EventsPoller.startPolling();
-            });
         };
 
         $scope.$watch('ctrl.draftQuery', function () {
@@ -307,51 +308,6 @@
         };
 
         // Events Poller object
-        self.EventsPoller = {
-            isPolling: false,
-            lastId: 0, // Tracks the last id we got
-            pollInstance: null,
-            doPoll: function () {
-                // Send along our last poll time to the events endpoint to let the server know
-                // how far back to check for new events to give us
-                $http.get('/api/draft/' + self.draftId + '/event/new?id=' + self.EventsPoller.lastId).success(function (response) {
-                    self.EventsPoller.handleResponse(response);
-                });
-            },
-            // Big handler of the response. Knows about all event types and data that can be sent.
-            handleResponse: function (events) {
-                if (events.length === 0) {
-                    return;
-                }
-
-                angular.forEach(events, function(event) {
-                    self.EventsPoller.lastId = event.id;
-
-                    var player = self.findPlayer(event.player.id);
-                    if (player === null) {
-                        return;
-                    }
-
-                    // At least for now the event type doesn't matter. Just update the player as they are in the event.
-                    player.draftRound = event.player.draftRound;
-                    player.team = event.player.team;
-                    player.teamPosition = event.player.teamPosition;
-                    self.reloadPlayers();
-                    self.refreshSelectedTeamPlayers();
-                });
-            },
-            startPolling: function () {
-                self.EventsPoller.pollInstance = $interval(function () {
-                    self.EventsPoller.doPoll();
-                }, 5000);
-                self.EventsPoller.isPolling = true;
-            },
-            stopPolling: function () {
-                $interval.cancel(self.EventsPoller.pollInstance);
-                self.EventsPoller.pollInstance = null;
-                self.EventsPoller.isPolling = false;
-            }
-        };
 
         self.findPlayer = function (id) {
             for (var i in self.players) {
@@ -361,8 +317,34 @@
             }
             return null;
         };
+
+        self.openDraftBoard = function () {
+            $window.open('/draft/' + self.draftId + '/draftBoard', '_blank');
+        };
+
+        self.handleEventsPollerResponse = function (events) {
+            if (events.length === 0) {
+                return;
+            }
+
+            angular.forEach(events, function(event) {
+                self.eventsPoller.lastId = event.id;
+
+                var player = self.findPlayer(event.player.id);
+                if (player === null) {
+                    return;
+                }
+
+                // At least for now the event type doesn't matter. Just update the player as they are in the event.
+                player.draftRound = event.player.draftRound;
+                player.team = event.player.team;
+                player.teamPosition = event.player.teamPosition;
+                self.reloadPlayers();
+                self.refreshSelectedTeamPlayers();
+            });
+        };
     }
 
-    DraftController.$inject = ['$scope', '$http', '$uibModal', '$interval', '$cookies', 'draftService'];
+    DraftController.$inject = ['$scope', '$http', '$uibModal', '$cookies', '$window', 'EventsPoller'];
     module.controller('DraftController', DraftController);
 })(angular.module('SpadeApp'));

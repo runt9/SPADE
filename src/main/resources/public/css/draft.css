@@ -89,6 +89,10 @@ tr.selected-team {
 ul.draft-pager {
     margin-left: 2.5%;
 }
+.draft-board-button {
+    margin-top: 20px;
+    margin-right: 2.5%;
+}
 @media screen and (max-width: 991px) {
     .toggleSidebar {
         display: block;

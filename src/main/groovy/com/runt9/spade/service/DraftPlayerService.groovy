@@ -116,14 +116,17 @@ class DraftPlayerService {
         DraftPlayer player = draftPlayerRepository.findOne(draftPlayerId)
         FantasyTeam team = fantasyTeamRepository.findOne(teamId)
 
+        List<DraftPlayer> teamPlayers = team.getPlayers()
+        Integer draftRound = 0
+        while (true) {
+            if (teamPlayers.find { it.draftRound == draftRound } == null) {
+                break;
+            }
 
-        List<DraftPlayer> teamPlayers = draftPlayerRepository.findByTeamId(teamId)
-        Integer maxDraftRound = teamPlayers.max { it.draftRound }?.draftRound
-        if (maxDraftRound == null) {
-            player.draftRound = 1
-        } else {
-            player.draftRound = maxDraftRound + 1
+            draftRound++
         }
+
+        player.draftRound = draftRound
         player.teamPosition = calculatePlayerTeamPosition(teamPlayers, player)
         player.team = team
         draftPlayerRepository.save(player)

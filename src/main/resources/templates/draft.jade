@@ -2,7 +2,7 @@ doctype html
 html
     head
         include commonHeader
-        script(src='/js/service/draftService.js')
+        script(src='/js/service/eventsPoller.js')
         script(src='/js/controller/draftController.js')
         script(src='/js/controller/selectTeamModalController.js')
         script(src='/js/controller/draftPlayerModalController.js')
@@ -15,8 +15,19 @@ html
             i.fa.fa-spin.fa-spinner
         .col-xs-12.col-sm-12.col-md-9.col-lg-9.playersColumn
             h2.text-center(ng-cloak) Welcome to the {{ ctrl.year }} {{ ctrl.draft.leagueName }} draft!
-            ul.draft-pager(uib-pagination, boundary-links='true', ng-model='ctrl.draftQuery.page', class='pagination-sm', previous-text='<',
-            next-text='>', first-text='<<', last-text='>>', total-items='ctrl.totalItems', items-per-page='ctrl.draftQuery.pageSize')
+            p.text-center
+                | NOTE: All stats collected from NFL.com Fantasy Football API. Points are calculated based on league settings.
+                br
+                | ADP, projected rank, and position rank are all from NFL.com Fantasy Football API for 10-team standard leagues and may not reflect customized league settings.
+
+            button.toggleSidebar.btn.btn-default.btn-lg(ng-click='ctrl.sidebarActive = !ctrl.sidebarActive')
+                i.glyphicon.glyphicon-menu-hamburger
+
+            .action-row
+                ul.draft-pager(uib-pagination, boundary-links='true', ng-model='ctrl.draftQuery.page', class='pagination-sm', previous-text='<',
+                next-text='>', first-text='<<', last-text='>>', total-items='ctrl.totalItems', items-per-page='ctrl.draftQuery.pageSize', max-size='6', rotate='true')
+                button.btn.btn-primary.pull-right.draft-board-button(ng-click='ctrl.openDraftBoard()') Draft Board
+
             .tableHolder
                 .filters
                     .searchBox
@@ -74,9 +85,9 @@ html
                             td(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
                                 | {{ col.getter(player, ctrl.statsYear, col) }}
 
-        .col-xs-8.col-sm-5.col-md-3.col-lg-3.teamList.offCanvas(ng-class='{activeSidebar: sidebarActive}')
+        .col-xs-8.col-sm-5.col-md-3.col-lg-3.teamList.offCanvas(ng-class='{activeSidebar: ctrl.sidebarActive}')
             .filters(align='center')
-                button.closeSidebar.btn.btn-default.btn-xs(ng-click='sidebarActive = !sidebarActive') X
+                button.closeSidebar.btn.btn-default.btn-xs(ng-click='ctrl.sidebarActive = !ctrl.sidebarActive') X
                 .teamFilterSelect
                     label Select Team: 
                         select(ng-model='ctrl.selectedLeagueTeam', ng-options='team as team.name for team in ctrl.draft.fantasyTeams track by team.id')
