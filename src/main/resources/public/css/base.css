@@ -1,0 +1,111 @@
+html,body {
+    height: 100%;
+}
+body {
+    overflow-y: hidden;
+}
+.noSelect {
+    user-select: none;
+}
+.sortableHeader {
+    display: block;
+    cursor: pointer;
+}
+.sorted {
+    background-color: #EEEEEE;
+}
+.caret.caret-reversed {
+    border-top-width: 0;
+    border-bottom: 4px solid #000000;
+}
+select {
+    border-radius: 4px;
+    margin-top: 1px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    height: 34px;
+    background-color: white;
+}
+.tableHolder {
+    width: 95%;
+    margin: auto;
+    border: 2px outset slategray;
+    border-radius: 10px;
+    overflow: auto;
+}
+.table {
+    margin-bottom: 0;
+}
+.filterSelect {
+    display: inline-block;
+    padding-left: 10px;
+}
+.clickable {
+    cursor: pointer;
+}
+.centered {
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 auto;
+}
+.scrollable {
+    overflow-y: auto;
+}
+.fixedFooter {
+    display: table-row;
+    vertical-align: bottom;
+    height: 1px;
+}
+.holder {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+.bg-doc {
+    background-color: #E4D8F0;
+}
+.bg-alert {
+    background-color: #FFD4A6;
+}
+.cellTop {
+    position: absolute;
+    top: 0;
+}
+.absoluteCenterHorizontal {
+    left: 0;
+    right: 0;
+}
+.absoluteCenterAll {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.loadingIndicator {
+    position: fixed;
+    z-index: 9999;
+    background-color: rgba(0,0,0,0.7);
+    text-align: center;
+}
+.loadingIndicatorHelper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+.loadingIndicator i {
+    font-size: 8em;
+    color: #CCCCCC;
+}
+.jumbotron {
+    padding-top: 0;
+}
+.minutes-picker {
+    width: auto;
+    float: left;
+}
+.minutes-label {
+    float: left;
+    padding-top: 5px;
+    margin-left: 10px;
+}

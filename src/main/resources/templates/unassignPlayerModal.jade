@@ -1,0 +1,7 @@
+.modal-header Unassign Player
+.modal-body
+    .alert.alert-danger(ng-if='$ctrl.error') An unknown error occurred while unassigning player. Please try again.
+    div Are you sure you want to unassign {{$ctrl.player.player.name}}?
+.modal-footer
+    button.btn.btn-warning(ng-disabled='$ctrl.loading', ng-click='$ctrl.cancel()') No
+    button.btn.btn-primary(ng-disabled='$ctrl.loading', ng-click='$ctrl.submit()') Yes

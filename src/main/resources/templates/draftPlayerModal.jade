@@ -1,0 +1,10 @@
+.modal-header
+    | Draft Player
+.modal-body
+    .alert.alert-danger(ng-if='$ctrl.error') An unknown error occurred while drafting player. Please try again.
+    div
+        label Select Team: 
+            select(ng-model='$ctrl.selectedTeam', ng-options='team as team.name for team in $ctrl.teams track by team.id', ng-disabled='$ctrl.loading')
+.modal-footer
+    button.btn.btn-warning(ng-disabled='$ctrl.loading', ng-click='$ctrl.cancel()') Cancel
+    button.btn.btn-primary(ng-disabled='$ctrl.loading || $ctrl.selectedTeam === null', ng-click='$ctrl.submit()') Submit

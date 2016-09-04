@@ -1,0 +1,13 @@
+.draft-label .glyphicon {
+    padding-left: 10px;
+}
+
+.league-team-row td {
+    padding-left: 0;
+    padding-bottom: 10px;
+}
+
+.league-team-row .glyphicon-trash:hover {
+    cursor: pointer;
+    color: #0FBBFF;
+}

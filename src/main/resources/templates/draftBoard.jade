@@ -1,0 +1,39 @@
+doctype html
+html
+    head
+        include commonHeader
+        script(src='/js/service/eventsPoller.js')
+        script(src='/js/controller/draftBoardController.js')
+        link(rel='stylesheet', href='/css/draftBoard.css')
+
+    body(ng-app='SpadeApp', ng-controller='DraftBoardController as ctrl')
+        .loadingIndicator.absoluteCenterAll(ng-show='ctrl.loading')
+            span.loadingIndicatorHelper
+            i.fa.fa-spin.fa-spinner
+
+        .holder
+            .jumbotron.draftInfo
+                .timerHolder
+                    span Time to Pick:
+                    span.timer(ng-click='ctrl.toggleTimer()', ng-class="{'text-danger': ctrl.timer.time < 30}")
+                        | {{ ctrl.timer.formatTime() }}
+                .draftTeamInfo
+                    div(ng-repeat='(key, team) in ctrl.getNextTeams()', style='display: inline-block')
+                        span.draftTeamHeader {{key}}: 
+                        span.draftTeamName {{team}}
+
+            .tableHolder.scrollable.draftBoardHolder
+                table.table.table-bordered.draftBoardTable
+                    thead
+                        tr
+                            th.centered.round-column Rnd.
+                            th.centered(ng-repeat='team in ctrl.draft.fantasyTeams | orderBy: "draftOrder"') {{ team.name }}
+                    tbody
+                        tr(ng-repeat='round in ctrl.rounds track by $index', ng-init='round = $index')
+                            td.boardPlayerCell.centered
+                                .boardPlayerCell {{ round + 1 }}
+                            td.boardPlayerCell.centered(ng-repeat='team in ctrl.draft.fantasyTeams | orderBy: "draftOrder"',
+                                                        ng-class='ctrl.getCssClassForPlayer(ctrl.getDraftedPlayer(team, round))')
+                                div(ng-if='ctrl.getDraftedPlayer(team, round) !== null')
+                                    div {{ ctrl.getDraftedPlayer(team, round).player.name }}
+                                    div {{ ctrl.getDraftedPlayer(team, round).player.position.abbr}} ({{ ctrl.getDraftedPlayer(team, round).player.nflTeam.abbr }})

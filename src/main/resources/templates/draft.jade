@@ -1,0 +1,97 @@
+doctype html
+html
+    head
+        include commonHeader
+        script(src='/js/service/eventsPoller.js')
+        script(src='/js/controller/draftController.js')
+        script(src='/js/controller/selectTeamModalController.js')
+        script(src='/js/controller/draftPlayerModalController.js')
+        script(src='/js/controller/unassignPlayerModalController.js')
+        link(rel='stylesheet', href='/css/draft.css')
+
+    body(ng-app='SpadeApp', ng-controller='DraftController as ctrl')
+        .loadingIndicator.absoluteCenterAll(ng-show='ctrl.loading')
+            span.loadingIndicatorHelper
+            i.fa.fa-spin.fa-spinner
+        .col-xs-12.col-sm-12.col-md-9.col-lg-9.playersColumn
+            h2.text-center(ng-cloak) Welcome to the {{ ctrl.year }} {{ ctrl.draft.leagueName }} draft!
+            p.text-center
+                | NOTE: All stats collected from NFL.com Fantasy Football API. Points are calculated based on league settings.
+                br
+                | ADP, projected rank, and position rank are all from NFL.com Fantasy Football API for 10-team standard leagues and may not reflect customized league settings.
+
+            button.toggleSidebar.btn.btn-default.btn-lg(ng-click='ctrl.sidebarActive = !ctrl.sidebarActive')
+                i.glyphicon.glyphicon-menu-hamburger
+
+            .action-row
+                ul.draft-pager(uib-pagination, boundary-links='true', ng-model='ctrl.draftQuery.page', class='pagination-sm', previous-text='<',
+                next-text='>', first-text='<<', last-text='>>', total-items='ctrl.totalItems', items-per-page='ctrl.draftQuery.pageSize', max-size='6', rotate='true')
+                button.btn.btn-primary.pull-right.draft-board-button(ng-click='ctrl.openDraftBoard()') Draft Board
+
+            .tableHolder
+                .filters
+                    .searchBox
+                        input.form-control(type='text', ng-model='ctrl.draftQuery.nameSearch', placeholder='Search Name', ng-model-options='{debounce: 500}')
+                    .filterSelect
+                        label Position: 
+                            select(ng-model='ctrl.draftQuery.positionId')
+                                option(value='{{ null }}') All
+                                option(ng-repeat='pos in ctrl.possiblePositions', value='{{ pos.id }}') {{ pos.abbr }}
+                    .filterSelect
+                        label NFL Team: 
+                            select(ng-model='ctrl.draftQuery.nflTeamId')
+                                option(value='{{ null }}') All
+                                option(ng-repeat='team in ctrl.nflTeams', value='{{ team.id }}') {{ team.city + ' ' + team.nickName }}
+                    .filterSelect
+                        label Availability: 
+                            select(ng-model='ctrl.draftQuery.available')
+                                option(value='{{ null }}') All
+                                option(value='{{ true }}') Only Available
+                                option(value='{{ false }}') Only Unavailable
+                    .filterSelect
+                        label Tagged: 
+                            select(ng-model='ctrl.draftQuery.tagged')
+                                option(value='{{ null }}') All
+                                option(value='{{ true }}') Tagged
+                                option(value='{{ false }}') Untagged
+                    .filterSelect
+                        label Stat Year:
+                            select(ng-model='ctrl.statsYear')
+                                // TODO: No hardcode!
+                                option(value='2015', ng-selected='ctrl.statsYear == 2015') 2015 Season
+                                option(value='2016') 2016 Projections
+                table.table.table-hover
+                    thead
+                        tr
+                            th Tag
+                            // We do special things with player name, so separate it from the rest of the columns
+                            th(ng-class="{'sorted': ctrl.draftQuery.sortProperty === 'player.name'}")
+                                .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = 'player.name'; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
+                                    | Name
+                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === 'player.name', 'caret-reversed': ctrl.draftQuery.ascending}")
+
+                            th(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
+                                .sortableHeader.noSelect(ng-click="ctrl.draftQuery.sortProperty = col.sortKey; ctrl.draftQuery.ascending = !ctrl.draftQuery.ascending")
+                                    | {{ col.name }}
+                                    span(ng-class="{'caret': ctrl.draftQuery.sortProperty === col.sortKey, 'caret-reversed': ctrl.draftQuery.ascending}")
+                    tbody
+                        tr(ng-repeat='player in ctrl.players', ng-class="{'bg-danger': !ctrl.isPlayerAvailable(player), 'bg-warning': ctrl.isPlayerTagged(player), 'bg-success': player.team == ctrl.myTeam}")
+                            td.noSelect(ng-click='ctrl.toggleTagPlayer(player)', ng-class="{'clickable': ctrl.isPlayerAvailable(player)}")
+                                input(type='checkbox', ng-checked='ctrl.isPlayerTagged(player)', ng-disabled='!ctrl.isPlayerAvailable(player)')
+
+                            td(ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey, 'draftable-player': ctrl.commish}", ng-click='ctrl.playerClicked(player)')
+                                | {{ player.player.name }}
+                                i.glyphicon.glyphicon-plus.injured(ng-if='player.player.injuryStatus', uib-tooltip='{{ player.player.injuryStatus }}')
+                            td(ng-repeat='col in ctrl.columns', ng-class="{'sorted': ctrl.draftQuery.sortProperty === col.sortKey}")
+                                | {{ col.getter(player, ctrl.statsYear, col) }}
+
+        .col-xs-8.col-sm-5.col-md-3.col-lg-3.teamList.offCanvas(ng-class='{activeSidebar: ctrl.sidebarActive}')
+            .filters(align='center')
+                button.closeSidebar.btn.btn-default.btn-xs(ng-click='ctrl.sidebarActive = !ctrl.sidebarActive') X
+                .teamFilterSelect
+                    label Select Team: 
+                        select(ng-model='ctrl.selectedLeagueTeam', ng-options='team as team.name for team in ctrl.draft.fantasyTeams track by team.id')
+            .teamPlayer(ng-repeat='tp in ctrl.selectedLeagueTeamPlayers')
+                span.playerPosition {{ tp.position.abbr }}
+                span.byeWeek {{ tp.player.player.nflTeam.byeWeek }}
+                span.playerName {{ tp.player.player.name }}

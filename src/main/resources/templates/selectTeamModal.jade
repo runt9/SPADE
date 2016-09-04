@@ -1,0 +1,8 @@
+h4.modal-header Select your fantasy team
+.modal-body
+    table.table.table-bordered.table-hover
+        tbody
+            tr.clickable(ng-repeat='team in $ctrl.teams', ng-click='$ctrl.selectedTeam = team', ng-class='{"selected-team": team == $ctrl.selectedTeam}')
+                td {{ team.name }}
+.modal-footer
+    button.btn.btn-primary(ng-disabled='$ctrl.selectedTeam === null', ng-click='$ctrl.submit()') Submit
