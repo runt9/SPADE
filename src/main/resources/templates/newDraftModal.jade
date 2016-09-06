@@ -40,7 +40,7 @@ h4.modal-header Create New SPADE Draft
         uib-tab(index='1', heading='Position Info')
             table.table
                 tbody
-                    tr(ng-repeat='dpc in $ctrl.draft.positionCounts')
+                    tr(ng-repeat='dpc in $ctrl.draft.positionCounts | orderBy: "position.id"')
                         td.draft-label {{ dpc.position.abbr }}
                         td
                             input.form-control(type='number', min='1', max='10', ng-model='dpc.count', ng-disabled='$ctrl.loading')
