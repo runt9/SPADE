@@ -43,7 +43,7 @@
                 'pts allow 7-13': 3,
                 'pts allow 14-20': 1,
                 'pts allow 28-34': -1,
-                'pts allow 35+': -3
+                'pts allowed 35+': -3
             },
             yahoo: {
                 'pass yds': 25,
@@ -75,7 +75,7 @@
                 'pts allow 7-13': 4,
                 'pts allow 14-20': 1,
                 'pts allow 28-34': -1,
-                'pts allow 35+': -4,
+                'pts allowed 35+': -4,
                 'team def 2pt ret': 2
             }
         };
